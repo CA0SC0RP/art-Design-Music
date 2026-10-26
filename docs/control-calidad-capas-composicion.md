@@ -2,6 +2,8 @@
 
 Estado: lista de control para aplicar durante la reconstrucción por capas. No certifica capas todavía inexistentes.
 
+> **Nota (propuesta, 2026-10-26):** en las capas recortadas permitidas por el contrato v2, el control de «lienzo exacto» se sustituye por comprobar `size`, `placement`, `scale` y `alphaBounds` declarados (`contrato-de-capas-y-work-json.md`, sección 3).
+
 ## Principio de trabajo
 
 La imagen maestra aprobada es la referencia visual. El objetivo es reproducir su composición mediante capas independientes, no modificar la maestra ni aceptar una aproximación solo porque resulte atractiva.

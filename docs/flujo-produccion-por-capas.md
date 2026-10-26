@@ -2,6 +2,8 @@
 
 Estado: flujo de trabajo aprobado para reconstruir la escena a partir de capas independientes. La imagen maestra existente se conserva como referencia visual y no se modifica.
 
+> **Nota (propuesta, 2026-10-26):** donde este documento exige lienzos de 3840 × 2160 para todas las capas, el contrato v2 (`contrato-de-capas-y-work-json.md`, sección 3) permite además capas recortadas con posición y escala declaradas. Una vez aprobado el contrato, rige en caso de conflicto.
+
 ## Objetivo
 
 Crear las capas por separado y componerlas para comprobar que el resultado coincide lo más posible con la imagen maestra aprobada. No se considera terminada una capa por existir: se valida visualmente dentro de la composición completa.

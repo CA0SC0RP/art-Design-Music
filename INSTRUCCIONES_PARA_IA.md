@@ -21,6 +21,8 @@ Cuadro Vivo es una experiencia de **arte visual en movimiento inspirada en cuadr
 10. Trabajar en ramas separadas de `main`; entregar cambios para revisión antes de fusionar.
 11. Si una herramienta solo tiene acceso de lectura o trabaja en un entorno local, decirlo claramente. No afirmar que los cambios están en GitHub hasta verificarlos allí.
 12. Documentar decisiones, estado, bloqueos y siguiente paso en los archivos de proyecto.
+13. Toda coordenada de un elemento se mide sobre la imagen maestra original. Las coordenadas del paquete preliminar v0.1 no se reutilizan automáticamente.
+14. Solo el usuario marca un recurso como `aprobado`; una IA puede dejarlo, como máximo, en `en_revision`.
 
 ## Flujo de cambios
 1. Leer este archivo, `ESTADO_PROYECTO.md`, `ARQUITECTURA.md` y la bitácora.
@@ -31,4 +33,4 @@ Cuadro Vivo es una experiencia de **arte visual en movimiento inspirada en cuadr
 6. Resumir cambios, archivos, limitaciones y próximos pasos.
 
 ## Contrato visual-técnico
-El formato compartido está definido en `docs/contrato-de-capas-y-work-json.md`. No introducir campos incompatibles sin documentarlos y acordarlos. Los recursos visuales aprobados son la fuente de verdad para la apariencia; el motor no debe reinterpretarlos creativamente.
+El formato compartido está definido en `docs/contrato-de-capas-y-work-json.md` y en `works/work.schema.json`; las comprobaciones previstas, en `docs/plan-de-validacion-automatica.md`. Son propuestas hasta que el usuario las apruebe. No introducir campos incompatibles sin documentarlos y acordarlos. Los recursos visuales aprobados son la fuente de verdad para la apariencia; el motor no debe reinterpretarlos creativamente.

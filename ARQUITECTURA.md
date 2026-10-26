@@ -40,13 +40,15 @@ src/engine/
 src/app/
 src/audio/
 works/index.json
+works/work.schema.json
 works/mountains-that-breathe/work.json
 works/mountains-that-breathe/layers/
 works/mountains-that-breathe/audio/
 works/_demo/
+tools/    # validador, propuesto (docs/plan-de-validacion-automatica.md)
 tests/
 docs/
 android/  # etapa futura
 ```
 
-La estructura final se confirmará al aprobar `docs/contrato-de-capas-y-work-json.md`. No mover ni duplicar la maestra sin verificar su ubicación y acordar una ruta canónica.
+La estructura final se confirmará al aprobar `docs/contrato-de-capas-y-work-json.md` (v2). Esta estructura sustituye a la de `artwork/` del plan de separación de capas. La maestra sigue en la raíz del repositorio; no moverla ni duplicarla sin acordar una ruta canónica con el usuario. Primera plataforma: prototipo web; no se construye aún motor, visor ni aplicación Android.

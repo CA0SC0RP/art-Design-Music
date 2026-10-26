@@ -35,6 +35,9 @@ La extracción técnica preliminar v0.1 incluye:
 - Las capas se etiquetan como preliminares hasta pasar la revisión visual.
 
 ## Estructura objetivo
+
+> **Nota (propuesta, 2026-10-26):** esta estructura quedó superada por la de `ARQUITECTURA.md` (`works/<id>/layers/`), que mantiene la maestra en la raíz del repositorio. Los criterios de aceptación de abajo asumen lienzo completo; el contrato v2 también admite capas recortadas (sección 3).
+
 ```
 artwork/
   master/

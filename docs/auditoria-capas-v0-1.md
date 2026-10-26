@@ -2,6 +2,8 @@
 
 Fecha: 2026-10-25
 
+> **Nota del 2026-10-26 — coordenadas no reutilizables.** Las cajas de este documento se midieron sobre el paquete local v0.1, que no está en este repositorio, y **no deben reutilizarse**. Una comprobación visual posterior contra la imagen maestra (cajas dibujadas sobre una copia temporal y recortes al 100 %) mostró que el disco solar queda por debajo de la caja del sol, que la caja de aves rodea un grupo de 3 aves y deja fuera al menos otro grupo de 5, y que solo la caja del venado coincide de forma aproximada con la figura. No es una medición. Toda coordenada debe medirse de nuevo sobre la maestra original (contrato de capas, sección 2).
+
 ## Resultado
 Se inspeccionaron los PNG preliminares del paquete local v0.1. Todos los archivos usan el lienzo 3840 × 2160, por lo que comparten las mismas coordenadas. Las capas móviles de venado, sol y aves son RGBA y tienen canal alfa con valores transparentes y opacos.
 
