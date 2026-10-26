@@ -1,0 +1,465 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cuadro Vivo — work.json (schemaVersion 2)",
+  "description": "Definición de una obra. PROPUESTA pendiente de aprobación (ver docs/contrato-de-capas-y-work-json.md). El esquema solo comprueba forma y reglas locales; las reglas entre campos (zIndex únicos, marco en primer plano, archivos existentes, hashes, límites por tipo de capa) las define docs/plan-de-validacion-automatica.md y aún NO están implementadas.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "title", "status", "canvas", "master", "frame", "audio", "layers", "render"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 2 },
+    "id": { "$ref": "#/$defs/slug" },
+    "title": { "type": "string", "minLength": 1 },
+    "status": {
+      "description": "Estado de la obra. 'aprobada' solo con todos sus componentes aprobados (regla EST-4 del plan de validación).",
+      "enum": ["planificada", "en_preparacion", "en_revision", "aprobada"]
+    },
+    "canvas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height", "aspectRatio"],
+      "properties": {
+        "width": { "const": 3840 },
+        "height": { "const": 2160 },
+        "aspectRatio": { "const": "16:9" }
+      }
+    },
+    "master": {
+      "description": "Imagen maestra de referencia. 'file' es relativo a la raíz del repositorio. Nunca se modifica; 'sha256' detecta cualquier cambio.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "width", "height", "sha256"],
+      "properties": {
+        "file": { "type": "string", "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._/-]+\\.png$" },
+        "width": { "const": 3840 },
+        "height": { "const": 2160 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layerId", "fixed", "visibleWindow", "measurement"],
+      "properties": {
+        "layerId": { "$ref": "#/$defs/slug" },
+        "fixed": { "const": true },
+        "visibleWindow": {
+          "description": "Rectángulo inscrito en la abertura del marco, medido sobre la maestra original. Obligatorio (no nulo) en en_revision y aprobada.",
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/rect" }]
+        },
+        "measurement": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/measurement" }] }
+      },
+      "if": { "properties": { "visibleWindow": { "type": "object" } }, "required": ["visibleWindow"] },
+      "then": { "properties": { "measurement": { "type": "object" } } }
+    },
+    "audio": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/audio" }]
+    },
+    "layers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 40,
+      "items": { "$ref": "#/$defs/layer" }
+    },
+    "render": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fit", "internalResolution", "backgroundColor", "preload"],
+      "properties": {
+        "fit": {
+          "description": "'contain' muestra el lienzo completo; nunca se recorta ningún lado del marco.",
+          "const": "contain"
+        },
+        "internalResolution": { "enum": ["adaptive", "1920x1080", "2560x1440", "3840x2160"] },
+        "backgroundColor": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "preload": { "enum": ["on-demand", "eager"] }
+      }
+    },
+    "notes": { "type": "string" }
+  },
+
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "date": { "type": "string", "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$" },
+
+    "status": {
+      "description": "pendiente: declarado, sin recurso. provisional: borrador/marcador/relleno automático. en_revision: entregado para revisión. cambios_solicitados: revisado con defectos registrados. aprobado: aprobado explícitamente por el usuario (requiere 'approval').",
+      "enum": ["pendiente", "provisional", "en_revision", "cambios_solicitados", "aprobado"]
+    },
+
+    "rect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": { "type": "integer", "minimum": 0, "maximum": 3839 },
+        "y": { "type": "integer", "minimum": 0, "maximum": 2159 },
+        "width": { "type": "integer", "minimum": 1, "maximum": 3840 },
+        "height": { "type": "integer", "minimum": 1, "maximum": 2160 }
+      }
+    },
+    "size": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "integer", "minimum": 0, "maximum": 3840 },
+        "y": { "type": "integer", "minimum": 0, "maximum": 2160 }
+      }
+    },
+
+    "measurement": {
+      "description": "Procedencia de una coordenada: debe haberse medido sobre la imagen maestra original. Las coordenadas del paquete preliminar v0.1 o de cualquier otra imagen no son válidas y no se reutilizan.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["basis", "masterSha256", "date", "by", "method"],
+      "properties": {
+        "basis": { "const": "master-original" },
+        "masterSha256": { "$ref": "#/$defs/sha256" },
+        "date": { "$ref": "#/$defs/date" },
+        "by": { "type": "string", "minLength": 1 },
+        "method": { "type": "string", "minLength": 1 }
+      }
+    },
+
+    "approvalPlain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by", "date", "evidence"],
+      "properties": {
+        "by": { "const": "usuario" },
+        "date": { "$ref": "#/$defs/date" },
+        "evidence": { "type": "string", "minLength": 1 }
+      }
+    },
+    "approvalFile": {
+      "description": "Aprobación de un archivo. 'fileSha256' ata la aprobación a los bytes aprobados: si el archivo cambia, la aprobación deja de ser válida.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by", "date", "evidence", "fileSha256"],
+      "properties": {
+        "by": { "const": "usuario" },
+        "date": { "$ref": "#/$defs/date" },
+        "evidence": { "type": "string", "minLength": 1 },
+        "fileSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+
+    "audioBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["band", "amount"],
+      "properties": {
+        "band": { "enum": ["none", "bass", "mid", "treble", "energy"] },
+        "amount": { "type": "number", "minimum": 0, "maximum": 0.5 }
+      }
+    },
+
+    "channel": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["channel", "type", "amplitudePx", "speedHz", "phaseRad", "audio"],
+          "properties": {
+            "channel": { "const": "translate" },
+            "type": { "enum": ["parallax", "float", "drift"] },
+            "amplitudePx": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["x", "y"],
+              "properties": {
+                "x": { "type": "number", "minimum": 0, "maximum": 48 },
+                "y": { "type": "number", "minimum": 0, "maximum": 48 }
+              }
+            },
+            "speedHz": { "type": "number", "minimum": 0, "maximum": 0.5 },
+            "phaseRad": { "type": "number", "minimum": 0, "maximum": 6.283186 },
+            "audio": { "$ref": "#/$defs/audioBinding" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["channel", "type", "amplitudeDeg", "speedHz", "phaseRad", "audio"],
+          "properties": {
+            "channel": { "const": "rotate" },
+            "type": { "const": "sway" },
+            "amplitudeDeg": { "type": "number", "minimum": 0, "maximum": 1 },
+            "speedHz": { "type": "number", "minimum": 0, "maximum": 0.5 },
+            "phaseRad": { "type": "number", "minimum": 0, "maximum": 6.283186 },
+            "audio": { "$ref": "#/$defs/audioBinding" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["channel", "type", "amplitude", "speedHz", "phaseRad", "audio"],
+          "properties": {
+            "channel": { "const": "scale" },
+            "type": { "const": "breathe" },
+            "amplitude": { "type": "number", "minimum": 0, "maximum": 0.01 },
+            "speedHz": { "type": "number", "minimum": 0, "maximum": 0.5 },
+            "phaseRad": { "type": "number", "minimum": 0, "maximum": 6.283186 },
+            "audio": { "$ref": "#/$defs/audioBinding" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["channel", "type", "min", "max", "speedHz", "phaseRad", "audio"],
+          "properties": {
+            "channel": { "const": "opacity" },
+            "type": { "enum": ["pulse", "shimmer"] },
+            "min": { "type": "number", "minimum": 0.5, "maximum": 1 },
+            "max": { "type": "number", "minimum": 0.5, "maximum": 1 },
+            "speedHz": { "type": "number", "minimum": 0, "maximum": 0.5 },
+            "phaseRad": { "type": "number", "minimum": 0, "maximum": 6.283186 },
+            "audio": { "$ref": "#/$defs/audioBinding" }
+          }
+        }
+      ]
+    },
+
+    "zone": {
+      "description": "Zona que debe reconstruirse. 'behind-element': píxeles ocultos detrás de un elemento móvil, que deben existir en las capas de 'paintedIn'. 'frame-bleed': contenido de la propia capa que queda oculto bajo el marco y que un desplazamiento haría visible.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "side", "region", "maskFile", "paintedIn", "coveragePx", "status", "measurement", "notes"],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "type": { "enum": ["behind-element", "frame-bleed"] },
+        "side": { "oneOf": [{ "type": "null" }, { "enum": ["left", "right", "top", "bottom"] }] },
+        "region": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/rect" }] },
+        "maskFile": {
+          "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^reconstruction/[a-z0-9][a-z0-9._-]*\\.png$" }]
+        },
+        "paintedIn": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/slug" } },
+        "coveragePx": {
+          "description": "Solo frame-bleed: profundidad (px) del contenido reconstruido bajo el marco.",
+          "oneOf": [{ "type": "null" }, { "type": "number", "exclusiveMinimum": 0 }]
+        },
+        "status": { "$ref": "#/$defs/status" },
+        "measurement": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/measurement" }] },
+        "approval": { "$ref": "#/$defs/approvalPlain" },
+        "notes": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "behind-element" } }, "required": ["type"] },
+          "then": { "properties": { "region": { "type": "object" }, "side": { "type": "null" }, "coveragePx": { "type": "null" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "frame-bleed" } }, "required": ["type"] },
+          "then": { "properties": { "side": { "type": "string" }, "coveragePx": { "type": "number" } } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "pendiente" } }, "required": ["status"] },
+          "else": { "properties": { "measurement": { "type": "object" } } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "aprobado" } }, "required": ["status"] },
+          "then": { "required": ["approval"] },
+          "else": { "not": { "required": ["approval"] } }
+        }
+      ]
+    },
+
+    "reconstruction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "zones"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "zones": { "type": "array", "items": { "$ref": "#/$defs/zone" } }
+      },
+      "if": { "properties": { "required": { "const": true } }, "required": ["required"] },
+      "then": { "properties": { "zones": { "minItems": 1 } } }
+    },
+
+    "layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "name", "kind", "file", "status", "layout", "size", "scale", "placement",
+        "alphaBounds", "zIndex", "pivot", "measurement", "motion", "safeBounds", "reconstruction", "notes"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "name": { "type": "string", "minLength": 1 },
+        "kind": {
+          "enum": ["sky", "mountain", "sun", "forest", "water", "mist", "foliage", "figure", "bird", "static", "frame"]
+        },
+        "file": {
+          "description": "Relativo al directorio de la obra. Solo layers/<nombre>.png en minúsculas (sensible a mayúsculas en GitHub Pages y Android).",
+          "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^layers/[a-z0-9][a-z0-9._-]*\\.png$" }]
+        },
+        "status": { "$ref": "#/$defs/status" },
+        "layout": { "enum": ["fullCanvas", "cropped"] },
+        "size": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/size" }] },
+        "scale": { "type": "number", "exclusiveMinimum": 0, "maximum": 4 },
+        "placement": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/rect" }] },
+        "alphaBounds": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/rect" }] },
+        "zIndex": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "pivot": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/point" }] },
+        "measurement": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/measurement" }] },
+        "motion": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["channels"],
+          "properties": {
+            "channels": { "type": "array", "maxItems": 4, "items": { "$ref": "#/$defs/channel" } }
+          }
+        },
+        "safeBounds": {
+          "description": "Desplazamiento máximo autorizado (px del lienzo maestro) de cualquier píxel opaco de la capa. 0 = movimiento no autorizado.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["xPx", "yPx"],
+          "properties": {
+            "xPx": { "type": "number", "minimum": 0, "maximum": 48 },
+            "yPx": { "type": "number", "minimum": 0, "maximum": 48 }
+          }
+        },
+        "reconstruction": { "$ref": "#/$defs/reconstruction" },
+        "approval": { "$ref": "#/$defs/approvalFile" },
+        "notes": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "pendiente" } }, "required": ["status"] },
+          "else": {
+            "properties": {
+              "file": { "type": "string" },
+              "size": { "type": "object" },
+              "placement": { "type": "object" },
+              "alphaBounds": { "type": "object" },
+              "measurement": { "type": "object" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "layout": { "const": "fullCanvas" } }, "required": ["layout"] },
+          "then": {
+            "properties": {
+              "size": { "oneOf": [{ "type": "null" }, { "const": { "width": 3840, "height": 2160 } }] },
+              "placement": { "oneOf": [{ "type": "null" }, { "const": { "x": 0, "y": 0, "width": 3840, "height": 2160 } }] },
+              "scale": { "const": 1 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "aprobado" } }, "required": ["status"] },
+          "then": { "required": ["approval"] },
+          "else": { "not": { "required": ["approval"] } }
+        },
+        {
+          "if": {
+            "properties": {
+              "motion": {
+                "properties": {
+                  "channels": { "contains": { "properties": { "channel": { "enum": ["translate", "rotate", "scale"] } }, "required": ["channel"] } }
+                },
+                "required": ["channels"]
+              }
+            },
+            "required": ["motion"]
+          },
+          "then": { "properties": { "reconstruction": { "properties": { "required": { "const": true } } } } }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "frame" } }, "required": ["kind"] },
+          "then": {
+            "properties": {
+              "layout": { "const": "fullCanvas" },
+              "motion": { "properties": { "channels": { "maxItems": 0 } } },
+              "safeBounds": { "const": { "xPx": 0, "yPx": 0 } },
+              "reconstruction": { "properties": { "required": { "const": false }, "zones": { "maxItems": 0 } } }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "static" } }, "required": ["kind"] },
+          "then": {
+            "properties": {
+              "motion": { "properties": { "channels": { "maxItems": 0 } } },
+              "safeBounds": { "const": { "xPx": 0, "yPx": 0 } }
+            }
+          }
+        }
+      ]
+    },
+
+    "audio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["src", "status", "durationSec", "loop", "credit", "analysis"],
+      "properties": {
+        "src": {
+          "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^audio/[a-z0-9][a-z0-9._-]*\\.(m4a|mp3|wav)$" }]
+        },
+        "status": { "$ref": "#/$defs/status" },
+        "durationSec": { "oneOf": [{ "type": "null" }, { "type": "number", "exclusiveMinimum": 0 }] },
+        "loop": { "type": "boolean" },
+        "credit": { "oneOf": [{ "type": "null" }, { "type": "string", "minLength": 1 }] },
+        "analysis": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "precomputedSrc", "smoothing", "bands"],
+          "properties": {
+            "mode": { "enum": ["none", "realtime", "precomputed", "realtime-with-precomputed-fallback"] },
+            "precomputedSrc": {
+              "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^audio/[a-z0-9][a-z0-9._-]*\\.json$" }]
+            },
+            "smoothing": { "type": "number", "minimum": 0, "maximum": 0.99 },
+            "bands": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["bass", "mid", "treble"],
+              "properties": {
+                "bass": { "$ref": "#/$defs/band" },
+                "mid": { "$ref": "#/$defs/band" },
+                "treble": { "$ref": "#/$defs/band" }
+              }
+            }
+          },
+          "if": { "properties": { "mode": { "enum": ["precomputed", "realtime-with-precomputed-fallback"] } }, "required": ["mode"] },
+          "then": { "properties": { "precomputedSrc": { "type": "string" } } }
+        },
+        "approval": { "$ref": "#/$defs/approvalFile" },
+        "notes": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "pendiente" } }, "required": ["status"] },
+          "else": { "properties": { "src": { "type": "string" } } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "aprobado" } }, "required": ["status"] },
+          "then": { "required": ["approval"] },
+          "else": { "not": { "required": ["approval"] } }
+        }
+      ]
+    },
+
+    "band": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minHz", "maxHz"],
+      "properties": {
+        "minHz": { "type": "number", "minimum": 20, "maximum": 20000 },
+        "maxHz": { "type": "number", "minimum": 20, "maximum": 20000 }
+      }
+    }
+  }
+}
