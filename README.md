@@ -34,3 +34,17 @@ Primera pieza visual aprobada: paisaje de montañas construido como capas de pap
 - `docs/` — decisiones visuales, arquitectura y pruebas.
 
 **Importante:** no se debe considerar que la imagen PNG está guardada en este repositorio hasta que exista y se verifique un archivo binario en GitHub. Este README registra el estado y las reglas del proyecto.
+
+
+## Protocolo de colaboración y estado técnico
+
+Antes de trabajar, las IA deben leer:
+- [Instrucciones para IA](INSTRUCCIONES_PARA_IA.md)
+- [Estado del proyecto](ESTADO_PROYECTO.md)
+- [Arquitectura propuesta](ARQUITECTURA.md)
+- [Bitácora de decisiones](BITACORA.md)
+- [Contrato de capas y work.json](docs/contrato-de-capas-y-work-json.md)
+
+**Reparto de trabajo:** ChatGPT prepara y revisa los recursos visuales; Claude desarrolla el motor, visor, audio e integración; el usuario aprueba las decisiones creativas y entregas. Cuadro Vivo es arte visual en movimiento inspirado en cuadros de papel recortado, no un videojuego.
+
+Los documentos técnicos en esta rama son propuestas de preparación; no significan que exista una aplicación implementada ni que las capas finales estén listas. Revisar los archivos reales y el estado de GitHub antes de afirmar lo contrario. Esta documentación se encuentra en la rama de preparación y aún no está fusionada en `main`.
