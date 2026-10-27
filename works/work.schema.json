@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Cuadro Vivo — work.json (schemaVersion 2)",
-  "description": "Definición de una obra. PROPUESTA pendiente de aprobación (ver docs/contrato-de-capas-y-work-json.md). El esquema solo comprueba forma y reglas locales; las reglas entre campos (zIndex únicos, marco en primer plano, archivos existentes, hashes, límites por tipo de capa) las define docs/plan-de-validacion-automatica.md y aún NO están implementadas.",
+  "description": "Definición de una obra. PROPUESTA pendiente de aprobación (ver docs/contrato-de-capas-y-work-json.md). El esquema comprueba forma y las reglas que JSON Schema sabe expresar (incluye fechas reales y que safeBounds > 0 exija reconstrucción con todas sus zonas aprobadas). NO puede sumar campos ni compararlos entre sí: que x+width e y+height no excedan el lienzo (GEO-1) y que opacity.min <= opacity.max (MOV-10) son reglas del validador, y también las demás reglas entre campos (zIndex únicos, marco en primer plano, archivos existentes, hashes, límites por tipo de capa), definidas en docs/plan-de-validacion-automatica.md. El validador aún NO está implementado.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "id", "title", "status", "canvas", "master", "frame", "audio", "layers", "render"],
@@ -81,7 +81,14 @@
   "$defs": {
     "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
     "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-    "date": { "type": "string", "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$" },
+    "date": {
+      "$comment": "Fecha real de calendario AAAA-MM-DD (calendario gregoriano, años 0001-9999, bisiestos incluidos). El patrón lo comprueban las pruebas contra datetime.date para todos los días de todos esos años. minLength/maxLength evitan que algunas implementaciones acepten un salto de línea final tras '$'.",
+      "type": "string",
+      "format": "date",
+      "minLength": 10,
+      "maxLength": 10,
+      "pattern": "^(?:(?!0000)[0-9]{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12][0-9]|3[01])|(?:0[469]|11)-(?:0[1-9]|[12][0-9]|30)|02-(?:0[1-9]|1[0-9]|2[0-8]))|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)-02-29)$"
+    },
 
     "status": {
       "description": "pendiente: declarado, sin recurso. provisional: borrador/marcador/relleno automático. en_revision: entregado para revisión. cambios_solicitados: revisado con defectos registrados. aprobado: aprobado explícitamente por el usuario (requiere 'approval').",
@@ -89,6 +96,7 @@
     },
 
     "rect": {
+      "$comment": "Cada campo se limita por separado. JSON Schema no puede sumar: la regla x+width <= 3840 e y+height <= 2160 (GEO-1) la comprueba el validador, para todo rectángulo (placement, alphaBounds, region de zonas, frame.visibleWindow).",
       "type": "object",
       "additionalProperties": false,
       "required": ["x", "y", "width", "height"],
@@ -221,7 +229,7 @@
           "properties": {
             "channel": { "const": "opacity" },
             "type": { "enum": ["pulse", "shimmer"] },
-            "min": { "type": "number", "minimum": 0.5, "maximum": 1 },
+            "min": { "$comment": "Debe cumplirse min <= max. JSON Schema no compara dos campos: lo comprueba el validador (MOV-10).", "type": "number", "minimum": 0.5, "maximum": 1 },
             "max": { "type": "number", "minimum": 0.5, "maximum": 1 },
             "speedHz": { "type": "number", "minimum": 0, "maximum": 0.5 },
             "phaseRad": { "type": "number", "minimum": 0, "maximum": 6.283186 },
@@ -322,7 +330,7 @@
           }
         },
         "safeBounds": {
-          "description": "Desplazamiento máximo autorizado (px del lienzo maestro) de cualquier píxel opaco de la capa. 0 = movimiento no autorizado.",
+          "description": "Desplazamiento máximo autorizado (px del lienzo maestro) de cualquier píxel opaco de la capa. 0 = movimiento no autorizado. Solo puede ser mayor que 0 en algún eje si reconstruction.required es true y TODAS las zonas de la capa están 'aprobado' (lo impone este esquema).",
           "type": "object",
           "additionalProperties": false,
           "required": ["xPx", "yPx"],
@@ -376,6 +384,30 @@
             "required": ["motion"]
           },
           "then": { "properties": { "reconstruction": { "properties": { "required": { "const": true } } } } }
+        },
+        {
+          "$comment": "safeBounds no puede autorizar movimiento (> 0 en cualquier eje) si la capa no declara reconstrucción requerida con al menos una zona y todas sus zonas aprobadas.",
+          "if": {
+            "anyOf": [
+              { "properties": { "safeBounds": { "properties": { "xPx": { "exclusiveMinimum": 0 } }, "required": ["xPx"] } }, "required": ["safeBounds"] },
+              { "properties": { "safeBounds": { "properties": { "yPx": { "exclusiveMinimum": 0 } }, "required": ["yPx"] } }, "required": ["safeBounds"] }
+            ]
+          },
+          "then": {
+            "properties": {
+              "reconstruction": {
+                "properties": {
+                  "required": { "const": true },
+                  "zones": {
+                    "minItems": 1,
+                    "items": { "properties": { "status": { "const": "aprobado" } }, "required": ["status"] }
+                  }
+                },
+                "required": ["required", "zones"]
+              }
+            },
+            "required": ["reconstruction"]
+          }
         },
         {
           "if": { "properties": { "kind": { "const": "frame" } }, "required": ["kind"] },

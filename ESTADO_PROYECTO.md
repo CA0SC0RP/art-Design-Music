@@ -17,7 +17,9 @@ Experiencia de arte visual en movimiento basada en cuadros de papel recortado, c
 - Archivos en `main`: `README.md`, `ESTADO_PROYECTO.md`, `INSTRUCCIONES_PARA_IA.md`, `ARQUITECTURA.md`, `BITACORA.md`, la imagen maestra y seis documentos en `docs/` (auditoría v0.1, contrato, control de calidad, flujo de producción, plan de separación y referencia histórica).
 - No existen en `main`: `works/`, `src/`, `tools/`, `android/`, audio ni capas.
 - Imagen maestra: PNG RGB de 8 bits, 3840 × 2160, sin perfil de color incrustado; SHA-256 `d216046d9f78331c5372f867afc56a90a7b9f9659e27e026b28a89958cf2cfdc`.
-- Rama de trabajo `contrato/capas-v2-esquema-y-validacion`, creada a partir de `main` en `f81b03c`: añade `works/index.json`, `works/work.schema.json` y `docs/plan-de-validacion-automatica.md`, y actualiza el contrato y los documentos de proyecto. Pendiente de revisión; no está integrada en `main`.
+- Rama de trabajo `contrato/capas-v2-esquema-y-validacion`, creada a partir de `main` en `f81b03c`: añade `works/index.json`, `works/work.schema.json`, `docs/plan-de-validacion-automatica.md` y `tests/test_contrato_v2.py`, y actualiza el contrato y los documentos de proyecto. Pendiente de revisión; no está integrada en `main` y no hay PR abierto.
+- Corrección técnica del 2026-10-27 en esa rama: fechas reales de calendario en el esquema; `safeBounds` > 0 exige reconstrucción con todas sus zonas aprobadas (esquema); reglas GEO-1 (rectángulos dentro del lienzo) y MOV-10 (`opacity.min ≤ max`) especificadas en el plan, que el esquema no puede expresar y **aún no tienen validador**.
+- Pruebas ejecutadas (`python3 -I tests/test_contrato_v2.py -v`): 45 pruebas, 30 superadas, 15 omitidas por ser reglas pendientes de implementar, 0 fallos. Detalle y lista de pendientes en `docs/plan-de-validacion-automatica.md`, sección 4. No hay validador, integración continua, pruebas con PNG reales ni pruebas visuales o de rendimiento en iPad o televisor; los límites de movimiento siguen siendo valores propuestos.
 - El informe anterior (commit `04d983b`, siete archivos, protocolo sin publicar) quedó superado.
 
 ## Decisiones provisionales

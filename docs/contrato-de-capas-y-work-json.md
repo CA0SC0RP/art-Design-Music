@@ -2,7 +2,9 @@
 
 **Estado:** propuesta para revisión del usuario. No está aprobada ni implementada: no existe motor, validador ni capas finales. Sustituye al borrador inicial (que usaba `schemaVersion: 1` solo como ejemplo, nunca consumido por código). El esquema formal es [`works/work.schema.json`](../works/work.schema.json); este documento explica las reglas y el esquema las comprueba en lo que puede expresar. Las reglas entre campos están en [`plan-de-validacion-automatica.md`](plan-de-validacion-automatica.md).
 
-Los números de límites (márgenes, amplitudes, velocidades) son **valores iniciales propuestos**. No se han probado en iPad ni en televisor y solo cambian con aprobación del usuario.
+Los números de límites (márgenes, amplitudes, velocidades) son **valores iniciales propuestos, pendientes de pruebas visuales y de rendimiento** (iPad Safari y TCL 55Q650G). No se han probado en ningún dispositivo y solo cambian con aprobación del usuario.
+
+En este documento, cada regla indica quién la impone: **esquema** (`works/work.schema.json`, probado en `tests/test_contrato_v2.py`) o **validador** (descrito en el plan; **aún no implementado**).
 
 ## 1. Principios
 
@@ -16,7 +18,7 @@ Los números de límites (márgenes, amplitudes, velocidades) son **valores inic
 
 1. Toda coordenada (`placement`, `alphaBounds`, `pivot`, `region` de zonas, `frame.visibleWindow`) se **mide de nuevo sobre la imagen maestra original** de este repositorio.
 2. Las coordenadas del paquete preliminar v0.1 (documentadas en `auditoria-capas-v0-1.md`) **no se reutilizan, ni siquiera como punto de partida automático**. Una comprobación visual contra la maestra mostró que al menos las del sol y las aves no coinciden con ella (ver esa auditoría).
-3. Cada medición queda registrada en un objeto `measurement`: `basis` (siempre `master-original`), `masterSha256` (hash de la maestra usada), `date`, `by` y `method`. Si el hash no coincide con el de `master.sha256`, la medición no es válida.
+3. Cada medición queda registrada en un objeto `measurement`: `basis` (siempre `master-original`), `masterSha256` (hash de la maestra usada), `date`, `by` y `method`. Si el hash no coincide con el de `master.sha256`, la medición no es válida. `date` (igual que `approval.date`) debe ser una **fecha real de calendario** AAAA-MM-DD, no solo tener esa forma: `2026-02-30` y `2026-04-31` se rechazan, `2028-02-29` es válida y `2026-02-29` no. Lo impone el esquema.
 4. Honestidad sobre el alcance: el hash es una declaración, no una prueba. La protección real es la combinación de ese registro, la comprobación de píxeles (`alphaBounds` contra el PNG real) y la comparación de la composición con la maestra (ver plan de validación).
 5. `alphaBounds` es el rectángulo mínimo que contiene todos los píxeles con alfa > 0 de la capa, ya colocada en coordenadas maestras.
 
@@ -32,6 +34,7 @@ Cada capa declara `layout`, `size` (píxeles del archivo PNG), `scale`, `placeme
 | Uso | alineación trivial; preferible para producción inicial y para el marco | optimiza memoria en elementos pequeños (ciervo, aves, sol) |
 
 **Reglas comunes**
+- **Todo rectángulo** (`placement`, `alphaBounds`, `region` de las zonas y `frame.visibleWindow`, en capas de lienzo completo y recortadas) cumple `x + width ≤ 3840` e `y + height ≤ 2160`. El esquema limita cada campo por separado pero **no puede sumar**, así que esta regla (GEO-1) la impone el **validador**, aún no implementado; las pruebas contienen una comprobación de referencia que fija el comportamiento esperado.
 - PNG RGBA de 8 bits, alfa real, sin fondo falso. La maestra no tiene perfil de color incrustado (PNG RGB de 8 bits sin sRGB/iCCP/gAMA), así que las capas tampoco deben incluir perfil: se evita que el navegador convierta colores de forma distinta a la maestra.
 - `placement.width = size.width × scale` y `placement.height = size.height × scale`, ambos enteros.
 - `scale` es uniforme (un solo valor) y vale 1 mientras no se apruebe otra cosa. Se admite ≠ 1 solo si se justifica en `notes` y el usuario lo aprueba; nunca para corregir una medición mal hecha.
@@ -78,7 +81,9 @@ Mover un elemento deja al descubierto lo que había detrás. Cada capa que se pr
 - `paintedIn`: la propia capa.
 
 Cada zona tiene su `status`, su `measurement` y, si está aprobada, su `approval`. Reglas:
-- `safeBounds` solo puede ser mayor que cero cuando todas las zonas requeridas de la capa están `aprobado`; en `frame-bleed`, `coveragePx` debe cubrir `safeBounds` en el eje correspondiente.
+- **Toda capa móvil declara la reconstrucción necesaria.** Si tiene un canal `translate`, `rotate` o `scale`, `reconstruction.required` es `true` y lista al menos una zona. Un canal solo de `opacity` no expone nada y no la exige. Lo impone el esquema.
+- **`safeBounds` no puede autorizar movimiento si las zonas requeridas no están aprobadas.** `xPx` o `yPx` mayores que cero exigen `reconstruction.required: true`, al menos una zona y **todas** sus zonas en `aprobado` (con su `approval`). Lo impone el esquema. Una capa con canales declarados pero `safeBounds` en 0 es un movimiento propuesto, todavía no autorizado.
+- Pendiente de implementar en el validador (no en el esquema): en `frame-bleed`, `coveragePx` debe cubrir `safeBounds` en el eje correspondiente, y `frame.visibleWindow` no puede ser nulo cuando hay movimiento autorizado.
 - Si una zona no puede reconstruirse sin inventar detalle injustificado, `safeBounds` queda en 0 en ese eje: el elemento permanece fijo.
 - El contenido reconstruido es arte nuevo: pasa por la misma revisión y aprobación que una capa.
 - Si cambia el archivo de una capa en `paintedIn`, la aprobación de la zona se considera obsoleta.
@@ -92,15 +97,17 @@ Cada zona tiene su `status`, su `measurement` y, si está aprobada, su `approval
 | `translate` | `parallax`, `float`, `drift` | `amplitudePx {x,y}`, `speedHz`, `phaseRad` | Desplaza la capa |
 | `rotate` | `sway` | `amplitudeDeg` | Gira sobre `pivot` |
 | `scale` | `breathe` | `amplitude` (fracción) | Escala uniforme sobre `pivot` |
-| `opacity` | `pulse`, `shimmer` | `min`, `max` (0,5–1) | Varía la opacidad; no expone nada |
+| `opacity` | `pulse`, `shimmer` | `min`, `max` (cada uno 0,5–1; **`min ≤ max`**) | Varía la opacidad; no expone nada |
 
 Todos incluyen `audio: { band, amount }` (`none`, `bass`, `mid`, `treble`, `energy`; `amount` ≤ 0,5).
 
 **Reservados, no permitidos en v2:** `flow` (flujo de agua), `frames` (animación cuadro a cuadro, p. ej. aleteo), `deform` (malla). El esquema los rechaza al redactar; el motor tratará cualquier canal desconocido como inexistente en vez de fallar.
 
-**Límites duros (los aplica el esquema):** traslación ≤ 48 px por eje; rotación ≤ 1°; escala ≤ 1 %; opacidad mínima ≥ 0,5; velocidad ≤ 0,5 Hz; `amount` de audio ≤ 0,5.
+**Límites duros (los aplica el esquema):** traslación ≤ 48 px por eje; rotación ≤ 1°; escala ≤ 1 %; opacidad mínima ≥ 0,5; velocidad ≤ 0,5 Hz; `amount` de audio ≤ 0,5. Estos límites también son valores propuestos, pendientes de pruebas visuales y de rendimiento.
 
-**Límites por tipo de capa (los aplicará el validador; propuestos):**
+**`opacity.min` no puede ser mayor que `opacity.max`** (pueden ser iguales). JSON Schema no puede comparar dos campos entre sí, así que esta regla (MOV-10) la impone el **validador**, aún no implementado; las pruebas contienen una comprobación de referencia que fija el comportamiento esperado.
+
+**Límites por tipo de capa (los aplicará el validador; valores propuestos, pendientes de pruebas visuales y de rendimiento):**
 
 | `kind` | Traslación x / y (px) | Rotación | Escala | Opacidad mín. | Velocidad máx. |
 |---|---|---|---|---|---|
@@ -313,3 +320,4 @@ El índice de obras es [`works/index.json`](../works/index.json): `id`, `title`,
 - Si se admite `scale` ≠ 1 en alguna capa.
 - Ruta canónica de la maestra (hoy en la raíz del repositorio).
 - Que la extensión de capas bajo el marco (`frame-bleed`) sea arte nuevo sujeto a aprobación.
+- Si `tests/test_contrato_v2.py` se conserva en el repositorio como base de las pruebas del futuro validador.

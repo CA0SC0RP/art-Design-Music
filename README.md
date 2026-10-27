@@ -39,7 +39,8 @@ Previsto (aún no existe salvo lo que indique `ESTADO_PROYECTO.md`):
 - `works/index.json` y `works/work.schema.json` — índice de obras y esquema.
 - `works/<id>/work.json`, `works/<id>/layers/`, `works/<id>/audio/` — cada obra, sus capas y su pista.
 - `src/` — motor, visor y audio.
-- `tools/` — validador.
+- `tools/` — validador (no existe; solo está planeado).
+- `tests/test_contrato_v2.py` — pruebas del esquema y comprobaciones de referencia; ya está en la rama de propuesta `contrato/capas-v2-esquema-y-validacion`, no en `main`, y no es el validador.
 
 La ruta canónica definitiva de la maestra está pendiente de aprobación del usuario; mientras tanto permanece en la raíz.
 

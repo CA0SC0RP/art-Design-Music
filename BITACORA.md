@@ -23,5 +23,12 @@
 - No ejecutado: validador del plan (no está implementado), reglas entre campos (zIndex únicos, marco en primer plano, archivos y hashes), comprobaciones de píxeles y composición contra la maestra (no hay capas), pruebas en iPad Safari y en el TCL 55Q650G.
 - El esquema solo comprueba forma y reglas locales; que `zIndex` sean únicos o que el marco esté arriba son reglas del plan, aún sin implementar.
 
+## 2026-10-27 — Corrección técnica del contrato v2 (misma rama, sin PR ni cambios en `main`)
+- Pedido del usuario tras revisar la propuesta: conservar la estructura y cerrar cinco huecos técnicos.
+- Esquema (ejecutado en pruebas): `date` solo acepta fechas reales de calendario (patrón comparado con `datetime.date` para todos los días de 0001 a 9999, más `minLength`/`maxLength` 10 para rechazar el salto de línea final); `safeBounds` > 0 en cualquier eje exige `reconstruction.required: true`, al menos una zona y todas las zonas `aprobado`.
+- Limitación de JSON Schema, documentada: no puede sumar ni comparar campos. Por eso `x + width ≤ 3840` e `y + height ≤ 2160` para todo rectángulo (GEO-1) y `opacity.min ≤ opacity.max` (MOV-10) son reglas del validador, **aún no implementado**. Las pruebas incluyen una comprobación de referencia mínima de ambas y un caso que muestra que el esquema solo las deja pasar.
+- Nuevo `tests/test_contrato_v2.py`. Resultado real: 45 pruebas, 30 superadas, 15 omitidas (reglas pendientes), 0 fallos. Con el patrón de fecha antiguo fallan 10 pruebas y sin la regla de `safeBounds` fallan 6 (comprobado en una copia temporal).
+- Sin cambios: imagen maestra (mismo SHA-256), capas, motor. Los límites de movimiento siguen siendo valores propuestos, pendientes de pruebas visuales y de rendimiento.
+
 ## Registro futuro
 Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecutada y limitación encontrada. Distinguir hechos verificados de propuestas. No registrar una operación como completada hasta verificar su resultado.
