@@ -32,3 +32,14 @@
 
 ## Registro futuro
 Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecutada y limitación encontrada. Distinguir hechos verificados de propuestas. No registrar una operación como completada hasta verificar su resultado.
+
+## 2026-10-27 — Dirección artística, sprites y música compuesta con la escena
+- El usuario acordó que todas las obras deben parecer construidas con papel recortado, no óleo ni cartoon: cartulina visible, bordes recortados, sombras entre planos y profundidad artesanal. Tearaway es una referencia conceptual de materialidad, no para copiar diseños.
+- Para el primer cuadro, marco ornamental dorado completo y fijo; exterior detrás del marco negro OLED puro (#000000), sin madera adicional.
+- Se acuerda que todos los elementos puedan tener vida sutil: animales, plantas, agua/río, cascada, nubes, niebla, sol/luz, pájaros, casa y otros objetos de la escena cuando el movimiento sea coherente. No es una película ni una animación frenética.
+- El plan visual debe combinar capas espaciales con sprites/hojas de poses y ciclos largos para elementos como el río. Cada objeto tendrá comportamiento, velocidad, fase y amplitud propios.
+- La música será original y se diseña junto con cada cuadro. Referencias iniciales: ambient, lo-fi y chillout; cada obra puede variar de género y emoción. Tempo tentativo para el primer cuadro: alrededor de 72 BPM, pendiente de composición.
+- La partitura audiovisual debe definir marcas temporales/eventos musicales para movimientos concretos y complementarse con análisis de audio suavizado. Evitar basarse solo en graves/agudos o activar objetos mecánicamente por frecuencia.
+- Idea futura para otra obra: paisaje gótico con castillo lejano, niebla/humo de papel y murciélagos en vuelo, con música misteriosa. No forma parte del primer cuadro.
+- Se creó la rama `direccion-artistica-musica-sprites-2026-10-27` desde `contrato/capas-v2-esquema-y-validacion` y el documento `docs/direccion-artistica-y-partitura-audiovisual.md`. Esta rama no está fusionada. No se generaron capas finales, sprites ni música.
+- Siguiente: Claude lee toda la documentación, entrega una auditoría del estado real y propone/implementa solo un modelo técnico aislado para capas, sprites/ciclos y eventos musicales, sin tocar la maestra, sin afirmar que hay recursos finales y sin fusionar/desplegar.
