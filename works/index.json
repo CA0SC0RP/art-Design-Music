@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "works": [
+    {
+      "id": "mountains-that-breathe",
+      "title": "Mountains That Breathe",
+      "order": 1,
+      "status": "en_preparacion",
+      "workFile": null,
+      "notes": "Primera obra. Aún no existe works/mountains-that-breathe/work.json: se creará cuando se aprueben el contrato v2 y la medición de coordenadas sobre la maestra original. Sin capas, audio ni código."
+    }
+  ]
+}
