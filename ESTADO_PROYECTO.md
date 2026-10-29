@@ -12,18 +12,19 @@ Experiencia de arte visual en movimiento basada en cuadros de papel recortado, c
 - Claude: arquitectura, motor, visor, sistema de animación, audio, controles, integración y pruebas técnicas.
 - Usuario: decisiones creativas y aprobación de recursos y entregas.
 
-## Estado de ramas conocido
-- `main` se registró previamente en `f81b03c` (fusión del PR #1).
-- `contrato/capas-v2-esquema-y-validacion` contiene propuesta de contrato v2, esquema, índice y plan de validación; no debe considerarse fusionada a `main` sin nueva verificación.
-- `direccion-artistica-musica-sprites-2026-10-27` es una rama de trabajo creada para documentar la dirección artística y musical acordada el 27-10-2026. No fusionar sin aprobación.
-- No afirmar que el estado actual de ramas/commits sigue igual sin verificar GitHub.
+## Estado de ramas verificado el 29-10-2026
+- `main` está en `e2c7399`: fusión del PR #2 por `CA0SC0RP` el 27-10-2026 a las 14:18 (-0600). Incluye el contrato v2, `works/work.schema.json`, `works/index.json`, `docs/plan-de-validacion-automatica.md`, `tests/test_contrato_v2.py` y `docs/direccion-artistica-y-partitura-audiovisual.md`.
+- Contenidas en `main`: `contrato/capas-v2-esquema-y-validacion` (`b137906`), `direccion-artistica-musica-sprites-2026-10-27` (`1fc7bea`) y `preparacion/contrato-datos-y-protocolo` (`cebbe47`).
+- El contrato v2, el esquema y el plan siguen documentados como propuesta. La fusión los integró en `main`, pero no consta una aprobación explícita del usuario (decisión D1 en `docs/auditoria-tecnica-2026-10-29.md`).
+- `auditoria/estado-2026-10-29` (desde `e2c7399`): auditoría técnica y propuesta de fase siguiente. No fusionada; espera revisión.
+- Volver a verificar GitHub antes de afirmar que este estado sigue igual.
 
 ## Maestra original
 El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 × 2160, sin perfil de color incrustado; SHA-256 registrado: `d216046d9f78331c5372f867afc56a90a7b9f9659e27e026b28a89958cf2cfdc`. No sobrescribirla ni modificarla. Verificar que el archivo y el hash coincidan antes de usarlo para medir o producir capas.
 
 ## Estado técnico registrado anteriormente
 - Propuesta: web modular, HTML/CSS/JavaScript y Canvas 2D como primer prototipo; audio mediante Web Audio/análisis en tiempo real y posibilidad de datos precalculados.
-- La rama del contrato registró 45 pruebas: 30 superadas, 15 omitidas por reglas aún pendientes, 0 fallos. Repetir las pruebas antes de afirmar que ese resultado corresponde al HEAD actual.
+- Repetidas el 29-10-2026 sobre `main` (`e2c7399`): 45 pruebas, 30 superadas, 15 omitidas, 0 fallos. Los 15 marcadores omitidos son funciones vacías; además, 18 reglas del catálogo del plan no tienen prueba ni marcador (`docs/auditoria-tecnica-2026-10-29.md`, §2).
 - No hay constancia verificada de un validador, motor, visor, pruebas con PNG de capas reales, audio final o pruebas reales en iPad/televisor.
 - No reutilizar automáticamente coordenadas del paquete preliminar v0.1: volver a medir sobre la maestra real.
 
@@ -45,3 +46,4 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 4. Diseñar música y partitura audiovisual en paralelo con el inventario de movimientos.
 5. Claude puede avanzar con auditoría técnica, modelo de datos para sprites/ciclos/eventos musicales y pruebas de concepto sin alterar la maestra ni afirmar que los recursos finales existen.
 6. Mantener cambios en ramas; no fusionar ni desplegar sin aprobación.
+7. Auditoría entregada el 29-10-2026 (`docs/auditoria-tecnica-2026-10-29.md`). Falta tu respuesta a las decisiones D1 a D9 antes de iniciar la siguiente fase.

@@ -43,3 +43,19 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Idea futura para otra obra: paisaje gótico con castillo lejano, niebla/humo de papel y murciélagos en vuelo, con música misteriosa. No forma parte del primer cuadro.
 - Se creó la rama `direccion-artistica-musica-sprites-2026-10-27` desde `contrato/capas-v2-esquema-y-validacion` y el documento `docs/direccion-artistica-y-partitura-audiovisual.md`. Esta rama no está fusionada. No se generaron capas finales, sprites ni música.
 - Siguiente: Claude lee toda la documentación, entrega una auditoría del estado real y propone/implementa solo un modelo técnico aislado para capas, sprites/ciclos y eventos musicales, sin tocar la maestra, sin afirmar que hay recursos finales y sin fusionar/desplegar.
+
+## 2026-10-29 — Auditoría técnica del estado actual (sin cambios de contrato, esquema, pruebas ni código)
+- **Fecha y objetivo:** 2026-10-29. Auditar el estado real del repositorio tras los cambios del 27-10 y proponer la siguiente fase. Fase de solo lectura, mediciones y documentación.
+- **Rama y commit de partida:** `auditoria/estado-2026-10-29`, creada desde `main` en `e2c7399` (fusión del PR #2). Sin cambios pendientes al empezar.
+- **Archivos creados o modificados:** nuevo `docs/auditoria-tecnica-2026-10-29.md`; modificados `ESTADO_PROYECTO.md` (sección de ramas y línea de pruebas) y esta bitácora. No se tocaron contrato, esquema, plan, índice, `tests/`, `README.md` ni la imagen maestra.
+- **Cambios y motivo:** el informe contiene la auditoría y la propuesta de fase siguiente. `ESTADO_PROYECTO.md` se corrigió porque registraba `main` en `f81b03c` y las ramas del contrato y de dirección artística como no fusionadas; ambas están contenidas en `main`. Las entradas anteriores de esta bitácora y los textos obsoletos de `README.md:43` y `docs/plan-de-validacion-automatica.md:150` se dejan sin editar (el informe los lista en P1) hasta que lo apruebes.
+- **Pruebas ejecutadas y resultados reales** (scripts temporales fuera del repositorio, salvo el primero):
+  - `python3 -I tests/test_contrato_v2.py` sobre `e2c7399`: 45 pruebas, 30 superadas, 15 omitidas, 0 fallos, 4,05 s. Árbol limpio después.
+  - Los 69 casos de las pruebas, con `jsonschema` 4.26.0 y con Ajv 8.18.0: 0 discrepancias de veredicto.
+  - Patrón de fecha compilado como ECMAScript contra el calendario de JavaScript: 3 719 628 fechas, 0 discrepancias.
+  - Ajv con `strict: true`: no compila (`strictRequired`). Con `strict: "log"`: compila con 31 avisos (6 `strictRequired`, 25 `strictTypes`).
+  - 16 sondeos de huecos: el esquema acepta 14 documentos que violan reglas del plan aún sin implementar y rechaza 2 (canal `frames` y `kind` inexistente).
+  - Mediciones indicativas sobre la maestra (resolución efectiva y borde exterior), sin modificarla; blob y SHA-256 idénticos.
+- **No ejecutado:** validador (no existe), reglas entre campos, PNG reales, composición contra la maestra, pruebas en iPad Safari y TCL 55Q650G. No se pudo instalar Ajv desde npm (registro inalcanzable); se usó una copia preinstalada.
+- **Problemas encontrados:** textos de estado contradictorios con el repositorio; maestra canónica sin confirmar; el contrato v2 no cubre sprites, ciclos, aleteo, eventos musicales ni el negro OLED; Ajv estricto no compila el esquema; 18 reglas del plan sin prueba ni marcador; sin `.gitignore` ni `requirements`.
+- **Pendiente:** tus decisiones D1 a D9 del informe (§8.1). No se inicia la siguiente fase sin tu aprobación.
