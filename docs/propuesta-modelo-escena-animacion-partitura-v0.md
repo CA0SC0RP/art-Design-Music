@@ -123,14 +123,14 @@ Los eventos son metadatos autorales de la composición, no detección automátic
 - Si falta análisis, la modulación se neutraliza a su valor base; no se detienen clips ni se exceden límites.
 - Política recomendada para V0: cuando el audio es reloj maestro, pausar audio pausa playhead; en modo silencioso se usa reloj interno. No mezclar políticas en una sesión sin transición explícita.
 
-## 6. Ejemplo JSON ilustrativo
+## 6. Ejemplo JSON ilustrativo — fixture estático del MVP
 
-IDs y referencias ficticios; no afirman que exista ese `work.json` o que las capas estén producidas/aprobadas. El track ilustra estructura futura, no autoriza movimiento. Para un slice estático puede omitirse todo `animation`.
+Este es el **fixture mínimo conceptual** del primer slice: una escena estática, dos referencias a capas ya existentes y aprobadas en v2 (fondo y marco), reloj determinista y partitura sin eventos. Los IDs son ficticios. No contiene clips ni autoriza movimiento. En producción, las capas deben resolverse por sus IDs reales y cumplir el contrato v2.
 
 ```json
 {
   "format": "adm-experience/0.1",
-  "id": "example-experience",
+  "id": "example-static-experience",
   "work": {
     "id": "example-work",
     "contract": "adm-work/2",
@@ -147,63 +147,28 @@ IDs y referencias ficticios; no afirman que exista ese `work.json` o que las cap
       "durationSec": 24,
       "loop": false,
       "nodes": [
-        { "id": "background-node", "type": "layer", "layerId": "background" },
-        { "id": "frame-node", "type": "layer", "layerId": "frame" }
+        { "id": "background-node", "type": "layer", "layerId": "approved-background-layer" },
+        { "id": "frame-node", "type": "layer", "layerId": "approved-frame-layer" }
       ]
     }
   ],
   "animation": {
-    "clips": [
-      {
-        "id": "background-drift",
-        "startAtSec": 0,
-        "durationSec": 12,
-        "repeat": "loop",
-        "phaseSec": 0,
-        "tracks": [
-          {
-            "id": "background-offset",
-            "target": { "nodeId": "background-node", "property": "offsetPx" },
-            "valueType": "vector2",
-            "blend": "replace",
-            "fillMode": "hold",
-            "keyframes": [
-              { "atSec": 0, "value": { "x": 0, "y": 0 }, "interpolation": "smoothstep" },
-              { "atSec": 6, "value": { "x": 1, "y": 0 }, "interpolation": "smoothstep" },
-              { "atSec": 12, "value": { "x": 0, "y": 0 }, "interpolation": "linear" }
-            ]
-          }
-        ]
-      }
-    ],
+    "clips": [],
     "behaviors": [],
     "bindings": []
   },
   "score": {
     "format": "adm-score/0.1",
     "durationSec": 24,
-    "tempoBpm": 72,
-    "meter": { "numerator": 4, "denominator": 4 },
-    "audioRef": "work.audio",
-    "sections": [
-      { "id": "intro", "startAtSec": 0, "endAtSec": 24, "label": "intro" }
-    ],
-    "events": [
-      {
-        "id": "opening-swell",
-        "atSec": 8,
-        "durationSec": 4,
-        "kind": "swell",
-        "intensity": 0.35,
-        "tags": ["ambient"],
-        "visualBindings": []
-      }
-    ]
+    "sections": [],
+    "events": []
   }
 }
 ```
 
-**Advertencias:** no es un manifiesto validado por esquema; aún no existe JSON Schema para estos formatos. El desplazamiento del ejemplo no debe aplicarse a una capa real sin comprobar tipo, reconstrucción aprobada, `safeBounds` y límites acumulados. El marco nunca puede ser target.
+**Advertencias:** no es un manifiesto validado por esquema; aún no existe JSON Schema para estos formatos. Los recursos citados son IDs ilustrativos, no archivos ni aprobaciones reales. El marco permanece fijo y jamás puede ser target. Este fixture estático no depende de audio, sprites, análisis ni movimiento.
+
+El movimiento futuro se describe por separado y no forma parte del fixture mínimo: solo podría añadirse un track/behavior a un nodo que refiera una capa concreta ya clasificada como móvil, con recurso, reconstrucción, zonas y límites aprobados. Nunca se infiere autorización a partir de un ejemplo ni se mueve el fondo o el marco por defecto.
 
 ## 7. Referencias y resolución de recursos
 
@@ -347,7 +312,7 @@ Se precisan cuatro responsabilidades, sin crear relojes competidores:
 3. **Análisis de audio:** señal secundaria opcional, muestreada/alineada respecto al playhead; no crea tiempo, no dispara por sí sola gestos críticos y su fallo neutraliza la modulación.
 4. **Comportamiento visual:** función determinista evaluada desde el playhead y parámetros explícitos; puede recibir eventos o análisis como entradas acotadas, pero nunca amplía permisos ni límites de movimiento.
 
-Cuando el audio sea el reloj maestro físico de una sesión, su posición se adapta al playhead y las pausas deben mantener ambos alineados. En modo silencioso, el reloj interno continúa bajo una política declarada. La selección entre pausar toda la experiencia o continuar en silencio debe ser explícita por sesión; no se permite que audio, análisis y temporizadores UI avancen relojes independientes.
+El `playheadSec` es siempre la representación temporal canónica que consume la escena. Con audio activo, el adaptador lee `audio.currentTime` y usa esa posición observada para sincronizar/corregir el playhead; no existe un segundo reloj de escena. La tolerancia de deriva y cualquier corrección se fijarán tras mediciones, sin asumir latencia cero. Sin audio, el playhead avanza con el reloj interno monotónico. Pausa congela playhead y audio; reanudar alinea el audio al playhead actual antes de continuar; seek actualiza el playhead y busca la pista a la misma posición. Si el navegador bloquea el audio, la pista termina inesperadamente o se pierde, se conserva el último playhead y se continúa en modo silencioso con reloj interno (si la experiencia no ha terminado); la escena nunca se oculta ni se congela por ese fallo. Al pasar de silencio a audio, se busca la posición actual del playhead antes de reproducir. La pérdida de análisis solo neutraliza la señal. Ningún temporizador de UI puede avanzar una línea temporal paralela.
 
 ### 15.4 Primer vertical slice en dos pasos verificables
 
@@ -367,3 +332,110 @@ Sprites, análisis en vivo, partitura musical completa, agua, WebGL y Android TV
 - **AUD-5:** el Slice B no se habilita sin recurso y reconstrucción aprobados; los recursos provisionales solo se muestran como tales en diagnóstico.
 
 **Estado tras el addendum:** la auditoría queda incorporada a la propuesta documental. No se creó esquema, fixture, validador, motor ni visor; no se ejecutaron pruebas. La especificación sigue pendiente de aprobación de Principal/usuario.
+
+
+## 16. Revisión de Principal — cierre de correcciones V0-R1 a V0-R4 y precisiones
+
+Este apartado responde a `colaboracion/auditorias/005-revision-especificacion-v0.md`. Donde este apartado difiera de formulaciones anteriores, prevalece esta aclaración.
+
+### 16.1 V0-R1 — semántica normativa de `energy`
+
+Para los formatos complementarios V0, `energy` significa **energía RMS global de la señal de audio**, no una banda de frecuencia:
+
+- Entrada: muestras PCM decodificadas, normalizadas a [-1, 1]. En estéreo se incluyen las muestras de ambos canales en la misma ventana.
+- Cálculo por ventana: `energyRaw = sqrt(sum(sample²) / sampleCount)`. Por la normalización PCM, el resultado pertenece a [0,1].
+- Serie precalculada: un valor por frame del análisis; si `frameRate = 30`, cada ventana nominal dura `1/30 s`. La última ventana puede ser parcial. La serie debe corresponder al `sourceSha256` exacto del audio.
+- Suavizado en tiempo real: `energy[n] = smoothing * energy[n-1] + (1-smoothing) * energyRaw[n]`; el primer valor inicializa la serie. `smoothing` conserva el rango [0,1].
+- Representación complementaria propuesta: objeto `energy` separado de `bands`, con `method: "pcm-full-scale-rms"` y `values: number[]` en [0,1]. `bands` contiene únicamente `bass`, `mid` y `treble`, cada una con su configuración/serie de frecuencia. No se añade `energy` a `analysis.bands` de `work.json` v2.
+- Consumo: si un binding solicita `energy` y existe una serie válida, usa su valor suavizado. Si falta, no coincide el hash o no se puede calcular, usa el valor neutral `e=1` de la fórmula de modulación actual; esto conserva la amplitud base y evita que la ausencia de análisis detenga el movimiento. El análisis sigue siendo opcional.
+
+Ejemplo conceptual del sidecar complementario (no es un archivo creado ni un esquema aprobado):
+
+```json
+{
+  "format": "adm-audio-analysis/0.1",
+  "frameRate": 30,
+  "durationSec": 24,
+  "sourceSha256": "<sha256-del-audio>",
+  "bands": {
+    "bass": [],
+    "mid": [],
+    "treble": []
+  },
+  "energy": {
+    "method": "pcm-full-scale-rms",
+    "values": []
+  }
+}
+```
+
+La discrepancia histórica de v2 queda registrada, no reparada: el contrato menciona `energy`, pero `works/work.schema.json` no la declara dentro de `analysis.bands`. La representación anterior pertenece solo al formato complementario propuesto; cualquier cambio a v2 requiere una propuesta de versión futura y aprobación independiente.
+
+### 16.2 V0-R2 — unicidad de tipos de canal por capa efectiva
+
+Regla semántica bloqueante **MOV-UNIQUE-1**:
+
+- Al resolver cada nodo `layer` de Experience, obtener la capa efectiva por `layerId` en el `work.json` v2.
+- En esa capa efectiva debe existir como máximo un canal de cada tipo permitido (`translate`, `rotate`, `scale`, `opacity`).
+- Dos canales del mismo tipo en una misma capa producen error bloqueante, aunque tengan IDs diferentes y aunque la lista tenga cuatro elementos o menos.
+- Canales de tipos distintos pueden coexistir solo si cada uno está permitido para el `kind`, la reconstrucción y las aprobaciones están vigentes, y la envolvente acumulada cumple `safeBounds` y todos los límites.
+- La comprobación se hace por capa resuelta, no solo por IDs de canal o de nodo. Dos nodos que refieran la misma capa no pueden eludir la regla.
+
+Pruebas negativas futuras: duplicar por separado `translate`, `rotate`, `scale` y `opacity` en una capa; cada fixture debe fallar. Prueba positiva: canales distintos, permitidos y dentro de límites. La regla no modifica el esquema v2.
+
+### 16.3 V0-R3 — ciclo de vida del playhead y autoridad de sincronización
+
+`playheadSec` es el único tiempo canónico de Experience, Score y evaluación visual. El adaptador de audio puede ser la **referencia de sincronización observada** mientras reproduce, pero la escena siempre consume el playhead. Política operativa propuesta:
+
+| Acción/condición | Playhead y audio |
+|---|---|
+| Play con audio | El audio se inicia en la posición actual del playhead; su `currentTime` observado corrige/alinea el playhead |
+| Play sin audio / modo silencioso | El reloj interno monotónico avanza el playhead |
+| Pause | Pausa audio y congela el playhead |
+| Resume | Busca/alinea audio al playhead congelado y reanuda; sin audio, reanuda reloj interno |
+| Seek | Actualiza el playhead y busca audio a la misma posición si está disponible |
+| Fin de pista | Si la experiencia aún no termina, conserva posición y continúa silenciosamente con reloj interno; si timeline terminó, finaliza |
+| Audio bloqueado por navegador | No bloquear render; continuar silenciosamente y permitir reintento explícito del usuario |
+| Pérdida/error de audio | Conservar último playhead observado y continuar con reloj interno, sin salto intencional |
+| Pérdida de análisis | Neutralizar solo la modulación; reloj y escena siguen |
+| Silencio → audio | Buscar la posición actual del playhead antes de reproducir |
+| Audio → silencio | Continuar desde el último playhead observado con reloj interno |
+
+La corrección de deriva se hará comparando posición observada y playhead; umbrales, frecuencia de corrección y compensación se definirán tras medir los dispositivos objetivo. No se declara latencia cero ni se fijan valores arbitrarios. Si una plataforma no permite buscar/reproducir, se mantiene el modo silencioso.
+
+### 16.4 V0-R4 — fixture mínimo estático y movimiento futuro separado
+
+La sección 6 ahora contiene únicamente el fixture estático mínimo: escena, nodos layer, arrays de animación vacíos, partitura vacía y reloj. Se eliminó el clip que desplazaba el fondo. El marco no es target y el fondo no se mueve por defecto.
+
+El movimiento posterior no es un fixture del MVP. Para probarlo, se requerirá una fixture independiente con una capa específica ya aprobada para movimiento; su identidad y parámetros solo podrán fijarse después de verificar el recurso real, su reconstrucción, `safeBounds`, límites por tipo y aprobación humana. Ningún JSON ilustrativo otorga permisos.
+
+### 16.5 Precisiones adicionales solicitadas
+
+**Keyframes y límites del clip**
+- `clip.startAtSec` es absoluto en la línea temporal.
+- `keyframe.atSec` es relativo al tiempo local del clip, con intervalo permitido [0, durationSec].
+- El intervalo activo del clip es [startAtSec, startAtSec + durationSec). Para `loop`, el tiempo local usa módulo `durationSec`; el keyframe en `durationSec` es el extremo terminal usado para validar continuidad y no sustituye al keyframe de 0 en el instante de wrap.
+- Para `once`, en el instante final `fillMode: "hold"` conserva el valor terminal; `fillMode: "none"` vuelve al valor base. Para `ping-pong`, el extremo terminal se evalúa como punto de retorno y la dirección temporal se invierte sin crear un segundo reloj.
+- Los keyframes deben ser estrictamente crecientes; se permite un keyframe terminal exactamente en `durationSec`.
+
+**Resolución de `audioRef`**
+- En `adm-score/0.1`, `audioRef: "work.audio"` es un identificador lógico reservado que resuelve exclusivamente al objeto `audio` de la raíz del `work.json` v2 asociado.
+- No es URL, ruta de archivo ni JSON Pointer arbitrario. Si el campo está ausente, es `null` o `audio.src` es `null`, se selecciona modo silencioso.
+- No se permiten rutas remotas, rutas absolutas ni referencias ambiguas.
+
+**Envolvente acumulada y `safeBounds`**
+- `safeBounds` es un límite máximo de desplazamiento autorizado, no una autorización genérica para trasladar, rotar o escalar.
+- Cada transformación debe estar permitida por el tipo de capa y contar con reconstrucción/aprobación aplicable. Se calcula la transformación combinada `T(p,t)` respecto a la geometría base y se comprueba `D(p,t)=T(p,t)-p` para los puntos de control de la envolvente de `alphaBounds` (como mínimo sus esquinas y pivote) durante todo el ciclo.
+- Debe cumplirse `max |D_x| <= safeBounds.xPx` y `max |D_y| <= safeBounds.yPx`. La cota considera traslación, rotación y escala simultáneas, no solo la amplitud individual de cada canal. Si la cota no puede demostrarse de forma conservadora, el movimiento se rechaza.
+- Además se aplican límites por `kind`, velocidad, marco fijo, ventana visible y zonas de reconstrucción aprobadas. `safeBounds > 0` no sustituye ninguno de esos requisitos.
+
+**Severidad de validación**
+- **Error bloqueante:** formato/version desconocido; ID/referencia ausente o ambigua; ruta insegura; tipo/campo/tipo numérico inválido; tiempos fuera de rango; IDs duplicados; canal duplicado por capa; marco como target; recurso requerido faltante; movimiento sin aprobación/reconstrucción; límites o envolvente acumulada excedidos; conflicto de tracks simultáneos.
+- **Warning/diagnóstico con fallback seguro:** audio opcional bloqueado/ausente; análisis opcional ausente o hash no coincidente; evento no reconocido que no afecta la estructura; behavior opcional desconocido en modo previsualización (se neutraliza el behavior y se mantiene el nodo estático).
+- En modo producción, un behavior requerido desconocido, un recurso visual requerido ausente o cualquier incertidumbre de seguridad bloquea la reproducción de esa experiencia; nunca se sustituye por un recurso arbitrario.
+- Cada diagnóstico futuro debe incluir código de regla, severidad, ruta del dato y explicación. Las reglas EXP/ANM/SCR deberán marcarse individualmente como error o warning en el catálogo del validador.
+
+### 16.6 Estado de aprobación
+
+Con estas correcciones, los puntos V0-R1 a V0-R4 quedan respondidos en la propuesta documental. Los formatos `adm-experience/0.1` y `adm-score/0.1` continúan siendo propuestas laterales, no integradas a v2. La especificación sigue pendiente de aprobación final de Principal/usuario. La recomendación de Principal para preparar JSON Schemas y fixtures pequeños se entiende como una autorización condicionada a que esta versión corregida sea revisada; no autoriza todavía su creación, ni motor, visor, integración, recursos o cambios a v2.
+
