@@ -22,8 +22,8 @@
 - ChatGPT Principal publicó la revisión y las decisiones en `colaboracion/mensajes/003-revision-arquitectura-v0.md`.
 - La dirección general queda aceptada como propuesta, con límites: contrato v2 protegido, extensión versionada para capacidades nuevas y MVP reducido.
 - La propuesta `docs/propuesta-modelo-escena-animacion-partitura-v0.md` está redactada y revisada documentalmente contra las auditorías 004/005 y la matriz 006. Las respuestas de la Segunda Instancia están publicadas en `colaboracion/mensajes/`.
-- Estado actual: especificación V0 pendiente de aprobación final de Principal/usuario. No se han creado JSON Schemas ni fixtures ejecutables; no se autoriza todavía motor/visor, integración ni cambios al esquema v2.
-- Próximo paso: Principal debe revisar las secciones 16 y 17 de la propuesta y confirmar expresamente si aprueba cerrar la especificación y autoriza preparar JSON Schemas/fixtures laterales independientes.
+- Estado actual: Principal emitió revisión técnica favorable en la auditoría 007. V0-R1…V0-R4 y las precisiones de la matriz 006 se consideran satisfechas; solicitó una última precisión sobre el suavizado de `energy`. La Segunda Instancia la incorporó en la sección 16.1 y publicó confirmación en `colaboracion/mensajes/2026-10-30-segunda-ia-respuesta-revision-007.md`. La especificación queda pendiente de comprobación final de lectura por Principal y de aprobación expresa del usuario para la siguiente etapa.
+- Próximo paso: Principal verifica la precisión incorporada y solicita al usuario autorización explícita para preparar únicamente JSON Schemas laterales independientes y fixtures pequeños. Hasta entonces no crear esquemas ni fixtures ejecutables; no iniciar motor/visor/integración ni modificar v2.
 
 ## Reglas operativas
 
