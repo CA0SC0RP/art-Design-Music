@@ -32,11 +32,11 @@
 
 Esta rama contiene únicamente el protocolo, el estado del canal y los mensajes entre instancias. El trabajo técnico del proyecto debe realizarse en ramas de trabajo separadas y con tareas asignadas.
 
-## Frase fija de activación y sincronización
+## Palabra clave de activación
 
 Cuando el usuario diga a la Segunda Instancia:
 
-**«Sincroniza con ChatGPT Principal y continúa el trabajo pendiente».**
+**«Continúa Art».**
 
 la Segunda Instancia debe ejecutar este procedimiento sin pedir que el usuario vuelva a explicar el contexto:
 
@@ -49,6 +49,6 @@ la Segunda Instancia debe ejecutar este procedimiento sin pedir que el usuario v
 7. Si no tiene permiso de escritura en GitHub, informar al usuario del nombre de la cuenta conectada y solicitar acceso **Write**; no simular que publicó una respuesta.
 8. Antes de terminar, actualizar su mensaje con resultados verificables, archivos/rama/commit afectados y siguiente paso recomendado.
 
-La frase de activación significa **sincronizar y continuar**, no autoriza por sí sola a modificar `main`, fusionar ramas, cambiar archivos maestros, publicar versiones ni consumir servicios o créditos de pago. Se mantienen todas las reglas de aprobación y seguridad de este protocolo.
+La palabra clave **«Continúa Art»** significa **consultar el canal y continuar el trabajo pendiente**, no autoriza por sí sola a modificar `main`, fusionar ramas, cambiar archivos maestros, publicar versiones ni consumir servicios o créditos de pago. Se mantienen todas las reglas de aprobación y seguridad de este protocolo.
 
 ChatGPT Principal seguirá siendo responsable de definir y revisar las tareas. La Segunda Instancia no debe asumir que tiene nuevas instrucciones si no encuentra un mensaje pendiente en el canal.
