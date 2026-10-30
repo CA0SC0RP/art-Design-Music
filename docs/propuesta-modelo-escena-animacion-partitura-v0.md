@@ -439,3 +439,39 @@ El movimiento posterior no es un fixture del MVP. Para probarlo, se requerirá u
 
 Con estas correcciones, los puntos V0-R1 a V0-R4 quedan respondidos en la propuesta documental. Los formatos `adm-experience/0.1` y `adm-score/0.1` continúan siendo propuestas laterales, no integradas a v2. La especificación sigue pendiente de aprobación final de Principal/usuario. La recomendación de Principal para preparar JSON Schemas y fixtures pequeños se entiende como una autorización condicionada a que esta versión corregida sea revisada; no autoriza todavía su creación, ni motor, visor, integración, recursos o cambios a v2.
 
+
+
+## 17. Alineación con la matriz independiente de pruebas 006
+
+Se revisó `colaboracion/auditorias/006-matriz-pruebas-v0.md`. Esta matriz es una propuesta de criterios de aceptación, no código ni resultados de ejecución. Las siguientes precisiones alinean la semántica de Experience/Score:
+
+### 17.1 Grafo y referencias
+
+- Para V0, cada `layerId` puede aparecer como máximo una vez dentro de una misma escena. Duplicar el mismo `layerId` en dos nodos se rechaza (SCN-03); no hay instancias múltiples, alias de composición ni semántica de duplicación en este MVP.
+- Debe existir exactamente un nodo que represente la capa protegida de marco cuando la obra v2 declara `frame.layerId`; no se permite omitirla, duplicarla ni representarla con otro `layerId`. Se conserva su `zIndex` superior.
+- La validación estructural/reloj puede usar recursos provisionales solo en modo previsualización/diagnóstico, claramente etiquetados. La aceptación de producción requiere recursos existentes y aprobados. No se requieren audio, sprites ni recursos finales para verificar el reloj aislado.
+
+### 17.2 Precisión terminológica para AUD-01…AUD-06
+
+En las reglas de unicidad, “tipo de canal” significa el tipo de movimiento v2 (`translate`, `rotate`, `scale`, `opacity`), no la banda de audio (`bass`, `mid`, `treble`, `energy`). Por tanto, AUD-02 debe interpretarse como dos canales de movimiento del mismo tipo en la misma capa (por ejemplo, dos `translate`), no como “dos canales bass”. La banda de audio es un parámetro de modulación dentro de un canal, y su vocabulario se valida por separado. Se deja esta nota como aclaración técnica; no se modifica la matriz publicada por Principal.
+
+### 17.3 Loop y extremos
+
+- Un clip/track que declara continuidad seamless debe tener valores compatibles en sus extremos para cada propiedad animada. Si no coinciden, es **error bloqueante** para la declaración seamless.
+- Un loop discontinuo solo puede aceptarse si se declara explícitamente como no-seamless; en ese caso se emite warning visible y el salto en el wrap es intencional. Nunca se etiqueta como seamless.
+- El endpoint `atSec = durationSec` es válido como valor terminal; en loop se usa para comprobar continuidad con `atSec = 0`, y el instante exacto de wrap evalúa el inicio del ciclo. En `once` con `fillMode: hold`, se conserva el valor terminal al finalizar.
+
+### 17.4 Conversión de tempo a tiempo absoluto
+
+En V0 no hay tempo map. `tempoBpm` es constante y se interpreta como pulsos de negra por minuto; `beatIndex` cuenta negras desde el inicio. La conversión es:
+
+`atSec = beatIndex * 60 / tempoBpm`
+
+El compás etiqueta la agrupación métrica, no crea otro reloj. Si en el futuro se admiten otras unidades de beat o cambios de tempo, deberán declararse en una versión posterior; no inferirlos desde el denominador del compás.
+
+### 17.5 Severidad y matriz
+
+Las reglas PKG/SCN/EXP/ANM/SCR/MOV se clasifican según la sección 16.5: integridad, referencias, tiempos, unicidad y seguridad son errores bloqueantes; ausencia de audio/análisis opcional y eventos no reconocidos no estructurales producen fallback/diagnóstico. En previsualización se puede neutralizar un behavior desconocido y mostrar el nodo estático; en producción, un behavior requerido desconocido bloquea esa experiencia.
+
+La matriz 006 amplía los casos de aceptación y debe conservarse como documento independiente. No se ejecutó ninguno de sus casos al incorporarlos a esta especificación.
+
