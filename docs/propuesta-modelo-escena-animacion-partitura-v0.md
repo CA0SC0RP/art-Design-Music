@@ -345,7 +345,7 @@ Para los formatos complementarios V0, `energy` significa **energía RMS global d
 - Entrada: muestras PCM decodificadas, normalizadas a [-1, 1]. En estéreo se incluyen las muestras de ambos canales en la misma ventana.
 - Cálculo por ventana: `energyRaw = sqrt(sum(sample²) / sampleCount)`. Por la normalización PCM, el resultado pertenece a [0,1].
 - Serie precalculada: un valor por frame del análisis; si `frameRate = 30`, cada ventana nominal dura `1/30 s`. La última ventana puede ser parcial. La serie debe corresponder al `sourceSha256` exacto del audio.
-- Suavizado en tiempo real: `energy[n] = smoothing * energy[n-1] + (1-smoothing) * energyRaw[n]`; el primer valor inicializa la serie. `smoothing` conserva el rango [0,1].
+- Suavizado en tiempo real: `energy[n] = smoothing * energy[n-1] + (1-smoothing) * energyRaw[n]`; el primer valor inicializa la serie. `smoothing` conserva el rango [0,0.99].
 - **Parámetro único de suavizado:** cuando exista, el valor autoritativo es `work.audio.analysis.smoothing` del contrato v2. No se define un parámetro paralelo en Experience ni en el sidecar.
 - **Metadatos y semántica del sidecar:** `energy.smoothing` es una copia informativa del valor autoritativo `work.audio.analysis.smoothing`, no un parámetro configurable independiente. `energy.valuesSmoothed` indica si la serie ya recibió el EMA:
   - Si es `false`, `values` contiene RMS por ventana sin suavizar; el consumidor aplica una sola vez el EMA usando `energy.smoothing` antes de modular.
