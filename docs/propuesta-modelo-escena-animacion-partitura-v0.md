@@ -347,8 +347,11 @@ Para los formatos complementarios V0, `energy` significa **energía RMS global d
 - Serie precalculada: un valor por frame del análisis; si `frameRate = 30`, cada ventana nominal dura `1/30 s`. La última ventana puede ser parcial. La serie debe corresponder al `sourceSha256` exacto del audio.
 - Suavizado en tiempo real: `energy[n] = smoothing * energy[n-1] + (1-smoothing) * energyRaw[n]`; el primer valor inicializa la serie. `smoothing` conserva el rango [0,1].
 - **Parámetro único de suavizado:** cuando exista, el valor autoritativo es `work.audio.analysis.smoothing` del contrato v2. No se define un parámetro paralelo en Experience ni en el sidecar.
-- **Equivalencia entre precálculo y tiempo real:** el sidecar de análisis debe registrar explícitamente el valor de `smoothing` utilizado o declarar que `energy.values` ya está suavizada con ese valor. El validador futuro comprobará que coincide exactamente con `work.audio.analysis.smoothing`; el análisis en tiempo real aplicará ese mismo valor y la misma fórmula.
-- **Fallback por incompatibilidad:** si no existe audio/análisis, falta el sidecar, no coincide `sourceSha256` o el parámetro de suavizado falta/no coincide cuando sea requerido, se ignora la serie precalculada y se usa el fallback neutral `e=1`. No se mezclan series con parámetros distintos ni se intenta compensarlas.
+- **Metadatos y semántica del sidecar:** `energy.smoothing` es una copia informativa del valor autoritativo `work.audio.analysis.smoothing`, no un parámetro configurable independiente. `energy.valuesSmoothed` indica si la serie ya recibió el EMA:
+  - Si es `false`, `values` contiene RMS por ventana sin suavizar; el consumidor aplica una sola vez el EMA usando `energy.smoothing` antes de modular.
+  - Si es `true`, `values` ya contiene el resultado del EMA con `energy.smoothing`; el consumidor lo usa directamente y no vuelve a suavizarlo.
+  - El validador futuro comprobará que `energy.smoothing` coincide exactamente con `work.audio.analysis.smoothing`. La señal en tiempo real usa ese mismo valor y fórmula.
+- **Fallback por incompatibilidad:** si no existe audio/análisis, falta el sidecar, no coincide `sourceSha256`, falta cualquiera de los metadatos de suavizado o el valor no coincide con v2, se ignora la serie precalculada y se usa el fallback neutral `e=1`. Nunca se aplica EMA dos veces ni se mezclan series con parámetros distintos.
 - Representación complementaria propuesta: objeto `energy` separado de `bands`, con `method: "pcm-full-scale-rms"` y `values: number[]` en [0,1]. `bands` contiene únicamente `bass`, `mid` y `treble`, cada una con su configuración/serie de frecuencia. No se añade `energy` a `analysis.bands` de `work.json` v2.
 - Consumo: si un binding solicita `energy` y existe una serie válida, usa su valor suavizado. Si falta, no coincide el hash o no se puede calcular, usa el valor neutral `e=1` de la fórmula de modulación actual; esto conserva la amplitud base y evita que la ausencia de análisis detenga el movimiento. El análisis sigue siendo opcional.
 
@@ -367,6 +370,8 @@ Ejemplo conceptual del sidecar complementario (no es un archivo creado ni un esq
   },
   "energy": {
     "method": "pcm-full-scale-rms",
+    "smoothing": 0.25,
+    "valuesSmoothed": false,
     "values": []
   }
 }
