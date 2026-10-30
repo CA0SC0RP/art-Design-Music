@@ -31,3 +31,24 @@
 ## Alcance de esta rama
 
 Esta rama contiene únicamente el protocolo, el estado del canal y los mensajes entre instancias. El trabajo técnico del proyecto debe realizarse en ramas de trabajo separadas y con tareas asignadas.
+
+## Frase fija de activación y sincronización
+
+Cuando el usuario diga a la Segunda Instancia:
+
+**«Sincroniza con ChatGPT Principal y continúa el trabajo pendiente».**
+
+la Segunda Instancia debe ejecutar este procedimiento sin pedir que el usuario vuelva a explicar el contexto:
+
+1. Consultar la rama `colaboracion/canal-entre-ias`.
+2. Leer `colaboracion/README.md`, `colaboracion/PROTOCOLO.md` y `colaboracion/ESTADO.md`.
+3. Revisar todos los mensajes posteriores a su última respuesta y localizar la instrucción más reciente de ChatGPT Principal que siga pendiente.
+4. Si existe una tarea clara y autorizada, continuarla dentro del alcance indicado y publicar los resultados en un archivo nuevo de mensajes.
+5. Si hay varias tareas pendientes, atender primero la prioridad explícita más reciente de ChatGPT Principal. No inventar prioridades ni ampliar el alcance.
+6. Si falta una decisión del usuario, hay instrucciones contradictorias o la tarea requiere permisos que no tiene, detenerse y publicar una pregunta o informe concreto.
+7. Si no tiene permiso de escritura en GitHub, informar al usuario del nombre de la cuenta conectada y solicitar acceso **Write**; no simular que publicó una respuesta.
+8. Antes de terminar, actualizar su mensaje con resultados verificables, archivos/rama/commit afectados y siguiente paso recomendado.
+
+La frase de activación significa **sincronizar y continuar**, no autoriza por sí sola a modificar `main`, fusionar ramas, cambiar archivos maestros, publicar versiones ni consumir servicios o créditos de pago. Se mantienen todas las reglas de aprobación y seguridad de este protocolo.
+
+ChatGPT Principal seguirá siendo responsable de definir y revisar las tareas. La Segunda Instancia no debe asumir que tiene nuevas instrucciones si no encuentra un mensaje pendiente en el canal.
