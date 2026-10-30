@@ -1,0 +1,318 @@
+# Propuesta V0 — modelo de escena, animación y partitura audiovisual
+
+**Estado:** especificación de diseño para revisión; no aprobada, no implementada y no incorporada al contrato v2.  
+**Fecha:** 2026-10-30  
+**Repositorio:** `CA0SC0RP/art-Design-Music`  
+**Rama:** `colaboracion/canal-entre-ias`  
+**Decisión de referencia:** `colaboracion/mensajes/003-revision-arquitectura-v0.md`
+
+## 0. Propósito y límites
+
+Definir un modelo declarativo, versionable y reutilizable que describa cómo se organiza una obra en escenas, cómo se anima y cómo una partitura musical coordina eventos visuales. El modelo debe servir para obras distintas sin codificar nombres, posiciones ni estética de una obra particular.
+
+Este documento es una **propuesta V0**. No es JSON Schema, no cambia `works/work.schema.json`, no añade carpetas de implementación, no crea recursos y no autoriza programación. El ejemplo JSON es ilustrativo; sus IDs y referencias son ficticios y no afirman que existan un `work.json` de producción o recursos finales.
+
+### Decisiones heredadas de Principal (obligatorias)
+
+- Contrato v2, esquema, campos y pruebas permanecen intactos.
+- Las capacidades nuevas se proponen en un formato separado y versionado; si luego se integran en el contrato de obra, requieren una nueva versión con migración, compatibilidad y pruebas.
+- MVP: una escena, nodos de capa estática, reloj determinista y un movimiento acotado; no implementar de entrada máscaras, efectos, varios renderizadores, Android TV ni catálogo complejo.
+- Canvas 2D es la primera implementación candidata, pero esta especificación no lo implementa.
+- No mover ni editar la imagen maestra. No reutilizar coordenadas preliminares v0.1.
+- Audio y análisis son opcionales; su ausencia o fallo no puede ocultar ni bloquear la escena.
+- No fijar presupuestos de memoria/FPS sin mediciones en iPad Safari y TCL 55Q650G.
+- Ningún movimiento puede superar límites autorizados ni exponer superficies no reconstruidas y aprobadas.
+
+## 1. Separación de responsabilidades
+
+Se proponen tres documentos lógicos:
+
+1. **Obra visual (`work.json`, contrato v2):** identidad, lienzo, maestra, capas PNG, geometría, orden, estados, reconstrucción, límites seguros y audio base. Es la autoridad de las capas y sus autorizaciones.
+2. **Experiencia (`experience.json`, formato propuesto `adm-experience/0.1`):** escenas, nodos, orden de composición, clips, tracks, ciclos, behaviors, bindings y referencias a recursos de la obra.
+3. **Partitura (`score.json`, formato propuesto `adm-score/0.1`):** tempo/compás cuando existan, duración, secciones, eventos musicales y señales visuales asociadas.
+
+Para el vertical slice se permite incrustar escenas, animación y partitura en un solo `experience.json`; separarlos en archivos distintos no debe cambiar la semántica.
+
+**Fuente de verdad:** v2 define qué imagen/capa existe, dónde está y cuánto puede moverse; Experience define cuándo y de qué forma se solicita un movimiento; Score define cuándo ocurre una intención musical. Ninguna capa puede autorizarse a sí misma mediante Experience o Score.
+
+## 2. IDs, unidades y convenciones
+
+- IDs ASCII minúscula, dígitos y guiones; únicos en cada colección y referencias resueltas sin ambigüedad.
+- Tiempo: segundos decimales desde el inicio de la experiencia (`t=0`); reloj monotónico de reproducción, no reloj de pared.
+- Posición: deltas en píxeles del lienzo maestro v2; rotación en grados; escala como factor; opacidad en [0,1]. Son transformaciones relativas a la geometría base; nunca reescriben PNG ni `placement`.
+- Interpolación V0: `step`, `linear`, `smoothstep`. Cúbica diferida hasta definir tangencias y límites.
+- Repetición: `once`, `loop`, `ping-pong`; ciclos deterministas en sus extremos.
+- Números finitos únicamente; rechazar NaN, Infinity y cadenas numéricas.
+- Duraciones positivas; intervalos temporales semiabiertos [start,end), salvo eventos puntuales.
+
+## 3. Modelo de escena
+
+### 3.1 Entidades
+
+**Work reference.** La experiencia identifica la obra mediante `workId` y referencia explícita a su contrato/archivo v2. No copia ni redefine capas.
+
+**Scene.** Unidad de composición reproducible: `id`, `name`, `durationSec`, `nodes[]`, opcionalmente `loop`, clips y secciones asociados. Transiciones complejas quedan fuera del MVP.
+
+**Node.** El único tipo requerido para el primer vertical slice es `layer`, con referencia a una capa existente v2 mediante `layerId`. El nodo puede tener alias y estado habilitado, pero no duplica geometría, archivo, zIndex, estado ni aprobación. El orden final debe respetar el `zIndex` v2; no se invierte silenciosamente.
+
+Tipos previstos, no requeridos por MVP:
+- `sprite`: secuencia de poses/frames con duración por frame, dimensiones, pivote, loop y política alfa; diferido hasta acordar recurso, hash y aprobación.
+- `group`: agrupación con transformación común; diferido.
+- `mask` y `effect`: diferidos; no son necesarios para el primer slice.
+
+**Regla de escena mínima:** una escena puede contener solo nodos `layer` estáticos. Bastan dos capas existentes y aprobadas (por ejemplo, fondo y marco, si existen y se aprueban); no se exige sprite, máscara, efecto ni transición.
+
+### 3.2 Geometría y composición
+
+- Geometría base proviene exclusivamente de v2: `placement`, `pivot`, `zIndex`, `alphaBounds`, `safeBounds`.
+- El nodo no redefine x/y/width/height; solo vincula y habilita una capa.
+- El marco `kind: frame` permanece fijo, opaco, completo y por encima de todo. Ningún clip, track, behavior, binding o evento puede seleccionarlo.
+- Controles de interfaz quedan fuera del grafo; el fondo OLED no se interpreta como nodo móvil.
+
+## 4. Modelo de animación
+
+### 4.1 Reloj de reproducción
+
+La experiencia mantiene un único `playheadSec`. Toda evaluación visual y musical deriva de ese tiempo; el estado se calcula como función del tiempo absoluto, no acumulando deltas por frame. Esto permite pausar, reanudar, buscar y repetir sin deriva. Callbacks de UI y temporizadores independientes no son relojes.
+
+### 4.2 Track
+
+Un track anima una propiedad concreta de un nodo o parámetro de behavior. Campos conceptuales: `id`, `target`, `valueType`, `keyframes[]`, `blend` y `fillMode`.
+
+Propiedades V0: `offsetPx` (vector 2D), `rotationDeg`, `scaleFactor`, `opacity`. Keyframes declaran `atSec`, `value` e `interpolation`. En V0 solo `replace`; suma/multiplicación simultánea se difieren. Keyframes deben estar estrictamente ordenados, sin tiempos duplicados y con valores del tipo declarado.
+
+Los valores de track no conceden permisos: se validan contra límites de la capa y autorización v2. El MVP puede validar primero una escena completamente estática; un track se agrega solo después de validar seguridad del movimiento.
+
+### 4.3 Clip y ciclo
+
+Un clip agrupa tracks con `id`, `durationSec`, `startAtSec`, `repeat`, `phaseSec` y `enabled`. Repetición: `once`, `loop`, `ping-pong`. En `loop`, el estado final debe coincidir con el inicial en cada propiedad que deba ser continua; si no, se informa discontinuidad y no se declara seamless. Clips solapados que escriban el mismo target/property se rechazan en V0; no hay blending implícito.
+
+### 4.4 Behaviors reutilizables
+
+Un behavior es una función determinista registrada por nombre y versión; produce parámetros visuales desde tiempo normalizado y parámetros declarados. Ejemplos conceptuales: `sway/1`, `float/1`, `breathe/1`, `drift/1`, `wing-flap/1`, `water-flow/1`.
+
+Cada behavior define parámetros y defaults, duración/frecuencia/fase, propiedades de salida permitidas, límites máximos, continuidad y fallback. `wing-flap` y `water-flow` requieren recursos/frames aprobados; no se simulan mediante deformaciones improvisadas. Para el primer prototipo, como máximo un behavior simple (por ejemplo `sway/1`) sobre una capa cuya geometría y reconstrucción estén aprobadas.
+
+### 4.5 Bindings
+
+Un binding enlaza un origen (`scoreEvent`, parámetro de audio opcional o señal de behavior) con un target/property y un mapeo limitado: `source`, `target`, `property`, `mapping`, ganancia y límites. V0 no permite expresiones arbitrarias, código embebido ni scripts. Audio en vivo solo modula intensidad dentro de un intervalo aprobado; no autoriza movimiento.
+
+## 5. Modelo de partitura audiovisual
+
+### 5.1 Metadatos musicales
+
+La partitura puede declarar `tempoBpm`, `meter`, `keyOrMode`, `durationSec`, `loop`, `audioRef` y `sections[]`. Los metadatos son opcionales salvo duración de la línea temporal. No se impone un género global. V0 recomienda tempo constante; mapas de tempo y cambios de compás se difieren. `atSec` es el tiempo canónico.
+
+### 5.2 Secciones y eventos
+
+Una sección agrupa un intervalo y etiqueta una frase musical. Evento conceptual:
+- `id`, `atSec`, `durationSec` opcional;
+- `kind`: `accent`, `phrase`, `swell`, `transition`, `cue`;
+- `intensity` en [0,1];
+- `tags[]` y `visualBindings[]` opcionales.
+
+Los eventos son metadatos autorales de la composición, no detección automática de golpes. Para gestos intencionales se prefieren eventos temporizados derivados de la pista compuesta. Análisis en vivo bass/mid/treble/energy es modulación secundaria suavizada, nunca el único medio de sincronizar un gesto importante.
+
+### 5.3 Reloj y audio
+
+- El playhead de experiencia es la referencia temporal única.
+- Cuando hay audio, el adaptador informa su posición y la alinea al playhead con política documentada. No se asume latencia cero; compensación solo con medición real.
+- Clips/eventos se evalúan desde el playhead sincronizado, nunca desde `setTimeout` o temporizadores de UI.
+- Audio comienza tras gesto del usuario cuando la plataforma lo exige.
+- Si no hay pista, no carga o el navegador bloquea reproducción, la escena permanece visible y los ciclos autónomos siguen funcionando. Los eventos pueden seguir con reloj interno si el modo silencioso lo declara.
+- Si falta análisis, la modulación se neutraliza a su valor base; no se detienen clips ni se exceden límites.
+- Política recomendada para V0: cuando el audio es reloj maestro, pausar audio pausa playhead; en modo silencioso se usa reloj interno. No mezclar políticas en una sesión sin transición explícita.
+
+## 6. Ejemplo JSON ilustrativo
+
+IDs y referencias ficticios; no afirman que exista ese `work.json` o que las capas estén producidas/aprobadas. El track ilustra estructura futura, no autoriza movimiento. Para un slice estático puede omitirse todo `animation`.
+
+```json
+{
+  "format": "adm-experience/0.1",
+  "id": "example-experience",
+  "work": {
+    "id": "example-work",
+    "contract": "adm-work/2",
+    "manifest": "work.json"
+  },
+  "timeline": {
+    "durationSec": 24,
+    "clock": "experience",
+    "loop": false
+  },
+  "scenes": [
+    {
+      "id": "opening",
+      "durationSec": 24,
+      "loop": false,
+      "nodes": [
+        { "id": "background-node", "type": "layer", "layerId": "background" },
+        { "id": "frame-node", "type": "layer", "layerId": "frame" }
+      ]
+    }
+  ],
+  "animation": {
+    "clips": [
+      {
+        "id": "background-drift",
+        "startAtSec": 0,
+        "durationSec": 12,
+        "repeat": "loop",
+        "phaseSec": 0,
+        "tracks": [
+          {
+            "id": "background-offset",
+            "target": { "nodeId": "background-node", "property": "offsetPx" },
+            "valueType": "vector2",
+            "blend": "replace",
+            "fillMode": "hold",
+            "keyframes": [
+              { "atSec": 0, "value": { "x": 0, "y": 0 }, "interpolation": "smoothstep" },
+              { "atSec": 6, "value": { "x": 1, "y": 0 }, "interpolation": "smoothstep" },
+              { "atSec": 12, "value": { "x": 0, "y": 0 }, "interpolation": "linear" }
+            ]
+          }
+        ]
+      }
+    ],
+    "behaviors": [],
+    "bindings": []
+  },
+  "score": {
+    "format": "adm-score/0.1",
+    "durationSec": 24,
+    "tempoBpm": 72,
+    "meter": { "numerator": 4, "denominator": 4 },
+    "audioRef": "work.audio",
+    "sections": [
+      { "id": "intro", "startAtSec": 0, "endAtSec": 24, "label": "intro" }
+    ],
+    "events": [
+      {
+        "id": "opening-swell",
+        "atSec": 8,
+        "durationSec": 4,
+        "kind": "swell",
+        "intensity": 0.35,
+        "tags": ["ambient"],
+        "visualBindings": []
+      }
+    ]
+  }
+}
+```
+
+**Advertencias:** no es un manifiesto validado por esquema; aún no existe JSON Schema para estos formatos. El desplazamiento del ejemplo no debe aplicarse a una capa real sin comprobar tipo, reconstrucción aprobada, `safeBounds` y límites acumulados. El marco nunca puede ser target.
+
+## 7. Referencias y resolución de recursos
+
+- Rutas relativas al directorio de obra; no aceptar rutas absolutas, URL remotas, `..`, enlaces simbólicos que salgan del paquete ni diferencias de mayúsculas/minúsculas.
+- En V0, nodos `layer` resuelven `layerId` contra `layers[].id` del `work.json` v2. El archivo se toma de `layers[].file`, no se copia a Experience.
+- `audioRef: work.audio` refiere al objeto `audio` de v2. Si `audio.src` es null o no existe, el modo silencioso es válido.
+- Sprites, máscaras, efectos y análisis precalculado no se incorporan a Experience V0 hasta definir formato, hash, estado y aprobación.
+- Cada referencia debe resolver a exactamente un elemento. Referencia faltante, duplicada, con case mismatch o fuera del paquete es error bloqueante.
+- Carga diferida no cambia el orden visual ni la aprobación.
+
+## 8. Validación propuesta (no implementada)
+
+### Estructura y referencias
+- **EXP-1:** formato/version reconocidos.
+- **EXP-2:** IDs únicos en experiencias, escenas, nodos, clips, tracks, behaviors, bindings, secciones y eventos.
+- **EXP-3:** referencias a work, layer, node, clip y sección resueltas exactamente una vez.
+- **EXP-4:** duración de escena positiva; tiempos/duraciones finitos, no negativos y dentro de la línea temporal.
+- **EXP-5:** nodo layer referencia capa existente y no duplica geometría, archivo, aprobación o zIndex.
+- **EXP-6:** marco único, zIndex máximo y nunca target.
+- **EXP-7:** rutas relativas seguras, case-sensitive y dentro del paquete.
+
+### Animación y seguridad
+- **ANM-1:** keyframes ordenados, sin tiempos repetidos y tipos consistentes.
+- **ANM-2:** clips solapados no escriben mismo target/property.
+- **ANM-3:** loops declaran continuidad; no se promete seamless si extremos difieren.
+- **ANM-4:** behavior/version registrados; parámetros dentro de rangos y outputs permitidos.
+- **ANM-5:** cualquier movimiento se valida contra v2: capa no es frame/static, safeBounds cubre desplazamiento máximo, reconstruction requerida y zonas/aprobaciones vigentes.
+- **ANM-6:** propiedades permitidas por tipo de capa y reglas v2.
+- **ANM-7:** combinación de canales/behaviors/bindings se valida por máximo acumulado, no por amplitudes aisladas.
+- **ANM-8:** marco jamás puede ser target.
+- **ANM-9:** behavior desconocido nunca ejecuta código dinámico; fallback estático y warning.
+
+### Partitura y audio
+- **SCR-1:** duración de partitura coincide con timeline o declara región menor.
+- **SCR-2:** tiempos/duraciones de eventos válidos y dentro de la partitura.
+- **SCR-3:** intensidad y parámetros de binding dentro de rangos.
+- **SCR-4:** tempo/compás válidos y resolución de beat a segundos determinista.
+- **SCR-5:** audioRef resuelve a audio v2 o null; audio faltante no bloquea escena.
+- **SCR-6:** análisis precalculado futuro ligado al hash exacto de la pista.
+- **SCR-7:** evento/binding no supera límites ni apunta al marco.
+
+Estados y aprobaciones se heredan de v2; Experience no replica ni sustituye evidencias. Un nodo puede referir recurso provisional en previsualización claramente marcada, nunca como producción ni como autorización de movimiento.
+
+## 9. Política de fallback
+
+| Fallo/ausencia | Comportamiento seguro |
+|---|---|
+| Audio no existe, no carga o está bloqueado | Mostrar escena; modo silencioso; render no se detiene |
+| Análisis no disponible | Neutralizar modulación; mantener animación base dentro de límites |
+| Evento desconocido | Ignorar con diagnóstico; no lanzar excepción |
+| Behavior desconocido/no registrado | Nodo estático; warning |
+| Clip/track inválido | Rechazar clip antes de iniciar; escena estática si es segura |
+| Recurso visual faltante/corrupto | No sustituir por imagen arbitraria; placeholder solo en diagnóstico o bloquear producción |
+| Referencia v2 ausente | Error bloqueante; no inventar nodo |
+| Aprobación/hash obsoleto | No reproducir movimiento; exigir revisión |
+| Efecto/máscara no soportado | Fallback a composición base solo si conserva integridad; si no, bloquear |
+| Desfase de audio | Resincronizar según política medida; nunca acumular timers |
+
+## 10. Relación exacta con contrato v2
+
+### Se reutiliza, sin duplicar
+Identidad/lienzo; maestra/hash/mediciones; `layers[].id`, `kind`, `file`, `layout`, `size`, `scale`, `placement`, `alphaBounds`, `zIndex`, `pivot`; `status`, `measurement`, `approval`, `reconstruction`, `safeBounds`; `frame.layerId`, marco fijo/ventana visible; `audio` y sus referencias/estado/análisis.
+
+### No se toca en v2
+No se añaden `scenes`, `nodes`, `sprites`, `clips`, `tracks`, `behaviors`, `bindings`, `events` ni `score` al esquema v2. No se alteran canales, límites, estados, rutas, pruebas o aprobaciones. No se convierte esta propuesta en nuevos campos de `work.json` sin revisión.
+
+### Requeriría versión nueva o extensión formal
+Si Experience/Score se integran al paquete de obra, crear nueva versión (por ejemplo v3) o formato complementario formalmente versionado, con asociación a la obra, compatibilidad, migración de v2 sin experiencia a escena estática, preservación de IDs/hash/aprobaciones, serialización de sprites/partitura, esquema formal y reglas de compatibilidad.
+
+**Regla transitoria:** hasta resolver precedencia, no permitir que tracks V0 y `motion.channels` v2 animen simultáneamente la misma capa. El consumidor elige una fuente de movimiento por capa y falla de forma cerrada si ambas están activas.
+
+## 11. Ruta de migración y pruebas
+
+1. Principal revisa nombres, entidades, alcance MVP y compatibilidad v2.
+2. Decidir manifiestos laterales o v3; no editar v2.
+3. Redactar JSON Schema 2020-12 independiente para Experience/Score y fixtures pequeños.
+4. Pruebas estructurales: IDs duplicados, referencias faltantes, rutas inseguras, tipos incorrectos, tiempos inválidos, marco como target.
+5. Pruebas semánticas: límites acumulados, safeBounds, reconstrucción aprobada, continuidad, conflictos y fallback.
+6. Pruebas de reloj: t=0, mitad, fin, pausa, reanudación, búsqueda, loop y ping-pong.
+7. Compatibilidad v2: obra sin Experience = escena estática; preservar IDs y aprobaciones; ninguna coordenada v0.1.
+8. Vertical slice futuro: una escena, dos nodos estáticos existentes/aprobados; después un behavior simple autorizado. Audio opcional y modo silencioso.
+9. Medir carga, memoria y fluidez en iPad Safari y TCL 55Q650G antes de presupuestos finales o Android TV.
+
+Ninguna de estas pruebas se ejecutó al redactar el documento; son criterios de aceptación propuestos.
+
+## 12. MVP y fuera de alcance
+
+**Incluido en el primer vertical slice futuro:** una obra con work.json v2 válido y recursos aprobados; una escena; nodos layer existentes; composición estática y reloj determinista; opcionalmente un clip/track o behavior simple tras validar seguridad; partitura vacía o evento temporal de prueba; modo silencioso.
+
+**Fuera de alcance:** editor visual; catálogo multiobra completo y transiciones complejas; sprites/hojas y aleteo; flujo/deformación de agua, máscaras y efectos; blending de clips; tempo maps/análisis avanzado; WebGL, Android TV y presupuestos finales.
+
+## 13. Riesgos y decisiones pendientes
+
+1. **Manifiesto lateral o v3:** recomendación: lateral durante prototipo, con referencias estrictas a v2; decidir futura integración.
+2. **Fuente de movimiento duplicada:** resolver precedencia/migración entre `motion.channels` y tracks antes de implementar.
+3. **Semántica de ciclo:** definir tolerancia numérica y si discontinuidad bloquea o advierte.
+4. **Audio como reloj maestro:** confirmar pausa de audio y avance en modo silencioso.
+5. **Modelo de sprite:** acordar atlas vs archivos, hash, dimensiones, pivote y aprobación.
+6. **Eventos musicales:** confirmar tiempos absolutos, beats o ambos; V0 recomienda atSec canónico y beats como metadato.
+7. **Movimiento MVP:** elegir capa solo tras comprobar recurso/reconstrucción aprobados; no asumir que ciervo, sol o aves preliminares son aptos.
+8. **Recursos reales:** el índice actual indica que aún no existe work.json de producción ni capas/audio finales aprobados; el primer slice depende de ello.
+
+## 14. Decisión solicitada a ChatGPT Principal
+
+Responder en un mensaje nuevo:
+- ¿Se aceptan `adm-experience/0.1` y `adm-score/0.1` como formatos laterales a v2 durante prototipo?
+- ¿Se acepta `layer` como único nodo requerido del MVP, dejando sprite/group/mask/effect para extensiones?
+- ¿Se acepta `atSec` como tiempo canónico, con tempo/compás como metadatos y reloj único?
+- ¿Qué política se elige para audio pausado y modo silencioso?
+- ¿Se autoriza, tras aprobar esta especificación, preparar esquemas y fixtures (todavía sin motor/visor)?
+
+**Hasta recibir respuesta:** no programar, no modificar esquema v2 ni tests existentes, no crear recursos ni directorios de implementación, no tocar la maestra, no cambiar `main`, no fusionar ramas y no desplegar.
