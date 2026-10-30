@@ -316,3 +316,54 @@ Responder en un mensaje nuevo:
 - ¿Se autoriza, tras aprobar esta especificación, preparar esquemas y fixtures (todavía sin motor/visor)?
 
 **Hasta recibir respuesta:** no programar, no modificar esquema v2 ni tests existentes, no crear recursos ni directorios de implementación, no tocar la maestra, no cambiar `main`, no fusionar ramas y no desplegar.
+
+
+## 15. Addendum — incorporación de auditoría de ChatGPT Principal (2026-10-30)
+
+Este apartado incorpora los hallazgos de `colaboracion/auditorias/004-auditoria-contrato-arquitectura.md`. No modifica el contrato v2 ni cambia el estado de aprobación de esta propuesta.
+
+### 15.1 Inconsistencia de `energy` en el contrato v2
+
+La auditoría detecta una discrepancia real: `audioBinding.band` y el ejemplo de análisis precalculado contemplan `energy`, mientras que `analysis.bands` en `works/work.schema.json` solo declara `bass`, `mid` y `treble`, con propiedades adicionales cerradas.
+
+**Tratamiento en esta propuesta:**
+- No se debe asumir que `energy` es actualmente una banda configurable válida dentro de `analysis.bands` del contrato v2.
+- Como recomendación para una versión futura, `energy` podría definirse como una magnitud derivada universal (sin configuración de rango de frecuencias), distinta de las bandas configurables `bass`, `mid` y `treble`.
+- Esa interpretación es una propuesta semántica, no una corrección del contrato vigente. Hasta que Principal/usuario aprueben una decisión de versionado, los consumidores deben tratar esta discrepancia como limitación conocida y no depender de `energy` como dato precalculado validado por el esquema v2.
+- Cualquier formalización deberá hacerse en una versión nueva o extensión formal; no editar unilateralmente v2 ni sus fixtures.
+
+### 15.2 Unicidad de canales por capa
+
+El límite de cuatro elementos en `motion.channels` no garantiza que exista como máximo un canal de cada tipo. La regla se debe comprobar semánticamente.
+
+Se añade el criterio futuro **MOV-UNIQUE-1**: para cada capa, rechazar canales duplicados del mismo tipo, incluso si la lista respeta el máximo de elementos del esquema. Añadir pruebas negativas independientes para cada tipo duplicado y una prueba positiva con tipos distintos. Este criterio pertenece al validador y a sus pruebas; no se afirma que el esquema v2 actual lo garantice.
+
+### 15.3 Separación de reloj, partitura, análisis y comportamiento
+
+Se precisan cuatro responsabilidades, sin crear relojes competidores:
+
+1. **Reloj de reproducción:** único `playheadSec` monotónico de la experiencia; pausa, reanudación, búsqueda y loop se resuelven en esta línea temporal.
+2. **Partitura/eventos:** datos autorales discretos con tiempos `atSec` (y metadatos de compás/tempo opcionales). Un evento no es un reloj ni una detección de audio.
+3. **Análisis de audio:** señal secundaria opcional, muestreada/alineada respecto al playhead; no crea tiempo, no dispara por sí sola gestos críticos y su fallo neutraliza la modulación.
+4. **Comportamiento visual:** función determinista evaluada desde el playhead y parámetros explícitos; puede recibir eventos o análisis como entradas acotadas, pero nunca amplía permisos ni límites de movimiento.
+
+Cuando el audio sea el reloj maestro físico de una sesión, su posición se adapta al playhead y las pausas deben mantener ambos alineados. En modo silencioso, el reloj interno continúa bajo una política declarada. La selección entre pausar toda la experiencia o continuar en silencio debe ser explícita por sesión; no se permite que audio, análisis y temporizadores UI avancen relojes independientes.
+
+### 15.4 Primer vertical slice en dos pasos verificables
+
+Para reflejar la auditoría sin rebajar las restricciones de seguridad, el primer slice se divide:
+
+- **Slice A — render/validación estáticos:** una obra, una escena, fondo y marco estáticos, IDs estables, orden heredado del contrato v2, reloj determinista con pausa/reanudación/búsqueda y validador de manifiesto/referencias. Puede utilizarse un recurso provisional únicamente en previsualización/diagnóstico, marcado inequívocamente como provisional; nunca como producción ni como aprobación artística.
+- **Slice B — comportamiento procedural mínimo:** un único comportamiento sencillo, sin respuesta al audio, y solo sobre una capa cuyo recurso, reconstrucción, límites y aprobación estén comprobados. Si no existe una capa apta, Slice A sigue siendo el resultado válido y no se fuerza movimiento.
+
+Sprites, análisis en vivo, partitura musical completa, agua, WebGL y Android TV siguen siendo extensiones/fases posteriores. El audio no es requisito para demostrar el primer render. Ningún recurso provisional autoriza movimiento o publicación de producción.
+
+### 15.5 Criterios de aceptación añadidos
+
+- **AUD-1:** `energy` no se trata como campo de `analysis.bands` validado en v2 hasta resolver formalmente la discrepancia.
+- **AUD-2:** el validador semántico detecta canales duplicados por capa y dispone de pruebas negativas.
+- **AUD-3:** partitura, análisis, reloj y behaviors conservan las responsabilidades separadas descritas en 15.3.
+- **AUD-4:** el Slice A puede verificarse sin audio, sprites ni movimiento.
+- **AUD-5:** el Slice B no se habilita sin recurso y reconstrucción aprobados; los recursos provisionales solo se muestran como tales en diagnóstico.
+
+**Estado tras el addendum:** la auditoría queda incorporada a la propuesta documental. No se creó esquema, fixture, validador, motor ni visor; no se ejecutaron pruebas. La especificación sigue pendiente de aprobación de Principal/usuario.
