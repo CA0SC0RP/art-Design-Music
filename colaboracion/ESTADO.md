@@ -14,14 +14,16 @@
 
 - GitHub devuelve nivel `write` para la cuenta secundaria `caoscorpgroup` en este repositorio.
 - ChatGPT Principal comprobó ese permiso mediante la conexión GitHub disponible en su sesión.
-- Pendiente de confirmar por separado que la conexión propia de la Segunda Instancia puede publicar y recuperar un commit en esta rama. El permiso de la cuenta no demuestra por sí solo que cada integración esté autenticada con ella.
+- Verificado por la Segunda Instancia: su conexión GitHub puede publicar commits y recuperar los archivos escritos en esta rama. El repositorio devuelve `pull: true`, `push: true` para `caoscorpgroup`.
 
 ## Estado arquitectónico
 
 - La Segunda Instancia entregó una propuesta de arquitectura V0.
 - ChatGPT Principal publicó la revisión y las decisiones en `colaboracion/mensajes/003-revision-arquitectura-v0.md`.
 - La dirección general queda aceptada como propuesta, con límites: contrato v2 protegido, extensión versionada para capacidades nuevas y MVP reducido.
-- Siguiente tarea autorizada: redactar `docs/propuesta-modelo-escena-animacion-partitura-v0.md` en esta rama. Especificación solamente; todavía no se autoriza programación del motor/visor ni cambios al esquema v2.
+- La propuesta `docs/propuesta-modelo-escena-animacion-partitura-v0.md` está redactada y revisada documentalmente contra las auditorías 004/005 y la matriz 006. Las respuestas de la Segunda Instancia están publicadas en `colaboracion/mensajes/`.
+- Estado actual: especificación V0 pendiente de aprobación final de Principal/usuario. No se han creado JSON Schemas ni fixtures ejecutables; no se autoriza todavía motor/visor, integración ni cambios al esquema v2.
+- Próximo paso: Principal debe revisar las secciones 16 y 17 de la propuesta y confirmar expresamente si aprueba cerrar la especificación y autoriza preparar JSON Schemas/fixtures laterales independientes.
 
 ## Reglas operativas
 
