@@ -1,35 +1,35 @@
-import { LivingPaperEngine, PaperPiece, polygon, paperShadow } from "./engine.js";
+import { LivingPaperEngine, PaperPiece, paperCut } from "./engine.js";
 import { MotionPath, smoothStep } from "./motion.js";
 
 const host=document.querySelector("#stage");
 const status=document.querySelector("#engineStatus");
 const loading=document.querySelector("#loading");
 const engine=await new LivingPaperEngine(host).init();
+const cut=(g,s,points,fill,style)=>paperCut(g,s,points,{fill,...style});
 loading?.remove();
 
-const mountain=engine.addPiece(new PaperPiece({id:"mountain",name:"Montaña lejana",depth:5,x:640,y:360,draw:(g,s)=>{
+const mountain=engine.addPiece(new PaperPiece({id:"mountain",name:"Montaña lejana",depth:5,x:640,y:360,draw:(g,s,style)=>{
   const p=[[-700,140],[-450,-110],[-200,140],[0,-55],[260,140],[480,-85],[700,160]];
-  paperShadow(s,p);polygon(g,p,0x9eafa5);
-  polygon(g,[[-700,140],[-450,-110],[-380,-15],[-320,40],[-200,140]],0xb8c8bd);
-  polygon(g,[[0,-55],[50,0],[100,45],[260,140]],0xb2c2b8);
+  cut(g,s,p,0x9eafa5,style);
+  cut(g,s,[[-700,140],[-450,-110],[-380,-15],[-320,40],[-200,140]],0xb8c8bd,style);
+  cut(g,s,[[0,-55],[50,0],[100,45],[260,140]],0xb2c2b8,style);
 }}));
 const hill=engine.addPiece(new PaperPiece({id:"hill",name:"Colina intermedia",depth:4,x:640,y:470,draw:(g,s)=>{
   const p=[[-700,120],[-520,15],[-260,-5],[-100,55],[120,-15],[360,45],[700,120]];
-  paperShadow(s,p);polygon(g,p,0x6f967b);polygon(g,[[-700,120],[-520,15],[-260,-5],[-100,55],[120,-15],[360,45],[700,120]],0x789f83,.92);
+  cut(g,s,p,0x6f967b,style);
 }}));
 const tree=engine.addPiece(new PaperPiece({id:"tree",name:"Árbol de papel",depth:2,x:330,y:450,draw:(g,s)=>{
-  paperShadow(s,[[-18,70],[-12,-120],[12,-120],[20,70]]);
-  polygon(g,[[-18,70],[-12,-120],[12,-120],[20,70]],0x8d674b);
+  cut(g,s,[[-18,70],[-12,-120],[12,-120],[20,70]],0x8d674b,style);
   for(const [x,y,r,c] of [[-35,-125,65,0x47745e],[30,-170,72,0x56866a],[5,-85,62,0x628e6c],[-65,-65,43,0x739d78]]){
     const pts=Array.from({length:12},(_,i)=>[x+Math.cos(i*Math.PI/6)*r,y+Math.sin(i*Math.PI/6)*r*.82]);
-    paperShadow(s,pts);polygon(g,pts,c);
+    cut(g,s,pts,c,style);
   }
 }}));
 const bird=engine.addPiece(new PaperPiece({id:"bird",name:"Ave de prueba",depth:3,x:170,y:230,draw:(g,s)=>{
   const body=[[-30,0],[-10,-9],[10,-5],[30,5],[12,13],[-12,10]];
-  paperShadow(s,body);polygon(g,body,0x3c5960);
-  polygon(g,[[-5,0],[-30,-32],[-5,-18],[12,-2]],0x526f74);
-  polygon(g,[[20,3],[38,0],[22,9]],0xc18d57);
+  cut(g,s,body,0x3c5960,style);
+  cut(g,s,[[-5,0],[-30,-32],[-5,-18],[12,-2]],0x526f74,style);
+  cut(g,s,[[20,3],[38,0],[22,9]],0xc18d57,style);
 }}));
 bird.motion=new MotionPath({points:[{x:150,y:235},{x:360,y:190},{x:610,y:245},{x:880,y:165},{x:1120,y:220},{x:150,y:235}],duration:24,loop:true,phase:.08,easing:smoothStep});
 
