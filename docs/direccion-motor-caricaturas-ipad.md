@@ -37,7 +37,7 @@ La interfaz debe ser visual y entendible; no debe exigir al usuario escribir có
 8. Añadir diálogo, efectos y música original cuando la historia lo requiera.
 9. Exportar un resultado de vídeo en una etapa posterior, una vez resueltos formato, calidad y rendimiento.
 
-La primera meta técnica no es producir una película completa: es conseguir una escena editable en iPad, con al menos un personaje u objeto seleccionable, modificable y animable mediante controles visuales.
+La primera meta de producto es completar el editor visual de personajes, incluyendo partes, jerarquías, rigs/huesos, deformación, texturas, poses y expresiones. La prueba de escenario existente es provisional y no sustituye esa meta. Después se desarrollarán escenas y animación, líneas de tiempo, renderizador local y exportación de vídeo.
 
 ## 4. Edición asistida desde ChatGPT
 
@@ -55,7 +55,7 @@ El flujo inicial de colaboración será:
 
 Son criterios de diseño, no decisiones irreversibles de implementación:
 
-- Prioridad de uso: iPad y Safari; el entorno de desarrollo puede seguir siendo GitHub Codespaces.
+- Prioridad de uso: iPad. Safari será el navegador de referencia inicial; se intentará compatibilidad con Chrome, Firefox y Opera en iPad. GitHub Codespaces será el entorno de desarrollo, no el renderizador final.
 - Interfaz web adaptable a pantalla táctil, con controles grandes y paneles que no oculten innecesariamente el escenario.
 - Separar la interfaz de edición, el modelo de la escena, el motor de reproducción y los recursos.
 - Representar personajes, objetos, escenas, acciones y animaciones mediante datos editables.
@@ -68,21 +68,22 @@ Son criterios de diseño, no decisiones irreversibles de implementación:
 
 ## 6. Alcance inicial y etapas
 
-### Etapa A — banco de pruebas visual
-- Interfaz web inicial para iPad.
-- Escenario con elementos seleccionables.
-- Panel para cambiar propiedades.
-- Movimiento básico con reproducción y pausa.
-- Guardado/carga de la descripción de la escena.
+### Etapa A — editor visual de personajes
+- Partes, jerarquías, pivotes y herramientas de organización.
+- Rig/huesos, articulación y controles de pose.
+- Deformación/estiramiento y mallas cuando aporten valor.
+- Texturas, expresiones y biblioteca de personajes.
+- Selección, manipulación y previsualización táctil.
 
-### Etapa B — editor de animación
-- Línea de tiempo.
-- Acciones y poses.
-- Curvas o interpolaciones de movimiento.
+### Etapa B — escenas y animación
+- Escenarios, fondos, objetos y composición.
+- Acciones, poses, movimientos y cámara.
 - Varias capas y objetos.
-- Deshacer/rehacer.
 
-### Etapa C — creador de microhistorias
+### Etapa C — líneas de tiempo e historias
+- Timeline, keyframes, curvas e interpolaciones.
+- Organización de escenas y tomas.
+- Deshacer/rehacer.
 - Varias escenas y tomas.
 - Personajes reutilizables.
 - Diálogos, voz y efectos.
