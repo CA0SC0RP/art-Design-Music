@@ -22,6 +22,7 @@ export function enableLayerInteraction(engine, links = []) {
   const originalUpdate = engine.update.bind(engine);
   engine.update = (dt) => {
     originalUpdate(dt);
+    if (engine.paused) return;
     for (const link of normalized) applyLink(link);
   };
 
@@ -53,6 +54,9 @@ export function enableLayerInteraction(engine, links = []) {
 
 function applyLink(link) {
   const { source, target } = link;
+  // Rebuild the target from its own rig before applying this frame's coupling.
+  // This prevents cumulative drift when controls are moved or the engine is paused.
+  target.update(target.elapsed, true);
   const columns = target.columns, rows = target.rows;
   let totalPressure = 0;
   for (let row = 0; row <= rows; row++) {
