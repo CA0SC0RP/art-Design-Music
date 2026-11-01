@@ -18,6 +18,7 @@ export function enableLayerInteraction(engine, links = []) {
   }
 
   const originalUpdate = engine.update.bind(engine);
+  const originalDestroy = engine.destroy;
   engine.update = dt => {
     originalUpdate(dt);
     if (engine.paused) return;
@@ -36,12 +37,23 @@ export function enableLayerInteraction(engine, links = []) {
     for (const link of normalized) {
       link.target.container.position.y = link.restY;
       link.target.shadowMesh.alpha = link.baseShadowAlpha;
+      link.target.vertices.set(link.target.baseVertices);
+      for (let i = 0; i < link.target.shadowVertices.length; i++) {
+        link.target.shadowVertices[i] = link.target.baseVertices[i] + (i % 2 ? 5 : 4);
+      }
+      link.target.mesh.vertices = link.target.vertices;
+      link.target.shadowMesh.vertices = link.target.shadowVertices;
     }
     engine.update = originalUpdate;
+    engine.destroy = originalDestroy;
     delete engine.setLayerInteraction;
     delete engine.getLayerInteractions;
     delete engine.destroyLayerInteractions;
     delete engine.layerInteractions;
+  };
+  engine.destroy = (...args) => {
+    engine.destroyLayerInteractions();
+    return originalDestroy?.apply(engine, args);
   };
   engine.layerInteractions = normalized;
   normalized.forEach(applyLink);
