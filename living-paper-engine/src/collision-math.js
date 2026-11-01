@@ -152,6 +152,17 @@ export function closestPointOnMesh(point, triangles, maxDistance = Infinity) {
 
 function closestPointOnTriangle(p, a, b, c) {
   const ab = sub(b,a), ac = sub(c,a), ap = sub(p,a);
+  // Folded or collapsed meshes can produce zero-area triangles; fall back to their edges.
+  if (Math.abs(cross(ab, ac)) < 1e-10) {
+    const candidates = [
+      closestPointOnSegment(p, a, b),
+      closestPointOnSegment(p, b, c),
+      closestPointOnSegment(p, c, a)
+    ];
+    return candidates.reduce((best, point) =>
+      squaredDistance(p, point) < squaredDistance(p, best) ? point : best
+    );
+  }
   const d1 = dot(ab,ap), d2 = dot(ac,ap);
   if (d1 <= 0 && d2 <= 0) return a;
   const bp = sub(p,b), d3 = dot(ab,bp), d4 = dot(ac,bp);
@@ -179,6 +190,13 @@ export function sampleMeshPoint(vertices, columns, rows, u, v) {
 function multiplyAffine(p, q) {
   return { a:p.a*q.a+p.c*q.b, b:p.b*q.a+p.d*q.b, c:p.a*q.c+p.c*q.d, d:p.b*q.c+p.d*q.d, tx:p.a*q.tx+p.c*q.ty+p.tx, ty:p.b*q.tx+p.d*q.ty+p.ty };
 }
+function closestPointOnSegment(p, a, b) {
+  const ab = sub(b, a), lengthSq = dot(ab, ab);
+  if (lengthSq < 1e-12) return a;
+  const t = clamp(dot(sub(p, a), ab) / lengthSq, 0, 1);
+  return add(a, scale(ab, t));
+}
+function squaredDistance(a, b) { return (a.x - b.x) ** 2 + (a.y - b.y) ** 2; }
 function sub(a,b){return{x:a.x-b.x,y:a.y-b.y};}
 function add(a,b){return{x:a.x+b.x,y:a.y+b.y};}
 function scale(a,s){return{x:a.x*s,y:a.y*s};}
