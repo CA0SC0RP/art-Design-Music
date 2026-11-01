@@ -31,6 +31,9 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Diagnóstico en vivo del número de vértices en contacto y penetración media para ajustar el comportamiento sin confundirlo con una simulación física completa.
 - Pruebas independientes de fricción: oposición al deslizamiento, límite de corrección y desactivación. Añade fricción tangencial opcional para amortiguar deslizamientos con corrección limitada y distancia tangencial de reposo configurable.
 - La respuesta de contacto se recalcula desde la geometría base en cada cuadro, actualiza las sombras y evita acumular correcciones.
+- Detección adicional de intersecciones entre aristas de la malla receptora y triángulos de la fuente; detecta cruces aunque ambos extremos de una arista queden fuera del triángulo.
+- Las correcciones de cruce se distribuyen entre los dos vértices de la arista, se limitan por la rigidez y el máximo de corrección, y se convierten desde espacio mundial a coordenadas locales.
+- El diagnóstico registra aristas examinadas e intersecciones detectadas, además de vértices activos, triángulos y penetración media.
 - Las consultas consideran posición, escala y rotación acumuladas de contenedores anidados, convierten la corrección de mundo a coordenadas locales y descartan candidatos fuera del radio de búsqueda.
 - La malla conserva su silueta normalizada; las celdas triangulares completamente externas a la silueta no participan en el contacto.
 - El inspector muestra vértices activos, triángulos consultados y penetración media, y permite ajustar el radio de búsqueda.
@@ -74,7 +77,7 @@ Los materiales son aproximaciones 2D deliberadas. Aún no representan simulació
 - `src/edge-math.js`: perfiles de espesor.
 - `src/edge.test.mjs`: pruebas de cantos.
 - `src/layers.js`: acoplamiento de movimiento, restricciones de contacto y respuesta visual entre capas.
-- `src/collision-math.js`: transformaciones afines, triangulación de mallas, búsqueda de punto más cercano, máscara de silueta y restricciones normal/tangencial.
+- `src/collision-math.js`: transformaciones afines, triangulación de mallas, búsqueda de punto más cercano, máscara de silueta, intersección segmento-triángulo y restricciones normal/tangencial.
 - `src/layer-groups.js`: creación de pilas multicapa y propagación en cascada.
 - `src/layer.test.mjs`: pruebas de interacción y topología de grupos multicapa.
 - `src/layer-math.js`: funciones puras para transferencia de desplazamiento, caída de influencia y desplazamiento de sombra de contacto.
