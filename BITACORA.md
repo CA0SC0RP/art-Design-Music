@@ -223,3 +223,5 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Es un prototipo funcional inicial de estructura rígida; no implementa todavía skinning, IK, deformación de malla, pivotes editables visualmente, poses guardadas ni texturas de papel de producción.
 - No se ejecutaron pruebas de navegador ni se validó en iPad. No se modificó `main`, no se abrió PR ni se desplegó. No se activaron servicios ni gastos.
 - Próximo paso: validar el prototipo en iPad y después mejorar edición de pivotes/articulaciones y poses antes de añadir deformación avanzada.
+
+- Mejora posterior del prototipo: el arrastre convierte el puntero al espacio local del elemento padre, para evitar tratar las coordenadas de una pieza hija como si fueran coordenadas globales. Cambio guardado en `prototype/character-editor-v01/index.html`.
