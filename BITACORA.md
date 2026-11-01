@@ -255,3 +255,14 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Código: `prototype/character-editor-v01/index.html`; documentación: `docs/prototipo-editor-articulado-personajes-v0-1.md`.
 - Commit de código: `d94c8c9e91a9fb570d09493d33571c7fb29fcaae`.
 - No se ha ejecutado la interfaz en navegador ni validado en Safari/iPad; no se declara prueba funcional visual. No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
+
+
+## Actualización — 2026-11-01: primera cinemática inversa 2D v0.5
+- Se incorporó un solver geométrico de dos segmentos para las cuatro cadenas del preset Personaje: brazo izquierdo/derecho y pierna izquierda/derecha.
+- El usuario elige la cadena, define un objetivo X/Y relativo al torso y selecciona el lado de flexión. El solver calcula las rotaciones de los dos segmentos y las aplica mediante la transición existente.
+- Se valida alcance, límites angulares, pivotes neutros, escala unitaria y alineación de segmentos. Si no se cumplen los requisitos, se muestra un mensaje y no se aplica la solución.
+- Es IK 2D rígida inicial; no hay todavía arrastre del objetivo, colisiones, restricciones anatómicas avanzadas ni skinning/deformación de malla.
+- Código: `prototype/character-editor-v01/index.html`; documentación: `docs/prototipo-editor-articulado-personajes-v0-1.md`.
+- Commit de código: `3c2d7366a4ae316dcb9b7efe87504f5eeb186c4c`.
+- Verificación estática: sintaxis JavaScript correcta, sin IDs duplicados ni referencias DOM inexistentes. No se ha ejecutado la interfaz en navegador ni validado el solver visualmente en Safari/iPad.
+- No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
