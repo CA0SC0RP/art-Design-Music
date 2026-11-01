@@ -11,6 +11,7 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Trayectoria de movimiento determinista, loop y velocidad global.
 - Articulaciones jerárquicas con pivotes, límites angulares y oscilación controlada.
 - Flexión continua de tiras de papel mediante una curva segmentada, sin juntas visibles.
+- Deformación de superficies con malla 2D subdividida, textura RGBA y vértices animados.
 - Movimiento heredado entre rama y hojas articuladas.
 
 ### Materiales de papel (prototipo)
@@ -44,7 +45,7 @@ Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor
 
 ## Pendiente
 
-- Deformación de malla 2D de piezas arbitrarias; la flexión actual se aplica a tiras y tallos definidos como geometría flexible.
+- Máscara de recorte y textura externa para mallas de piezas de cualquier silueta; el prototipo actual usa una textura de prueba generada en el navegador.
 - Articulaciones adicionales y controles de rig para alas, tallos, pétalos y otras piezas.
 - Textura procedural o mapas de textura con control de escala.
 - Importación de sprites transparentes y SVG externos.
