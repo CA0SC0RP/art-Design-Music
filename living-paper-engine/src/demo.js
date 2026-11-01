@@ -45,11 +45,16 @@ bird.motion=new MotionPath({points:[{x:150,y:235},{x:360,y:190},{x:610,y:245},{x
 const select=document.querySelector("#pieceSelect");
 const material=document.querySelector("#materialControl"),thickness=document.querySelector("#thicknessControl"),shadow=document.querySelector("#shadowControl");
 const scale=document.querySelector("#scaleControl"),rotation=document.querySelector("#rotationControl"),depth=document.querySelector("#depthControl"),speed=document.querySelector("#speedControl");
-const selectedName=document.querySelector("#selectedName");\nconst jointSelect=document.querySelector("#jointSelect"),jointAngle=document.querySelector("#jointAngleControl");\nconst joints={branch:branchJoint,leaf:leafJoint};\nlet selectedJoint=branchJoint;
+const selectedName=document.querySelector("#selectedName");
+const jointSelect=document.querySelector("#jointSelect"),jointAngle=document.querySelector("#jointAngleControl");
+const joints={branch:branchJoint,leaf:leafJoint};
+let selectedJoint=branchJoint;
 let selected=mountain;
 function choose(id){selected=engine.getPiece(id);select.value=id;selectedName.textContent=selected.name;scale.value=Math.round(selected.baseScale*100);rotation.value=Math.round(selected.container.rotation*180/Math.PI);depth.value=selected.depth;material.value=selected.material;thickness.value=selected.thickness;shadow.value=Math.round(selected.shadowStrength*100);syncLabels();}
 function syncLabels(){document.querySelector("#jointAngleValue").textContent=Math.round(selectedJoint.angle)+"°";document.querySelector("#scaleValue").textContent=scale.value+"%";document.querySelector("#rotationValue").textContent=rotation.value+"°";document.querySelector("#depthValue").textContent=depth.value;document.querySelector("#thicknessValue").textContent=thickness.value;document.querySelector("#shadowValue").textContent=shadow.value+"%";document.querySelector("#speedValue").textContent=(speed.value/100).toFixed(1)+"×";}
-select.addEventListener("change",()=>choose(select.value));\njointSelect.addEventListener("change",()=>{selectedJoint=joints[jointSelect.value];jointAngle.value=Math.round(selectedJoint.angle);syncLabels();});\njointAngle.addEventListener("input",()=>{selectedJoint.setAngle(Number(jointAngle.value));syncLabels();});
+select.addEventListener("change",()=>choose(select.value));
+jointSelect.addEventListener("change",()=>{selectedJoint=joints[jointSelect.value];jointAngle.value=Math.round(selectedJoint.angle);syncLabels();});
+jointAngle.addEventListener("input",()=>{selectedJoint.setAngle(Number(jointAngle.value));syncLabels();});
 scale.addEventListener("input",()=>{selected.setScale(Number(scale.value)/100);syncLabels();});
 rotation.addEventListener("input",()=>{selected.setRotation(Number(rotation.value));syncLabels();});
 depth.addEventListener("input",()=>{selected.setDepth(Number(depth.value));engine.sortDepth();syncLabels();});
