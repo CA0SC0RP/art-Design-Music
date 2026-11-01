@@ -310,3 +310,13 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se añadió `tests/ik-solver.test.js` con pruebas automatizadas basadas en Node.js, sin dependencias externas. La ejecución de la suite en Codespaces todavía debe confirmarse.
 - Cambios guardados en la rama `feature/living-paper-engine-foundation`; no se modificó `main`, no hubo merge, PR, despliegue ni gastos.
 - Pendiente inmediato: ejecutar la suite en Codespaces y después preparar una prueba táctil sencilla en Safari del iPad. No se declara validación de navegador.
+
+
+
+## 2026-11-01 — Robustez geométrica del solver IK v0.9.2
+
+- Se eliminó el umbral arbitrario de una unidad para objetivos IK cercanos al origen. Ahora se utiliza el alcance real de los segmentos y se rechaza únicamente la singularidad de distancia cero, junto con objetivos geométricamente inalcanzables.
+- Se añadió validación explícita de rangos articulares invertidos y parámetros no finitos.
+- Se amplió la prueba de reconstrucción del extremo a ocho posiciones en distintos cuadrantes y ambos sentidos de flexión; se añadieron casos de longitudes desiguales y límites inválidos.
+- GitHub Actions ejecutó correctamente sintaxis, suite matemática ampliada y comprobación de integración del solver externo. La validación de navegador y Safari/iPad sigue pendiente.
+- Cambios limitados a la rama `feature/living-paper-engine-foundation`; sin merge, despliegue, dependencias nuevas ni gastos.
