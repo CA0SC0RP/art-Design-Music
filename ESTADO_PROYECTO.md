@@ -85,3 +85,12 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se amplió GitHub Pages para publicar el Nivel 03 en `/level-03/`, conservando raíz/Nivel 01 y `/level-02/`. Ejecución y publicación quedan pendientes de verificación.
 - Es una prueba técnica con SVG provisionales; no es arte final ni incorpora audio, imagen maestra o generación externa. No se modificó `main` ni se incurrió en gastos.
 - Próximo paso: abrir Nivel 03 en Firefox y validar movimiento, pausa, velocidad y fluidez; luego Safari en iPad. Chrome continúa como incidencia separada.
+
+
+## Actualización — 2026-11-01: Nivel 04, Ecosistema vivo
+- A petición del usuario se creó `prototype/level-04/index.html` con una escena panorámica de bosque, montañas, cascada, río y vegetación.
+- La prueba incorpora planos de profundidad y bruma; nubes, copas, ramas, hojas y flores con oscilaciones de viento; 3 aves con vuelo y aleteo; cascada, bruma, dos corrientes de río, reflejos y ondas; 2 peces con nado y cola animada; mariposas y luciérnagas.
+- Conserva el control global de velocidad (0.5×–1.8×) y pausa/reanudación. El deslizador cambia duración de ciclos, no posiciones iniciales.
+- Se creó `prototype/level-04/README.md` y se amplió el workflow para publicar esta prueba en `/level-04/`, sin retirar los niveles anteriores.
+- Recursos SVG provisionales, sin imagen maestra, arte final, audio, servicios externos ni gastos. No se modificó `main`.
+- **Validación pendiente:** confirmar GitHub Actions/Pages y probar visualmente la escena, el control de velocidad, la pausa y el rendimiento en Firefox y Safari del iPad. No declarar la prueba aprobada hasta recibir esa comprobación.
