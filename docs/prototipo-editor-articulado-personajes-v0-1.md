@@ -172,3 +172,11 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - La cuadrícula inicial es una herramienta de edición de topología básica; no representa todavía el contorno definitivo de la silueta ni sustituye la forma vectorial original. El motor matemático de skinning está disponible, pero su resultado aún no deforma la silueta visible del personaje. Falta conectar el flujo completo de matrices de referencia, pesos y deformación por triángulo a la geometría renderizada.
 - Los controles están preparados para interacción táctil y mouse mediante Pointer Events, pero no se ha hecho todavía una prueba física en Safari/iPad. No marcar compatibilidad táctil como validada hasta esa prueba.
 - La suite automatizada incluye ahora 50 pruebas. GitHub Actions comprueba sintaxis, módulos, importación y pruebas; no sustituye una validación visual en navegador.
+
+
+
+### Complemento de v0.9.9 — previsualización de skinning ligada al rig
+
+- Al crear una malla se captura la pose de referencia como matrices afines relativas al hueso dueño de la malla. Al mover articulaciones, el editor calcula las matrices actuales y aplica el skinning a los vértices del wireframe.
+- Al asignar influencia a un hueso añadido después de crear la malla, se captura su matriz de referencia relativa para mantener coherencia en el cálculo.
+- La previsualización ya permite observar cómo se dobla la malla al mover huesos; la silueta vectorial subyacente todavía no se recorta y transforma por triángulos. Esa integración de la geometría visible sigue pendiente.
