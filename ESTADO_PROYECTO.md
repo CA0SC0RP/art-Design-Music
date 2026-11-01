@@ -157,3 +157,11 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se actualizó el documento técnico del editor.
 - Verificación estática: sintaxis JavaScript correcta en esta versión. No se ha ejecutado la interfaz en navegador ni validado la interacción táctil en iPad.
 - No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
+
+
+## Actualización — 2026-11-01: acciones coordinadas del rig v0.4
+- Se añadieron acciones de prueba para saludo, dos fases alternas de caminata y reposo. Cada acción coordina rotaciones de varias piezas de la cadena (brazo, antebrazo, mano; muslo, pierna inferior y pie) y se aplica con la transición de poses existente.
+- Las acciones parten del estado actual del personaje y pueden guardarse después como poses normales. Solo están preparadas para el preset Personaje y requieren los identificadores de piezas previstos.
+- No es IK: no calcula automáticamente la posición de la mano o el pie, ni resuelve restricciones entre articulaciones. La siguiente mejora será validar las acciones en Safari/iPad y diseñar controles de cadena, antes de introducir IK 2D.
+- Código: `prototype/character-editor-v01/index.html`; documento actualizado: `docs/prototipo-editor-articulado-personajes-v0-1.md`.
+- No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos. No se ha probado la interfaz en navegador ni en iPad.
