@@ -299,6 +299,6 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 ## Actualización — 2026-11-01: consistencia y rendimiento de malla v0.9.11
 - El pincel ahora captura la matriz de referencia de un hueso nuevo antes de pintar su influencia, tanto al iniciar el trazo como al continuarlo.
 - Se incorporó caché por render para matrices mundiales del rig y vértices deformados; el caché se invalida al iniciar cada render.
-- Se añadieron dos pruebas geométricas: continuidad de vértices compartidos entre triángulos y traslación afín pura. Suite total: 57 pruebas automatizadas.
+- Se añadieron dos pruebas geométricas: continuidad de vértices compartidos entre triángulos y traslación afín pura. Suite total: 58 pruebas automatizadas. Se añadió cobertura de persistencia de matrices de referencia para varios huesos influyentes.
 - El workflow incluye comprobaciones estructurales de pincel, captura de matrices, caché y mapeo triangular.
 - Pendiente: revisión visual en navegador de bordes y costuras, evaluación de rendimiento con personajes complejos y prueba táctil en Safari/iPad físico. No se afirma que esas validaciones se hayan realizado.
