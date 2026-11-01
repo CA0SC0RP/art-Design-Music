@@ -404,3 +404,12 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Las mallas guardan matrices de referencia relativas al hueso dueño. Durante el render, se calculan matrices actuales del rig y se deforma el wireframe con los pesos asignados.
 - Se preservan y validan matrices de referencia al importar/exportar proyectos. Si se añade una influencia de un hueso posterior, se captura su referencia relativa antes de asignar el peso.
 - La malla ya responde visualmente a la articulación en el wireframe. La forma vectorial original aún no se deforma: falta la deformación por triángulos y recorte de la silueta.
+
+
+
+## 2026-11-01 — Deformación de silueta y pincel de pesos
+
+- Se añadió un pincel de pesos con radio y fuerza ajustables, caída suave y operación táctil/arrastre mediante Pointer Events.
+- Se implementó el mapeo afín de triángulos y el renderizado de fragmentos SVG recortados por la malla, transformando cada fragmento según los pesos y las matrices del rig. La intención es que la silueta visible siga la deformación y no únicamente el wireframe.
+- Se ajustaron los bounds iniciales de las mallas para cubrir los contornos de las piezas y se redujeron las matrices de referencia almacenadas a los huesos realmente influyentes.
+- Suite: 55 pruebas automatizadas. GitHub Actions pasó en la integración de fragmentos; la ejecución del último cambio de matrices está pendiente. No se ha realizado aún prueba visual en navegador ni en Safari/iPad.
