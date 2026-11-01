@@ -121,7 +121,9 @@ engine.app.ticker.add(()=>{
   const penetration=contacts.length?contacts.reduce((sum,item)=>sum+item.averagePenetration,0)/contacts.length:0;
   const triangles=contacts.reduce((sum,item)=>sum+(item.sourceTriangles||0),0);
   const testedEdges=contacts.reduce((sum,item)=>sum+(item.testedEdges||0),0);
-  const edgeHits=contacts.reduce((sum,item)=>sum+(item.edgeIntersections||0),0);\n  const candidates=contacts.reduce((sum,item)=>sum+(item.candidateTriangles||0)+(item.edgeCandidateTriangles||0),0);\n  const indexedCells=contacts.reduce((sum,item)=>sum+(item.indexedCells||0),0);
+  const edgeHits=contacts.reduce((sum,item)=>sum+(item.edgeIntersections||0),0);
+  const candidates=contacts.reduce((sum,item)=>sum+(item.candidateTriangles||0)+(item.edgeCandidateTriangles||0),0);
+  const indexedCells=contacts.reduce((sum,item)=>sum+(item.indexedCells||0),0);
   const telemetry=document.querySelector("#contactTelemetry");
   if(telemetry)telemetry.textContent=`Contacto: ${active} vértices · ${triangles} triángulos · ${candidates} candidatos · ${edgeHits}/${testedEdges} cruces · ${indexedCells} celdas · penetración media: ${penetration.toFixed(2)} px`;
 });
