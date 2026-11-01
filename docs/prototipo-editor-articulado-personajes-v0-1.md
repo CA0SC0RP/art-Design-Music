@@ -1,4 +1,4 @@
-# Editor articulado de personajes — prototipo v0.4
+# Editor articulado de personajes — prototipo v0.5
 
 **Ruta:** `prototype/character-editor-v01/index.html`  
 **Estado:** prototipo incremental de estructura jerárquica, pivotes editables, límites de articulación y biblioteca de poses; no es el editor completo ni está validado en iPad.
@@ -26,7 +26,10 @@ Comprobar que el proyecto puede representar un objeto complejo como un árbol de
 - Las transiciones interpolan las transformaciones durante aproximadamente medio segundo y se cancelan al comenzar una edición manual.
 - Las poses forman parte del proyecto, se conservan en el guardado local y se incluyen en el JSON exportado.
 - Acciones coordinadas de prueba: saludo (brazo superior, antebrazo y mano), dos fases alternas de caminata (brazos, muslos, piernas inferiores y pies) y reposo. Las acciones parten del estado actual, cambian las articulaciones implicadas con una transición y pueden guardarse después como poses normales.
-- Las acciones coordinadas solo están preparadas para el preset de personaje y requieren que existan las piezas con los identificadores esperados. No calculan IK ni resuelven automáticamente la posición final de la mano o el pie.
+- Las acciones coordinadas solo están preparadas para el preset de personaje y requieren que existan las piezas con los identificadores esperados.
+- Primera implementación de cinemática inversa 2D (IK) de dos segmentos: selector de brazo/pierna izquierdo/derecho, objetivo X/Y relativo al torso y elección del lado de flexión. Resuelve geométricamente los ángulos del segmento proximal y distal y los aplica con transición suave.
+- El solver comprueba el alcance geométrico, los límites angulares y los requisitos de esta primera versión: escala 1, pivotes neutros y segmentos alineados en X. Si el objetivo está fuera del alcance o la solución supera los límites, informa al usuario en vez de aplicar una solución inválida.
+- Esta IK es una primera solución rígida de dos huesos; todavía no hay arrastre directo del objetivo, detección de colisiones, restricciones anatómicas avanzadas, blending de múltiples cadenas ni deformación de malla.
 - Guardado en localStorage del navegador y exportación del proyecto como JSON.
 - Restauración automática del último proyecto guardado en ese navegador.
 
@@ -47,10 +50,10 @@ Esta es una primera estructura de articulación por piezas rígidas. Los límite
 
 ## Siguiente trabajo
 
-1. Validar en Safari del iPad el arrastre del pivote, la conservación de la posición visual, las acciones coordinadas y los límites de giro.
-2. Corregir problemas táctiles o de transformación detectados.
-3. Evolucionar las acciones de prueba hacia controles de cadena más precisos; estudiar IK 2D para posicionar mano/pie sin confundirlo con las poses actuales.
+1. Validar en Safari del iPad los controles de IK, las soluciones de alcance, ambos lados de flexión y los límites articulares.
+2. Añadir manipulación directa del objetivo en el lienzo y controles para fijar/soltar la cadena, después de validar el solver numérico.
+3. Mejorar restricciones anatómicas y coordinación de cadenas sin introducir deformación todavía.
 4. Incorporar recursos de imagen/textura de papel y recorte con bordes y sombras de calidad.
-5. Después abordar deformación de malla y skinning, solo cuando la base jerárquica esté estable.
+5. Después abordar deformación de malla y skinning, cuando la base jerárquica e IK estén estables.
 
 No adelantar escenas narrativas, timeline ni exportador en esta etapa.
