@@ -25,3 +25,21 @@ export function resolveContactConstraint(source, target, {
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, Number.isFinite(Number(value)) ? Number(value) : min));
 }
+
+/** Bilinear sampling of a mesh vertex field at normalized UV coordinates. */
+export function sampleMeshPoint(vertices, columns, rows, u, v) {
+  const gx = clamp(u, 0, 1) * columns, gy = clamp(v, 0, 1) * rows;
+  const x0 = Math.floor(gx), y0 = Math.floor(gy);
+  const x1 = Math.min(columns, x0 + 1), y1 = Math.min(rows, y0 + 1);
+  const tx = gx - x0, ty = gy - y0;
+  const read = (x, y) => {
+    const index = (y * (columns + 1) + x) * 2;
+    return { x: vertices[index], y: vertices[index + 1] };
+  };
+  const a = mix(read(x0, y0), read(x1, y0), tx);
+  const b = mix(read(x0, y1), read(x1, y1), tx);
+  return mix(a, b, ty);
+}
+function mix(a, b, t) {
+  return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+}
