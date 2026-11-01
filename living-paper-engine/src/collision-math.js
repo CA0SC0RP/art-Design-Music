@@ -48,7 +48,11 @@ export function transformPoint(matrix, point) {
   return { x: matrix.a * point.x + matrix.c * point.y + matrix.tx, y: matrix.b * point.x + matrix.d * point.y + matrix.ty };
 }
 
-export function transformVector(matrix, vector) {\n  return { x: matrix.a * vector.x + matrix.c * vector.y, y: matrix.b * vector.x + matrix.d * vector.y };\n}\n\nexport function inverseTransformVector(matrix, vector) {
+export function transformVector(matrix, vector) {
+  return { x: matrix.a * vector.x + matrix.c * vector.y, y: matrix.b * vector.x + matrix.d * vector.y };
+}
+
+export function inverseTransformVector(matrix, vector) {
   const determinant = matrix.a * matrix.d - matrix.b * matrix.c;
   if (Math.abs(determinant) < 1e-10) return { x: 0, y: 0 };
   return {
