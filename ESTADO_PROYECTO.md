@@ -67,3 +67,12 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se modificó `prototype/level-01/assets/01-cielo.svg`: nubes con desplazamiento lento independiente y estrellas con parpadeo escalonado.
 - Se modificó `prototype/level-01/assets/04-rio.svg`: reflejos y trazos superficiales con desplazamiento continuo y pulsos de opacidad.
 - `main` y la imagen maestra permanecen intactos. No se han probado todavía estas animaciones en Safari del iPad; queda pendiente comprobar la publicación nueva y la reproducción real.
+
+
+## Actualización — 2026-11-01: validación reportada y prueba de sprites
+- El usuario confirmó que el prototipo del Nivel 01 sí muestra movimiento en Firefox. Por tanto, la prueba de cinco capas y de animaciones internas queda validada visualmente por reporte del usuario en Firefox.
+- Chrome sigue presentando un problema de visualización según el usuario; no se ha aislado si se debe a caché, compatibilidad o renderizado. Safari en iPad aún no se ha comprobado.
+- Se creó `prototype/level-02/index.html`, una prueba aislada con 14 sprites vectoriales provisionales e independientes: 3 aves con vuelo y aleteo, 4 mariposas con desplazamiento y batido de alas, 4 hojas en caída/rotación y 3 peces con nado y cambio de dirección. Incluye control de pausa/reanudación y respeto por movimiento reducido.
+- Se amplió el workflow de GitHub Pages para conservar el Nivel 01 en la raíz y publicar el Nivel 02 en `/level-02/`. La publicación de esta nueva versión queda pendiente de que Actions termine correctamente.
+- Esta segunda prueba mide comportamiento, independencia de ciclos y carga de varios sprites; no usa recursos finales, imagen maestra, música ni servicios de generación. No modifica `main` ni genera gastos.
+- Próxima validación: abrir `/level-02/` en Firefox y comprobar que los 14 elementos se mueven de forma independiente; después revisar fluidez y legibilidad en Safari del iPad. No avanzar aún a los recursos definitivos.
