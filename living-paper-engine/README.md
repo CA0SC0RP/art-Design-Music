@@ -1,52 +1,57 @@
 # Living Paper Engine
 
-Primer prototipo del motor especializado en escenas de papel multicapa para Art Design Music.
+Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Design Music.
 
-## Objetivo de esta etapa
+## Desarrollo actual
 
-Construir una base reutilizable para componer piezas independientes y controlar:
+### Fundación
+- Escena 2D con PixiJS 8.10.1.
+- Piezas independientes con posición, escala, rotación y profundidad.
+- Orden de composición por plano.
+- Trayectoria de movimiento determinista, loop y velocidad global.
 
-- capas y orden de profundidad;
-- transformación (posición, escala y rotación);
-- sombras proyectadas entre piezas;
-- movimiento mediante trayectorias y ciclos;
-- velocidad global y selección de pieza.
+### Materiales de papel (prototipo)
+- Presets: papel mate, cartulina, papel artesanal y papel translúcido.
+- Grosor aparente mediante capas de sombra desplazadas.
+- Borde recortado con contorno de material.
+- Línea de luz sutil en el borde superior.
+- Intensidad de sombra y grosor ajustables por pieza desde el inspector.
 
-Esta versión es un laboratorio técnico. Las formas vectoriales son geometría provisional, no ilustraciones finales ni sprites de producción.
+Los materiales son aproximaciones 2D deliberadas. Aún no representan simulación física ni una malla 3D de papel.
 
-## Tecnología inicial
+## Tecnología
 
-- JavaScript con módulos ES.
-- PixiJS 8 como renderer 2D acelerado por WebGL/WebGPU, con fallback administrado por PixiJS.
-- GitHub Pages para publicar la demo.
-- Sin APIs, servicios de IA, cuentas de pago ni recursos externos de pago.
-
-La versión fija PixiJS 8.10.1 desde jsDelivr para evitar cambios inesperados. Más adelante se evaluará empaquetar la dependencia localmente si el flujo de construcción lo requiere.
+- JavaScript ES modules.
+- PixiJS 8.10.1 desde CDN con versión fija.
+- SVG/PNG y texturas podrán incorporarse en siguientes etapas.
+- GitHub Pages para la demo; GitHub Actions para validaciones.
+- Sin APIs, servicios externos de IA ni dependencias de pago.
 
 ## Estructura
 
-- `index.html`: demo y controles.
-- `styles.css`: interfaz.
-- `src/engine.js`: escena, capas y piezas de papel.
-- `src/motion.js`: trayectorias y ciclos.
-- `src/demo.js`: escena de laboratorio y conexión de controles.
+- `index.html`: laboratorio interactivo.
+- `styles.css`: interfaz adaptable.
+- `src/engine.js`: renderer, piezas, materiales y geometría paper-cut.
+- `src/motion.js`: trayectorias y loops.
+- `src/demo.js`: escena de prueba y controles.
 
-## Cómo probar
+## Prueba manual
 
-Abrir `index.html` mediante GitHub Pages o un servidor estático. Seleccionar una pieza y modificar escala, rotación, profundidad y velocidad. Pausar y reanudar para comprobar la continuidad.
+Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor y sombra. Probar pausa/reanudación y velocidad global.
 
-## Límites conocidos
+## Pendiente
 
-- El grosor, la textura y las sombras son aproximaciones visuales.
-- La demo usa formas vectoriales temporales.
-- No hay todavía deformación de malla, articulación avanzada, editor de escenas ni importador de sprites.
-- La física no se simula: los comportamientos se controlan de forma determinista.
+- Textura procedural o mapas de textura con control de escala.
+- Importación de sprites transparentes y SVG externos.
+- Deformación de malla y articulaciones.
+- Luces y sombras más precisas entre capas.
+- Serialización de escenas y editor visual.
+- Pruebas en Safari iPad y Firefox; no declarar compatibilidad hasta probarlos.
 
-## Criterios de aceptación de la fundación
+## Criterios de calidad
 
-1. La escena se adapta al tamaño disponible.
-2. Cada pieza conserva transformaciones independientes.
-3. La profundidad cambia el orden visual y la escala aparente.
-4. Las sombras se desplazan junto con su pieza.
-5. Los movimientos pueden pausarse y continuar.
-6. El control global modifica el ritmo sin romper los ciclos.
+1. Las propiedades de una pieza no alteran las demás.
+2. El grosor aparente y la sombra permanecen coherentes con la pieza.
+3. Cambiar material no reinicia la trayectoria ni la escena.
+4. Los loops no saltan al completar el ciclo.
+5. Los controles se mantienen utilizables en pantalla táctil.
