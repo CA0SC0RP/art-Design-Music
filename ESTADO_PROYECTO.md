@@ -291,5 +291,5 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - El inspector incorpora un pincel de pesos con radio ajustable y caída suave, operable mediante toque y arrastre.
 - Se añadió mapeo afín por triángulo y renderizado de fragmentos SVG recortados por la malla, con transformación según el skinning del rig. El objetivo es deformar la silueta visible y no solo el wireframe.
 - Se ajustaron dimensiones iniciales de malla a las siluetas aproximadas de las piezas y se optimizó el guardado de matrices de referencia para incluir solo huesos influyentes.
-- Suite: 55 pruebas automatizadas. La integración de fragmentos pasó GitHub Actions; la última revisión de matrices reducidas y documentación queda a la espera de ejecución CI.
+- Suite: 55 pruebas automatizadas. La integración de fragmentos y el último cambio de matrices reducidas pasaron GitHub Actions; las 55 pruebas, la sintaxis de módulos y el JavaScript integrado finalizaron correctamente.
 - Sin prueba visual de navegador ni Safari/iPad físico todavía. Revisar artefactos en uniones triangulares y rendimiento antes de considerar estable la deformación.
