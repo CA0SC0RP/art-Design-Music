@@ -61,7 +61,9 @@ function normalizeMesh(raw,ids){
  }
  const faces=[];
  for(const f of raw.faces){if(!Array.isArray(f)||f.length!==3||!f.every(i=>Number.isInteger(i)&&i>=0&&i<vertices.length)||new Set(f).size!==3)return null;faces.push([...f]);}
- return {version:1,columns:Number.isInteger(raw.columns)?raw.columns:null,rows:Number.isInteger(raw.rows)?raw.rows:null,vertices,faces};
+ let bindMatrices=null;
+ if(raw.bindMatrices!=null){if(typeof raw.bindMatrices!=="object"||Array.isArray(raw.bindMatrices))return null;bindMatrices={};for(const [id,m] of Object.entries(raw.bindMatrices)){if(!ids.has(id)||!Array.isArray(m)||m.length!==6||!m.every(Number.isFinite))return null;bindMatrices[id]=[...m];}for(const v of vertices)for(const w of v.weights)if(!Object.prototype.hasOwnProperty.call(bindMatrices,w.boneId))return null;}
+ return {version:1,columns:Number.isInteger(raw.columns)?raw.columns:null,rows:Number.isInteger(raw.rows)?raw.rows:null,vertices,faces,bindMatrices};
 }
 function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 return {normalizeProject,escapeHtml};
