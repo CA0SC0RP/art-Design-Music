@@ -144,3 +144,12 @@ Un CI exitoso no sustituye la inspección visual ni demuestra compatibilidad en 
 - Los triángulos degenerados se consultan mediante sus segmentos, y las correcciones de arista no cuentan extremos que reciben contribución nula.
 
 - La implementación de malla está fijada explícitamente a `MeshSimple.autoUpdate = true` para la superficie, la sombra y el overlay de volumen. Se verificó contra el código fuente oficial de PixiJS v8.10.1: el setter `vertices` actualiza el buffer de posiciones y el modo automático ejecuta su actualización durante el render.
+
+
+## Estabilidad prolongada y rendimiento
+
+- La regresión de contacto ejecuta 2,400 frames consecutivos (20 ciclos de movimiento a 120 Hz) y comprueba que no aparezcan valores no finitos ni deriva al cerrar el ciclo.
+- El benchmark de contacto ejecuta el solver completo con mallas cuadradas de 32×32, 64×64 y 128×128 celdas, incluyendo construcción de triángulos, índice espacial, consultas de vértices, pruebas de aristas y aplicación de correcciones.
+- GitHub Actions registra el tiempo medio por frame, número de vértices/aristas/triángulos, celdas del índice, candidatos promedio y desplazamiento máximo.
+- Las pruebas exigen que el broadphase reduzca las consultas a menos del 10% de la búsqueda cartesiana vértice×triángulo y arista×triángulo, y que las correcciones permanezcan acotadas.
+- Los tiempos de CI son mediciones de referencia en un runner de GitHub, no una garantía de FPS en móviles o tabletas. Falta medir en navegador y dispositivo real.
