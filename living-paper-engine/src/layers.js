@@ -79,7 +79,7 @@ function applyLink(link) {
           x: target.vertices[i] + (target.container.position.x || 0),
           y: target.vertices[i + 1] + (target.container.position.y || 0)
         },
-        { normalX: link.contactNormalX, normalY: link.contactNormalY, minGap: link.contactGap, stiffness: link.contactStiffness, maxCorrection: link.maxCorrection }
+        { normalX: link.contactNormalX, normalY: link.contactNormalY, minGap: link.contactGap, stiffness: link.contactStiffness, maxCorrection: link.maxCorrection, tangentRestGap: link.tangentRestGap, friction: link.friction, maxTangentialCorrection: link.maxTangentialCorrection }
       );
       target.vertices[i] += contact.x;
       target.vertices[i + 1] += contact.y;
@@ -114,6 +114,9 @@ function normalizeLink(link = {}) {
     contactNormalX: clamp(Number(link.contactNormalX ?? 0), -1, 1),
     contactNormalY: clamp(Number(link.contactNormalY ?? 1), -1, 1),
     maxCorrection: clamp(Number(link.maxCorrection ?? 10), 0, 20),
+    tangentRestGap: clamp(Number(link.tangentRestGap ?? 0), -100, 100),
+    friction: clamp(Number(link.friction ?? 0), 0, 1),
+    maxTangentialCorrection: clamp(Number(link.maxTangentialCorrection ?? 3), 0, 12),
     restY: 0,
     baseShadowAlpha: 0,
     lastContact: { activeVertices: 0, averagePenetration: 0 }
@@ -129,5 +132,6 @@ const LIMITS = {
   coupling: [0, 1], clearance: [0, 24], contact: [0, 1],
   maxDisplacement: [0, 40], edgeRadius: [0.05, 0.8], shadowReach: [0, 24],
   contactGap: [0, 20], contactStiffness: [0, 1],
-  contactNormalX: [-1, 1], contactNormalY: [-1, 1], maxCorrection: [0, 20]
+  contactNormalX: [-1, 1], contactNormalY: [-1, 1], maxCorrection: [0, 20],
+  tangentRestGap: [-100, 100], friction: [0, 1], maxTangentialCorrection: [0, 12]
 };
