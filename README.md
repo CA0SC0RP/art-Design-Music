@@ -10,7 +10,7 @@ El usuario dirige la creación. ChatGPT es el único asistente de IA que partici
 
 ## Documentos vigentes
 
-- [Prototipo de editor articulado de personajes v0.6](docs/prototipo-editor-articulado-personajes-v0-1.md)
+- [Prototipo de editor articulado de personajes v0.8](docs/prototipo-editor-articulado-personajes-v0-1.md)
 - [Decisiones vigentes: editor de personajes, navegadores y renderizado local](docs/decisiones-editor-personajes-y-render-local-2026-11-01.md)
 - [Dirección del motor de caricaturas para iPad](docs/direccion-motor-caricaturas-ipad.md)
 - [Visión del estudio web y exportación de caricaturas](docs/vision-estudio-web-y-exportacion-de-caricaturas-2026-11-01.md)
