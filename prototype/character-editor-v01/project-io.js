@@ -1,6 +1,6 @@
 (function(root,factory){const api=factory();if(typeof module==="object"&&module.exports)module.exports=api;if(root)root.ADM_ProjectIO=api;})(typeof globalThis!=="undefined"?globalThis:this,function(){
 "use strict";
-const SHAPES=new Set(["torso","neck","head","hair","eye","limb","hand","foot","trunk","branch","twig","leaves","joint"]);
+const SHAPES=new Set(["torso","neck","head","hair","eye","limb","hand","foot","trunk","branch","twig","leaves","joint","brow","mouthNeutral","mouthSmile","mouthSad","mouthOpen","mouthAngry"]);
 function finite(value,fallback){const n=Number(value);return Number.isFinite(n)?n:fallback;}
 function normalizeProject(raw){
  if(!raw||typeof raw!=="object"||Array.isArray(raw))return {ok:false,message:"El archivo no contiene un proyecto válido."};
@@ -38,8 +38,10 @@ function normalizeProject(raw){
   for(const p of pose.nodes){
    if(!p||!ids.has(String(p.id))||poseNodeIds.has(String(p.id)))return {ok:false,message:"Una pose referencia piezas inexistentes o repetidas."};
    const n=byId.get(String(p.id)),x=finite(p.x,NaN),y=finite(p.y,NaN),rotation=finite(p.rotation,NaN),scale=finite(p.scale,NaN);
+   const poseShape=p.shape===undefined?n.shape:(p.shape==null?null:String(p.shape));
+   if(poseShape!==null&&!SHAPES.has(poseShape))return {ok:false,message:"Una pose contiene una forma no admitida."};
    if(![x,y,rotation,scale].every(Number.isFinite)||scale<0.05||scale>10)return {ok:false,message:"Una pose contiene transformaciones no válidas."};
-   poseNodeIds.add(String(p.id));poseNodes.push({id:String(p.id),x,y,rotation:Math.max(n.rotationMin,Math.min(n.rotationMax,rotation)),scale});
+   poseNodeIds.add(String(p.id));poseNodes.push({id:String(p.id),x,y,rotation:Math.max(n.rotationMin,Math.min(n.rotationMax,rotation)),scale,shape:poseShape});
   }
   const poseId=String(pose.id||"pose_importada").slice(0,100);if(poseIds.has(poseId))return {ok:false,message:"Hay identificadores de pose repetidos."};poseIds.add(poseId);poses.push({id:poseId,name:String(pose.name||"Pose importada").slice(0,80),nodes:poseNodes});
  }
