@@ -210,3 +210,17 @@ test("la deformación propagada respeta rotación y escala de la capa fuente", (
   assert.ok(Math.abs(target.vertices[center] - 10) < 1e-5);
   assert.ok(Math.abs(target.vertices[center + 1] - 18) < 1e-5);
 });
+
+
+test("cambiar parámetros repetidamente no acumula correcciones antes del siguiente frame", () => {
+  const source = makeMesh("front", { source: true });
+  const target = makeMesh("back");
+  const engine = { paused: false, update(dt) { source.update(dt); target.update(dt); } };
+  enableLayerInteraction(engine, [{ source, target, coupling: 0.4, clearance: 6, maxDisplacement: 20 }]);
+  engine.update(1 / 60);
+  const first = new Float32Array(target.vertices);
+  for (let i = 0; i < 12; i++) engine.setLayerInteraction(0, { coupling: 0.4, contactStiffness: 0.65 });
+  for (let i = 0; i < first.length; i++) assert.ok(Math.abs(target.vertices[i] - first[i]) < 1e-6);
+  engine.update(1 / 60);
+  for (let i = 0; i < first.length; i++) assert.ok(Math.abs(target.vertices[i] - first[i]) < 1e-6);
+});
