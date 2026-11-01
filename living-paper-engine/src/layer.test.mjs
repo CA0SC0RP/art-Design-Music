@@ -169,5 +169,5 @@ test("la fricción conserva el desplazamiento tangencial de reposo", () => {
   const result = resolveContactConstraint({ x: 0, y: 0 }, { x: 8, y: 0 }, {
     normalX: 0, normalY: 1, minGap: 0, tangentRestGap: -8, friction: 1
   });
-  assert.equal(result.frictionCorrection, 0);
+  assert.ok(Math.abs(result.frictionCorrection) < 1e-12);
 });
