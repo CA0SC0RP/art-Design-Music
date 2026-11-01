@@ -1,4 +1,4 @@
-import { Application, Container, Graphics } from "https://cdn.jsdelivr.net/npm/pixi.js@8.10.1/+esm";
+import { Application, Container, Graphics, MeshSimple, Texture } from "https://cdn.jsdelivr.net/npm/pixi.js@8.10.1/+esm";
 
 const DEPTH_SCALE={1:1.12,2:1.06,3:1,4:.96,5:.92};
 export const PAPER_MATERIALS={
@@ -85,6 +85,57 @@ export class PaperFlex{
     const bounded=Math.max(-this.maxBend,Math.min(this.maxBend,next));
     if(Math.abs(bounded-this.bend)>.12){this.bend=bounded;this.render();}
   }
+}
+
+
+export class PaperMesh{
+  constructor({id,x=0,y=0,width=140,height=90,shape=[[.02,.5],[.2,.15],[.55,.02],[.9,.2],[.98,.5],[.8,.85],[.45,.98],[.12,.78]],fill=0x78a16f,material="handmade",columns=12,rows=8,wave=5,fold=2,frequency=1.4,phase=0}={}){
+    this.id=id;this.width=width;this.height=height;this.columns=Math.max(2,columns);this.rows=Math.max(2,rows);this.wave=wave;this.fold=fold;this.frequency=frequency;this.phase=phase;this.elapsed=0;
+    this.container=new Container();this.container.position.set(x,y);
+    const canvas=document.createElement("canvas");canvas.width=512;canvas.height=512;
+    const ctx=canvas.getContext("2d");ctx.clearRect(0,0,512,512);
+    ctx.beginPath();shape.forEach(([u,v],i)=>i?ctx.lineTo(u*512,v*512):ctx.moveTo(u*512,v*512));ctx.closePath();
+    ctx.fillStyle="#"+fill.toString(16).padStart(6,"0");ctx.fill();
+    const m=PAPER_MATERIALS[material]||PAPER_MATERIALS.handmade;
+    ctx.strokeStyle="#"+m.edge.toString(16).padStart(6,"0");ctx.lineWidth=5;ctx.stroke();
+    for(let i=0;i<1100;i++){const px=Math.random()*512,py=Math.random()*512;if(ctx.isPointInPath(px,py)){ctx.fillStyle="rgba(255,255,255,.08)";ctx.fillRect(px,py,1.2,1.2);}}
+    this.texture=Texture.from(canvas);
+    const shadowCanvas=document.createElement("canvas");shadowCanvas.width=512;shadowCanvas.height=512;
+    const sc=shadowCanvas.getContext("2d");sc.drawImage(canvas,0,0);sc.globalCompositeOperation="source-in";sc.fillStyle="#26332f";sc.fillRect(0,0,512,512);
+    this.shadowTexture=Texture.from(shadowCanvas);
+    const vertices=[],uvs=[],indices=[];
+    for(let y=0;y<=this.rows;y++)for(let x=0;x<=this.columns;x++){
+      const u=x/this.columns,v=y/this.rows;vertices.push(u*width,v*height);uvs.push(u,v);
+    }
+    for(let y=0;y<this.rows;y++)for(let x=0;x<this.columns;x++){
+      const a=y*(this.columns+1)+x,b=a+1,d=(y+1)*(this.columns+1)+x,e=d+1;
+      indices.push(a,b,d,b,e,d);
+    }
+    this.baseVertices=new Float32Array(vertices);this.vertices=new Float32Array(vertices);
+    this.shadowVertices=new Float32Array(vertices.map((v,i)=>v+(i%2?5:4)));
+    const indexData=new Uint32Array(indices),uvData=new Float32Array(uvs);
+    this.shadowMesh=new MeshSimple({texture:this.shadowTexture,vertices:this.shadowVertices,uvs:uvData,indices:indexData});
+    this.shadowMesh.alpha=.2;
+    this.mesh=new MeshSimple({texture:this.texture,vertices:this.vertices,uvs:uvData,indices:indexData});
+    this.container.addChild(this.shadowMesh,this.mesh);
+  }
+  setDeformation({wave=this.wave,fold=this.fold,frequency=this.frequency}={}){
+    this.wave=Math.max(0,Math.min(24,wave));this.fold=Math.max(-18,Math.min(18,fold));this.frequency=Math.max(.1,Math.min(5,frequency));this.update(this.elapsed,true);
+  }
+  update(elapsed,force=false){
+    this.elapsed=elapsed;
+    for(let y=0;y<=this.rows;y++)for(let x=0;x<=this.columns;x++){
+      const i=(y*(this.columns+1)+x)*2,u=x/this.columns,v=y/this.rows;
+      const envelope=Math.sin(Math.PI*v);
+      const oscillation=Math.sin(u*Math.PI*2+elapsed*this.frequency+this.phase);
+      this.vertices[i]=this.baseVertices[i]+this.fold*Math.sin(v*Math.PI)*u;
+      this.vertices[i+1]=this.baseVertices[i+1]+this.wave*oscillation*envelope;
+      this.shadowVertices[i]=this.vertices[i]+4;
+      this.shadowVertices[i+1]=this.vertices[i+1]+5;
+    }
+    if(force){this.mesh.vertices=this.vertices;this.shadowMesh.vertices=this.shadowVertices;}
+  }
+  destroy(){this.texture.destroy(true);this.shadowTexture.destroy(true);this.container.destroy({children:true});}
 }
 
 export class PaperJoint{
