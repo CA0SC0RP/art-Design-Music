@@ -91,7 +91,7 @@ export class PaperFlex{
 
 export class PaperMesh{
   constructor({id,x=0,y=0,width=140,height=90,shape=[[.02,.5],[.2,.15],[.55,.02],[.9,.2],[.98,.5],[.8,.85],[.45,.98],[.12,.78]],fill=0x78a16f,material="handmade",columns=12,rows=8,wave=5,fold=2,frequency=1.4,phase=0}={}){
-    this.id=id;this.width=width;this.height=height;this.columns=Math.max(2,columns);this.rows=Math.max(2,rows);this.wave=wave;this.fold=fold;this.frequency=frequency;this.phase=phase;this.elapsed=0;
+    this.id=id;this.width=width;this.height=height;this.shape=shape.map(([u,v])=>[u,v]);this.columns=Math.max(2,columns);this.rows=Math.max(2,rows);this.wave=wave;this.fold=fold;this.frequency=frequency;this.phase=phase;this.elapsed=0;
     this.container=new Container();this.container.position.set(x,y);
     const canvas=document.createElement("canvas");canvas.width=512;canvas.height=512;
     const ctx=canvas.getContext("2d");ctx.clearRect(0,0,512,512);
