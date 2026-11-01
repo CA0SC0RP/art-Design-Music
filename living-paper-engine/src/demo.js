@@ -1,4 +1,4 @@
-import { LivingPaperEngine, PaperPiece, PaperJoint, PaperFlex, paperCut } from "./engine.js";
+import { LivingPaperEngine, PaperPiece, PaperJoint, PaperFlex, PaperMesh, paperCut } from "./engine.js";
 import { MotionPath, smoothStep } from "./motion.js";
 
 const host=document.querySelector("#stage");
