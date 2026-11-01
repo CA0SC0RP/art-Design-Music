@@ -422,3 +422,5 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se añadió caché por render para matrices del rig y vértices deformados, evitando recalcular el rig varias veces por pieza en la misma actualización visual.
 - Se agregaron pruebas de continuidad en vértices compartidos entre triángulos y de transformación afín de traslación. Suite: 58 pruebas. También se verificó que las matrices de referencia de varios huesos influyentes sobrevivan a la importación del proyecto.
 - El workflow ahora valida la presencia de las conexiones del pincel, matrices de referencia, caché y transformación triangular. La validación visual en navegador/Safari/iPad continúa pendiente.
+
+- Se corrigió la retroalimentación del inspector: los mensajes de pesos aplicados ya no se pierden cuando se vuelve a renderizar el lienzo; se limpian al cambiar de pieza/vértice o eliminar la malla.
