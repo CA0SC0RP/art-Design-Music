@@ -172,3 +172,4 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Verificación realizada: ambos archivos existen y se recuperaron desde la rama. No se ejecutó un navegador, no se probó Safari/iPad y no se declara compatibilidad todavía.
 - No se instalaron dependencias, no se usaron servicios pagos y no se copió código de los repositorios investigados.
 - Próximo paso: abrir el prototipo mediante la vista previa de Codespaces y probar toque, arrastre, escala, rotación, reproducción y pausa en Safari del iPad; corregir según el resultado.
+- Revisión estática posterior del prototipo: se corrigió el cálculo de rotación al cruzar ±180° y se limitaron los desplazamientos del personaje para reducir salidas del escenario. Commit: `ca457d0d9c01efd398f9c7a08a06b4fdc8c77cda`. Esta revisión no sustituye una prueba de navegador.
