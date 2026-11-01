@@ -133,7 +133,9 @@ function pointOnSegment(point, a, b) {
 export function buildTriangleSpatialIndex(triangles, cellSize = 64) {
   const size = Math.max(1, Number.isFinite(cellSize) ? cellSize : 64);
   const cells = new Map();
-  for (const triangle of triangles) {
+  for (let index = 0; index < triangles.length; index++) {
+    const triangle = triangles[index];
+    triangle.spatialIndex = index;
     const minCellX = Math.floor(triangle.minX / size), maxCellX = Math.floor(triangle.maxX / size);
     const minCellY = Math.floor(triangle.minY / size), maxCellY = Math.floor(triangle.maxY / size);
     for (let y = minCellY; y <= maxCellY; y++) {
@@ -145,27 +147,39 @@ export function buildTriangleSpatialIndex(triangles, cellSize = 64) {
       }
     }
   }
-  return { cellSize: size, cells, triangleCount: triangles.length };
+  return {
+    cellSize: size, cells, triangleCount: triangles.length,
+    seen: new Uint32Array(triangles.length), queryId: 0
+  };
 }
 
-/** Return unique triangles whose bounds overlap a world-space query rectangle. */
+/** Return unique triangles using reusable query stamps instead of allocating a Set per lookup. */
 export function queryTriangleSpatialIndex(index, bounds, epsilon = 1e-7) {
   const size = index.cellSize;
   const minCellX = Math.floor(bounds.minX / size), maxCellX = Math.floor(bounds.maxX / size);
   const minCellY = Math.floor(bounds.minY / size), maxCellY = Math.floor(bounds.maxY / size);
-  const found = new Set();
+  let queryId = index.queryId + 1;
+  if (queryId >= 0xffffffff) {
+    index.seen.fill(0);
+    queryId = 1;
+  }
+  index.queryId = queryId;
+  const found = [];
   for (let y = minCellY; y <= maxCellY; y++) {
     for (let x = minCellX; x <= maxCellX; x++) {
       const bucket = index.cells.get(`${x},${y}`);
       if (!bucket) continue;
       for (const triangle of bucket) {
+        const id = triangle.spatialIndex;
+        if (index.seen[id] === queryId) continue;
+        index.seen[id] = queryId;
         if (triangle.maxX < bounds.minX - epsilon || triangle.minX > bounds.maxX + epsilon ||
             triangle.maxY < bounds.minY - epsilon || triangle.minY > bounds.maxY + epsilon) continue;
-        found.add(triangle);
+        found.push(triangle);
       }
     }
   }
-  return [...found];
+  return found;
 }
 
 export function closestPointOnMesh(point, triangles, maxDistance = Infinity) {
