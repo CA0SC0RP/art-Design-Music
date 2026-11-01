@@ -249,12 +249,13 @@ test("el acoplamiento se mantiene sin deriva durante ciclos repetidos de deforma
     source, target, coupling: 0.6, clearance: 12, contactGap: 0, contactRange: 1
   }]);
   let afterFirstCycle;
-  for (let frame = 0; frame < 240; frame++) {
+  for (let frame = 0; frame < 2400; frame++) {
     engine.update(1 / 120);
     if (frame === 119) afterFirstCycle = new Float32Array(target.vertices);
+    for (const value of target.vertices) assert.ok(Number.isFinite(value), `vértice no finito en frame ${frame}`);
   }
   for (let i = 0; i < afterFirstCycle.length; i++) {
-    assert.ok(Math.abs(target.vertices[i] - afterFirstCycle[i]) < 1e-5);
+    assert.ok(Math.abs(target.vertices[i] - afterFirstCycle[i]) < 1e-5, `deriva tras 20 ciclos en componente ${i}`);
   }
 });
 
