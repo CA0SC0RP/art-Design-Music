@@ -8,14 +8,14 @@ const engine=await new LivingPaperEngine(host).init();
 loading?.remove();
 
 const mountain=engine.addPiece(new PaperPiece({id:"mountain",name:"Montaña lejana",depth:5,x:640,y:360,draw:(g,s)=>{
-  const p=[[-80,140],[90,-110],[250,140],[420,-55],[620,140],[820,-85],[1030,160]];
+  const p=[[-700,140],[-450,-110],[-200,140],[0,-55],[260,140],[480,-85],[700,160]];
   paperShadow(s,p);polygon(g,p,0x9eafa5);
-  polygon(g,[[-80,140],[90,-110],[150,-15],[210,40],[250,140]],0xb8c8bd);
-  polygon(g,[[420,-55],[470,0],[520,45],[620,140]],0xb2c2b8);
+  polygon(g,[[-700,140],[-450,-110],[-380,-15],[-320,40],[-200,140]],0xb8c8bd);
+  polygon(g,[[0,-55],[50,0],[100,45],[260,140]],0xb2c2b8);
 }}));
 const hill=engine.addPiece(new PaperPiece({id:"hill",name:"Colina intermedia",depth:4,x:640,y:470,draw:(g,s)=>{
-  const p=[[-40,120],[100,15],[260,-5],[390,55],[560,-15],[760,45],[940,120]];
-  paperShadow(s,p);polygon(g,p,0x6f967b);polygon(g,[[-40,120],[100,15],[260,-5],[390,55],[560,-15],[760,45],[940,120]],0x789f83,.92);
+  const p=[[-700,120],[-520,15],[-260,-5],[-100,55],[120,-15],[360,45],[700,120]];
+  paperShadow(s,p);polygon(g,p,0x6f967b);polygon(g,[[-700,120],[-520,15],[-260,-5],[-100,55],[120,-15],[360,45],[700,120]],0x789f83,.92);
 }}));
 const tree=engine.addPiece(new PaperPiece({id:"tree",name:"Árbol de papel",depth:2,x:330,y:450,draw:(g,s)=>{
   paperShadow(s,[[-18,70],[-12,-120],[12,-120],[20,70]]);
