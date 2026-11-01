@@ -180,3 +180,13 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - Al crear una malla se captura la pose de referencia como matrices afines relativas al hueso dueño de la malla. Al mover articulaciones, el editor calcula las matrices actuales y aplica el skinning a los vértices del wireframe.
 - Al asignar influencia a un hueso añadido después de crear la malla, se captura su matriz de referencia relativa para mantener coherencia en el cálculo.
 - La previsualización ya permite observar cómo se dobla la malla al mover huesos; la silueta vectorial subyacente todavía no se recorta y transforma por triángulos. Esa integración de la geometría visible sigue pendiente.
+
+
+
+## Iteración v0.9.10 — pincel de pesos y deformación de la silueta
+
+- Se incorporó un pincel de pesos con radio ajustable y caída suave: permite pintar influencia sobre varios vértices al tocar o arrastrar, usando Pointer Events.
+- Se añadió el mapeo afín entre triángulos de referencia y triángulos deformados. El renderizador recorta la forma SVG original por cada cara de la malla y transforma cada fragmento según el skinning, de modo que la geometría visible pueda acompañar la deformación, no solo el wireframe.
+- Las dimensiones y posiciones iniciales de las mallas se ajustaron a los límites aproximados de las siluetas de personaje y árbol. Las matrices de referencia se guardan solo para huesos realmente influyentes, reduciendo datos innecesarios.
+- Se añadieron pruebas del mapeo triangular y del pincel de pesos. La suite suma 55 pruebas automatizadas y la última ejecución disponible de GitHub Actions pasó para la integración de fragmentos; el commit más reciente de matrices reducidas tiene una ejecución pendiente.
+- Pendiente: validar el resultado visual real en navegador, revisar posibles uniones/artefactos entre triángulos, rendimiento con varios personajes y prueba táctil física en Safari/iPad. La integración de código no equivale a una validación visual final.
