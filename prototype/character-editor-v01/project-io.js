@@ -27,7 +27,8 @@ function normalizeProject(raw){
  const rootNode=nodes.find(n=>n.id===raw.root);
  if(rootNode.parent!==null)return {ok:false,message:"La pieza raíz no puede tener padre."};
  for(const n of nodes){if(n.id!==raw.root&&!ids.has(n.parent))return {ok:false,message:"Una pieza hace referencia a un padre inexistente."};}
- const byId=new Map(nodes.map(n=>[n.id,n]));\n for(const n of nodes){const rawMesh=n._meshRaw;delete n._meshRaw;if(rawMesh!=null){const mesh=normalizeMesh(rawMesh,ids);if(!mesh)return {ok:false,message:"Una malla contiene vértices, caras o pesos no válidos."};n.mesh=mesh;}}
+ const byId=new Map(nodes.map(n=>[n.id,n]));
+ for(const n of nodes){const rawMesh=n._meshRaw;delete n._meshRaw;if(rawMesh!=null){const mesh=normalizeMesh(rawMesh,ids);if(!mesh)return {ok:false,message:"Una malla contiene vértices, caras o pesos no válidos."};n.mesh=mesh;}}
  for(const n of nodes){const seen=new Set([n.id]);let p=n.parent;while(p){if(seen.has(p))return {ok:false,message:"La jerarquía contiene un ciclo."};seen.add(p);p=byId.get(p)?.parent||null;}}
  const poses=[],poseIds=new Set();
  if(raw.poses!=null&&!Array.isArray(raw.poses))return {ok:false,message:"La biblioteca de poses tiene un formato incorrecto."};
