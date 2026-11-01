@@ -61,3 +61,14 @@ test("el mapeo triangular admite traslación pura sin alterar distancias",()=>{
  const src=[{x:-4,y:2},{x:8,y:2},{x:1,y:11}],dst=src.map(p=>({x:p.x+17,y:p.y-9})),r=skin.triangleTransform(src,dst);
  assert.equal(r.ok,true);assert.deepEqual(r.matrix,[1,0,0,1,17,-9]);
 });
+
+test("expande ligeramente el recorte triangular para reducir juntas de antialiasing",()=>{
+ const tri=[{x:0,y:0},{x:10,y:0},{x:0,y:10}],r=skin.expandTriangle(tri,.35);
+ assert.equal(r.ok,true);assert.equal(r.triangle.length,3);
+ const area=p=>Math.abs((p[1].x-p[0].x)*(p[2].y-p[0].y)-(p[2].x-p[0].x)*(p[1].y-p[0].y));
+ assert.ok(area(r.triangle)>area(tri));assert.deepEqual(tri,[{x:0,y:0},{x:10,y:0},{x:0,y:10}]);
+});
+test("rechaza expansión negativa y triángulos degenerados",()=>{
+ assert.equal(skin.expandTriangle([{x:0,y:0},{x:1,y:0},{x:2,y:0}],.3).ok,false);
+ assert.equal(skin.expandTriangle([{x:0,y:0},{x:1,y:0},{x:0,y:1}],-.1).ok,false);
+});
