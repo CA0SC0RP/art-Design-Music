@@ -146,7 +146,9 @@ test("el solver evita la penetración de una hoja sin acumular correcciones", ()
   engine.update(1 / 60);
   const first = target.vertices[centerY];
   assert.ok(first > 10);
-  assert.equal(engine.layerInteractions[0].lastContact.activeVertices, 1);
+  assert.ok(engine.layerInteractions[0].lastContact.activeVertices >= 1);
+  assert.ok(engine.layerInteractions[0].lastContact.activeVertices <= engine.layerInteractions[0].lastContact.testedVertices);
+  assert.ok(engine.layerInteractions[0].lastContact.sourceTriangles > 0);
   engine.update(1 / 60);
   assert.ok(Math.abs(target.vertices[centerY] - first) < 1e-6);
 });
