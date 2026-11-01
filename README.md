@@ -4,7 +4,7 @@
 
 Este repositorio está reorientado al desarrollo de un motor y estudio visual para crear caricaturas animadas y microhistorias. La interfaz se diseñará primero para utilizarse desde un iPad.
 
-La meta inicial es que el usuario pueda abrir un escenario en Safari, seleccionar un personaje u objeto, modificar sus propiedades con controles visuales, reproducir una animación sencilla y revisar el resultado.
+La prioridad es completar primero el editor visual de personajes. Safari en iPad será el navegador de referencia inicial; también se buscará compatibilidad con Chrome, Firefox y Opera en iPad.
 
 El usuario dirige la creación. ChatGPT es el único asistente de IA que participa en el diseño, la lectura de archivos, la modificación del código y la revisión. No se delegan tareas a Claude ni a otros asistentes.
 
