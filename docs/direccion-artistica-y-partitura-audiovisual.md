@@ -1,3 +1,5 @@
+> **ARCHIVADO — 2026-11-01.** Esta dirección artística corresponde al concepto anterior de cuadros de papel recortado con movimiento ambiental. Ya no define el estilo, la animación ni la música del motor de caricaturas. No imponer papel recortado, ambient, lo-fi, chillout ni 72 BPM al proyecto nuevo. Se conserva como antecedente histórico.
+
 # Dirección artística y partitura audiovisual — Cuadro Vivo
 
 **Estado:** dirección creativa acordada; propuesta de producción pendiente de revisión visual del usuario. Este documento no significa que existan capas, sprites, música, motor ni animaciones implementadas.
