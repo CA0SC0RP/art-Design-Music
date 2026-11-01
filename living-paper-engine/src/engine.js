@@ -37,7 +37,8 @@ export class LivingPaperEngine{
   addPiece(piece){this.pieces.set(piece.id,piece);this.world.addChild(piece.container);this.sortDepth();return piece;}
   getPiece(id){return this.pieces.get(id);}
   sortDepth(){const items=[...this.pieces.values()].sort((a,b)=>b.depth-a.depth);items.forEach((p,i)=>this.world.setChildIndex(p.container,i));}
-  addArticulation(joint,parent){(parent||this.world).addChild(joint.container);this.articulations.add(joint);return joint;}\n  setSpeed(v){this.speed=Math.max(.1,Math.min(3,v));}
+  addArticulation(joint,parent){(parent||this.world).addChild(joint.container);this.articulations.add(joint);return joint;}
+  setSpeed(v){this.speed=Math.max(.1,Math.min(3,v));}
   setPaused(v){this.paused=Boolean(v);}
   update(dt){if(this.paused)return;const step=dt*this.speed;this.elapsed+=step;for(const p of this.pieces.values())p.motion?.update(step,this.elapsed,p);for(const joint of this.articulations)joint.update(this.elapsed);}
   layout(){if(!this.app||!this.world)return;const w=this.host.clientWidth||960,h=this.host.clientHeight||540;this.app.renderer.resize(w,h);const s=Math.min(w/1280,h/720);this.world.scale.set(s);this.world.position.set((w-1280*s)/2,(h-720*s)/2);}
@@ -56,14 +57,16 @@ export class PaperJoint{
   setAngle(degrees){this.sway=null;this.angle=Math.max(this.minAngle,Math.min(this.maxAngle,degrees));this.container.rotation=this.angle*Math.PI/180;}
   setSway({amplitude=8,period=4,phase=0}={}){this.sway={amplitude,period:Math.max(.1,period),phase};}
   update(elapsed){
-    if(!this.sway)return;
-    const {amplitude,period,phase}=this.sway;
-    const swing=Math.sin((elapsed/period)*Math.PI*2+phase)*amplitude;
-    this.angle=Math.max(this.minAngle,Math.min(this.maxAngle,this.restAngle+swing));
-    this.container.rotation=this.angle*Math.PI/180;
+    if(this.sway){
+      const {amplitude,period,phase}=this.sway;
+      const swing=Math.sin((elapsed/period)*Math.PI*2+phase)*amplitude;
+      this.angle=Math.max(this.minAngle,Math.min(this.maxAngle,this.restAngle+swing));
+      this.container.rotation=this.angle*Math.PI/180;
+    }
+    for(const child of this.children)child.update(elapsed);
   }
 }
-\nfunction flat(points){return points.flatMap(([x,y])=>[x,y]);}
+function flat(points){return points.flatMap(([x,y])=>[x,y]);}
 export function polygon(graphics,points,color,alpha=1){graphics.poly(flat(points)).fill({color,alpha});}
 function insidePolygon(x,y,points){
   let inside=false;
