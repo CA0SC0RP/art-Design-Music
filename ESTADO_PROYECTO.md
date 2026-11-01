@@ -216,3 +216,11 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - La suite cubre reconstrucción del extremo en ocho cuadrantes para ambos sentidos de flexión, longitudes desiguales y límites inválidos.
 - GitHub Actions completó con éxito la suite ampliada. Esto no equivale a una prueba del editor en navegador ni a validación táctil en Safari/iPad.
 - La interfaz continúa etiquetada v0.8 hasta completar su validación funcional en el dispositivo.
+
+
+
+## Actualización — 2026-11-01: importación de proyectos JSON
+- El editor incorpora **Importar JSON** para recuperar proyectos exportados y transferirlos entre dispositivos/navegadores.
+- El módulo de importación normaliza formatos v1/v2 y valida estructura, jerarquía, identificadores, formas, colores, transformaciones y poses. Los archivos mayores de 10 MB se rechazan y el texto importado se escapa antes de insertarse en HTML.
+- Se amplió GitHub Actions: validación sintáctica de módulos, 20 pruebas unitarias entre IK e importación, comprobación de sintaxis del JavaScript integrado y revisión de integración. La ejecución del workflow terminó correctamente.
+- Falta probar el flujo real de selección e importación de archivo en Safari del iPad; la validación automatizada no sustituye esa prueba.
