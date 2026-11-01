@@ -28,3 +28,12 @@ test("normaliza poses y limita rotaciones al rango de cada articulación",()=>{
 test("escapa texto importado antes de insertarlo en HTML",()=>{
  assert.equal(escapeHtml('<img src=x onerror="x"> & \'ok\''),'&lt;img src=x onerror=&quot;x&quot;&gt; &amp; &#39;ok&#39;');
 });
+
+test("rechaza IDs inseguros y colores hexadecimales de longitud incorrecta",()=>{
+ const badId=project();badId.nodes[1].id='arm" onload="x';assert.equal(normalizeProject(badId).ok,false);
+ const badColor=project();badColor.nodes[1].fill="#12345";assert.equal(normalizeProject(badColor).ok,false);
+});
+test("rechaza identificadores de pose repetidos",()=>{
+ const p=project();p.poses=[{id:"same",name:"A",nodes:[]},{id:"same",name:"B",nodes:[]}];
+ assert.equal(normalizeProject(p).ok,false);
+});
