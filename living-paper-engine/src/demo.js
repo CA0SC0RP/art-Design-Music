@@ -5,7 +5,7 @@ import { enablePaperRig, bindJointToFold } from "./rigging.js";
 import { enableFoldVolume } from "./volume.js";
 import { enablePaperEdges } from "./edges.js";
 import { enableElasticCurvature } from "./elastic.js";
-import { enableLayerInteraction } from "./layers.js";
+import { enableLayerGroups } from "./layer-groups.js";
 
 const host=document.querySelector("#stage");
 const status=document.querySelector("#engineStatus");
@@ -43,6 +43,8 @@ branchJoint.addChild(new PaperJoint({id:"small-leaf",x:0,y:-38,angle:-10,minAngl
 const flexibleStem=engine.addFlex(new PaperFlex({id:"flexible-stem",x:55,y:-70,length:82,width:7,bend:0,maxBend:28,fill:0x6f9871,sway:{amplitude:13,period:4.4,phase:.8}}),tree.container);
 const backingLeaf=engine.addPaperMesh(new PaperMesh({id:"backing-leaf",x:72,y:-222,width:150,height:92,fill:0x668a65,material:"cardstock",columns:14,rows:10,wave:0,fold:0,frequency:1.35,phase:.6,shape:[[.02,.5],[.16,.24],[.42,.06],[.7,.04],[.94,.3],[.99,.5],[.78,.76],[.48,.94],[.2,.78]]}),tree.container);
 backingLeaf.container.alpha=.72;
+const underlayLeaf=engine.addPaperMesh(new PaperMesh({id:"underlay-leaf",x:72,y:-222,width:150,height:92,fill:0x526e59,material:"cardstock",columns:14,rows:10,wave:0,fold:0,frequency:1.35,phase:.6,shape:[[.02,.5],[.16,.24],[.42,.06],[.7,.04],[.94,.3],[.99,.5],[.78,.76],[.48,.94],[.2,.78]]}),tree.container);
+underlayLeaf.container.alpha=.62;
 const meshLeaf=engine.addPaperMesh(new PaperMesh({id:"mesh-leaf",x:75,y:-225,width:150,height:92,fill:0x7d9f70,material:"handmade",columns:14,rows:10,wave:5,fold:3,frequency:1.35,phase:.6,shape:[[.02,.5],[.16,.24],[.42,.06],[.7,.04],[.94,.3],[.99,.5],[.78,.76],[.48,.94],[.2,.78]]}),tree.container);
 enableLocalizedDeformation(meshLeaf,[{u:.78,v:.28,radius:.34,strength:.9,bend:15,offsetX:3,offsetY:-2}]);
 enablePaperRig(meshLeaf,{anchors:[{u:.18,v:.5,radius:25,strength:1}],folds:[{x1:.18,y1:.5,x2:.84,y2:.5,angle:24,strength:.9,side:"positive"},{x1:.42,y1:.12,x2:.72,y2:.9,angle:12,strength:.7,side:"negative"}]});
@@ -50,7 +52,7 @@ bindJointToFold(meshLeaf,leafJoint,{foldIndex:1,restAngle:0,multiplier:.85,minAn
 enableElasticCurvature(meshLeaf,{curvature:0,axis:90,stiffness:18,damping:7,bias:.18});
 enableFoldVolume(meshLeaf,{intensity:.72,width:34});
 enablePaperEdges(meshLeaf,{thickness:5,intensity:.72});
-enableLayerInteraction(engine,[{source:meshLeaf,target:backingLeaf,coupling:.24,clearance:5,contact:.42,maxDisplacement:16,edgeRadius:.18}]);
+enableLayerGroups(engine,[{id:"leaf-stack",layers:[meshLeaf,backingLeaf,underlayLeaf],coupling:.24,clearance:5,contact:.42,maxDisplacement:16,edgeRadius:.18,links:[{clearance:5},{clearance:7,coupling:.18}]}]);
 const bird=engine.addPiece(new PaperPiece({id:"bird",name:"Ave de prueba",depth:3,x:170,y:230,draw:(g,s,style)=>{
   const body=[[-30,0],[-10,-9],[10,-5],[30,5],[12,13],[-12,10]];
   cut(g,s,body,0x3c5960,style);
@@ -74,6 +76,7 @@ const edgeThickness=document.querySelector("#paperEdgeThicknessControl"),edgeInt
 const layerCoupling=document.querySelector("#layerCouplingControl");
 const layerClearance=document.querySelector("#layerClearanceControl");
 const layerContact=document.querySelector("#layerContactControl");
+const layerPropagation=document.querySelector("#layerPropagationControl");
 const elasticCurvature=document.querySelector("#elasticCurvatureControl"),elasticAxis=document.querySelector("#elasticAxisControl"),elasticStiffness=document.querySelector("#elasticStiffnessControl"),elasticDamping=document.querySelector("#elasticDampingControl");
 const joints={branch:branchJoint,leaf:leafJoint};
 let selectedJoint=branchJoint;
@@ -96,8 +99,8 @@ const updateEdges=()=>{meshLeaf.setPaperEdge({thickness:Number(edgeThickness.val
 for(const control of [edgeThickness,edgeIntensity])control.addEventListener("input",updateEdges);
 const updateElastic=()=>{meshLeaf.setElasticCurvature({curvature:Number(elasticCurvature.value),axis:Number(elasticAxis.value),stiffness:Number(elasticStiffness.value),damping:Number(elasticDamping.value)});syncLabels();};
 for(const control of [elasticCurvature,elasticAxis,elasticStiffness,elasticDamping])control.addEventListener("input",updateElastic);
-const updateLayers=()=>{engine.setLayerInteraction(0,{coupling:Number(layerCoupling.value)/100,clearance:Number(layerClearance.value),contact:Number(layerContact.value)/100});document.querySelector("#layerCouplingValue").textContent=layerCoupling.value+"%";document.querySelector("#layerClearanceValue").textContent=layerClearance.value+" px";document.querySelector("#layerContactValue").textContent=layerContact.value+"%";};
-for(const control of [layerCoupling,layerClearance,layerContact])control.addEventListener("input",updateLayers);
+const updateLayers=()=>{engine.setLayerInteraction(0,{coupling:Number(layerCoupling.value)/100,clearance:Number(layerClearance.value),contact:Number(layerContact.value)/100});engine.setLayerInteraction(1,{coupling:Number(layerPropagation.value)/100,clearance:Number(layerClearance.value)+2,contact:Number(layerContact.value)/100});document.querySelector("#layerCouplingValue").textContent=layerCoupling.value+"%";document.querySelector("#layerClearanceValue").textContent=layerClearance.value+" px";document.querySelector("#layerContactValue").textContent=layerContact.value+"%";document.querySelector("#layerPropagationValue").textContent=layerPropagation.value+"%";};
+for(const control of [layerCoupling,layerClearance,layerContact,layerPropagation])control.addEventListener("input",updateLayers);
 scale.addEventListener("input",()=>{selected.setScale(Number(scale.value)/100);syncLabels();});
 rotation.addEventListener("input",()=>{selected.setRotation(Number(rotation.value));syncLabels();});
 depth.addEventListener("input",()=>{selected.setDepth(Number(depth.value));engine.sortDepth();syncLabels();});
@@ -106,7 +109,7 @@ thickness.addEventListener("input",()=>{selected.setThickness(Number(thickness.v
 shadow.addEventListener("input",()=>{selected.setShadowStrength(Number(shadow.value)/100);syncLabels();});
 speed.addEventListener("input",()=>{engine.setSpeed(Number(speed.value)/100);syncLabels();});
 document.querySelector("#pauseButton").addEventListener("click",event=>{engine.setPaused(!engine.paused);event.currentTarget.textContent=engine.paused?"Reanudar":"Pausar";});
-document.querySelector("#resetButton").addEventListener("click",()=>{mountain.setScale(1);mountain.setRotation(0);mountain.setDepth(5);mountain.setPosition(640,360);hill.setScale(1);hill.setRotation(0);hill.setDepth(4);hill.setPosition(640,470);tree.setScale(1);tree.setRotation(0);tree.setDepth(2);tree.setPosition(330,450);bird.setScale(1);bird.setRotation(0);bird.setDepth(3);bird.motion.time=0;flexibleStem.setSway({amplitude:13,period:4.4,phase:.8});flexBend.value=0;meshWaveControl.value=5;meshFoldControl.value=3;meshLeaf.setDeformation({wave:5,fold:3,frequency:1.35});influenceX.value=78;influenceY.value=28;influenceStrength.value=90;influenceBend.value=15;updateInfluence();anchorX.value=18;anchorY.value=50;anchorStrength.value=100;foldAngle.value=24;updateRig();volumeIntensity.value=72;volumeWidth.value=34;updateVolume();edgeThickness.value=5;edgeIntensity.value=72;updateEdges();elasticCurvature.value=0;elasticAxis.value=90;elasticStiffness.value=18;elasticDamping.value=7;meshLeaf.resetElasticMemory();updateElastic();layerCoupling.value=24;layerClearance.value=5;layerContact.value=42;updateLayers();branchJoint.setSway({amplitude:7,period:5,phase:.4});leafJoint.setSway({amplitude:17,period:2.8,phase:1.1});jointSelect.value="branch";selectedJoint=branchJoint;jointAngle.value=-7;for(const p of [mountain,hill,tree,bird]){p.setMaterial("matte");p.setThickness(4);p.setShadowStrength(.22);}speed.value=100;engine.setSpeed(1);choose("mountain");});
+document.querySelector("#resetButton").addEventListener("click",()=>{mountain.setScale(1);mountain.setRotation(0);mountain.setDepth(5);mountain.setPosition(640,360);hill.setScale(1);hill.setRotation(0);hill.setDepth(4);hill.setPosition(640,470);tree.setScale(1);tree.setRotation(0);tree.setDepth(2);tree.setPosition(330,450);bird.setScale(1);bird.setRotation(0);bird.setDepth(3);bird.motion.time=0;flexibleStem.setSway({amplitude:13,period:4.4,phase:.8});flexBend.value=0;meshWaveControl.value=5;meshFoldControl.value=3;meshLeaf.setDeformation({wave:5,fold:3,frequency:1.35});influenceX.value=78;influenceY.value=28;influenceStrength.value=90;influenceBend.value=15;updateInfluence();anchorX.value=18;anchorY.value=50;anchorStrength.value=100;foldAngle.value=24;updateRig();volumeIntensity.value=72;volumeWidth.value=34;updateVolume();edgeThickness.value=5;edgeIntensity.value=72;updateEdges();elasticCurvature.value=0;elasticAxis.value=90;elasticStiffness.value=18;elasticDamping.value=7;meshLeaf.resetElasticMemory();updateElastic();layerCoupling.value=24;layerClearance.value=5;layerContact.value=42;layerPropagation.value=18;updateLayers();branchJoint.setSway({amplitude:7,period:5,phase:.4});leafJoint.setSway({amplitude:17,period:2.8,phase:1.1});jointSelect.value="branch";selectedJoint=branchJoint;jointAngle.value=-7;for(const p of [mountain,hill,tree,bird]){p.setMaterial("matte");p.setThickness(4);p.setShadowStrength(.22);}speed.value=100;engine.setSpeed(1);choose("mountain");});
 choose("mountain");
 status.textContent="PixiJS 8 · curvatura elástica · memoria del papel · volumen y articulación";
 window.addEventListener("beforeunload",()=>engine.destroy());
