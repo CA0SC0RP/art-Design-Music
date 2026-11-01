@@ -64,7 +64,10 @@ function applyLink(link) {
       const i = (row * (target.columns + 1) + col) * 2;
       const u = col / target.columns, v = row / target.rows;
       if (target.shape && !pointInPolygon(u, v, target.shape)) continue;
-      const delta = sampleDisplacement(source.vertices, source.baseVertices, source.columns, source.rows, u, v);
+      const sourceDelta = sampleDisplacement(source.vertices, source.baseVertices, source.columns, source.rows, u, v);
+      // Propagate deformation through world space so rotated/scaled layer rigs remain aligned.
+      const worldDelta = transformVector(sourceTransform, sourceDelta);
+      const delta = inverseTransformVector(targetTransform, worldDelta);
       const weight = layerFalloff(u, v, link.edgeRadius);
       const response = resolveLayerResponse(delta.x, delta.y, { ...link, weight });
       target.vertices[i] += response.x;
