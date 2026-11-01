@@ -326,3 +326,10 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se reforzó la validación del identificador del hueso para impedir cadenas vacías.
 - Se añadieron pruebas para confirmar que rechazar la eliminación del último peso positivo y rechazar una quinta influencia no modifica los datos existentes.
 - Pendiente: confirmar GitHub Actions en esta revisión. La prueba visual de deformación, el rendimiento real y Safari/iPad siguen sin validarse.
+
+
+## Actualización — 2026-11-01: v0.9.15, reutilización de geometría SVG
+- Se eliminó la duplicación del marcado SVG de la forma base dentro de cada triángulo deformado. La geometría original ahora se declara una sola vez en `defs` y cada fragmento la instancia mediante `use`, manteniendo su transformación afín y su recorte independiente.
+- El cambio reduce el tamaño del SVG generado y evita repetir nodos de geometría en el marcado por cada cara. No se afirma aún una mejora medida de FPS o memoria; eso requiere perfilado en navegador.
+- El workflow incorpora comprobaciones estructurales para verificar la definición compartida y el uso de referencias SVG.
+- Pendiente: validar representación de `use` y clip paths en Safari/iPad, revisar contornos/costuras y medir rendimiento con mallas densas.
