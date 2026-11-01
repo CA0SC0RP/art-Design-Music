@@ -76,6 +76,7 @@ jobs:
           grep -q 'anchorStrengthControl' living-paper-engine/index.html
           grep -q 'controlledFoldAngleControl' living-paper-engine/index.html
           grep -q 'layerCouplingControl' living-paper-engine/index.html
+          grep -q 'layerContactControl' living-paper-engine/index.html
           grep -q 'enableLayerInteraction' living-paper-engine/src/demo.js
           grep -q 'elasticCurvatureControl' living-paper-engine/index.html
           grep -q 'setElasticCurvature' living-paper-engine/src/demo.js
