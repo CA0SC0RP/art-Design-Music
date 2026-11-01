@@ -14,6 +14,9 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Deformación de superficies con malla 2D subdividida, textura RGBA y vértices animados.
 - Influencias localizadas con centro, radio suave, intensidad y curvatura independiente.
 - Actualización explícita de los búferes de vértices de PixiJS durante la deformación.
+- Anclajes normalizados con radio e intensidad para fijar zonas de una pieza.
+- Pliegues definidos por una línea, ángulo, lado e intensidad, con extremos suavizados.
+- Sombras sincronizadas con la geometría final después de aplicar los pliegues y anclajes.
 - Movimiento heredado entre rama y hojas articuladas.
 
 ### Materiales de papel (prototipo)
@@ -23,7 +26,7 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Línea de luz sutil en el borde superior.
 - Intensidad de sombra y grosor ajustables por pieza desde el inspector.
 
-La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final. Las zonas de influencia se expresan en coordenadas normalizadas de la superficie y usan una caída suave para evitar límites abruptos.
+La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final. Las zonas de influencia se expresan en coordenadas normalizadas de la superficie y usan una caída suave para evitar límites abruptos. Los anclajes conservan regiones de la malla cerca de su posición de reposo. Los pliegues aplican una aproximación geométrica 2D a un lado de una línea de pliegue; no es simulación física de papel.
 
 Los materiales son aproximaciones 2D deliberadas. Aún no representan simulación física ni una malla 3D de papel.
 
@@ -45,7 +48,7 @@ Los materiales son aproximaciones 2D deliberadas. Aún no representan simulació
 
 ## Prueba manual
 
-Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor y sombra. Probar las articulaciones, la flexión del tallo, la ondulación y el pliegue de la hoja de malla, además de pausa y velocidad global.
+Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor y sombra. Probar las articulaciones, la flexión del tallo, la ondulación, la influencia localizada, el anclaje y el ángulo del pliegue de la hoja de malla, además de pausa y velocidad global.
 
 ## Pendiente
 
@@ -54,7 +57,8 @@ Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor
 - Textura procedural o mapas de textura con control de escala.
 - Importación de sprites transparentes y SVG externos.
 - Máscara de recorte basada en la silueta real y mapas de influencia pintables.
-- Puntos de anclaje y pliegues con orientación definida por el artista.
+- Mapas de influencia pintables y múltiples líneas de pliegue por pieza.
+- Control de tensión y curvatura de pliegue calibrado con recursos de papel reales.
 - Luces y sombras más precisas entre capas.
 - Serialización de escenas y editor visual.
 - Pruebas en Safari iPad y Firefox; no declarar compatibilidad hasta probarlos.
