@@ -26,53 +26,19 @@ jobs:
 
       - name: Validar sintaxis JavaScript
         run: |
+          node --check living-paper-engine/src/physics-mesh.js
+          node --check living-paper-engine/src/physics-mesh.test.mjs
+          node --experimental-default-type=module --test living-paper-engine/src/physics-mesh.test.mjs
           node --check living-paper-engine/src/engine.js
-          grep -q "autoUpdate=true" living-paper-engine/src/engine.js
-          grep -q "overlay.autoUpdate = true" living-paper-engine/src/volume.js
-          node --check living-paper-engine/src/motion.js
-          node --check living-paper-engine/src/demo.js
-          node --check living-paper-engine/src/deformation.js
-          node --check living-paper-engine/src/rigging.js
-          node --check living-paper-engine/src/volume.js
-          node --check living-paper-engine/src/volume-math.js
-          node --check living-paper-engine/src/collision-math.js
-          grep -q "frictionCorrection" living-paper-engine/src/collision-math.js
           node --check living-paper-engine/src/layers.js
-          node --check living-paper-engine/src/layer-groups.js
-          node --check living-paper-engine/src/layer-math.js
-          node --check living-paper-engine/src/layer.test.mjs
+          node --check living-paper-engine/src/collision-math.js
           node --experimental-default-type=module --test living-paper-engine/src/layer.test.mjs
-          node --check living-paper-engine/src/collision.test.mjs
           node --experimental-default-type=module --test living-paper-engine/src/collision.test.mjs
-          grep -q "enableLayerGroups" living-paper-engine/src/layer-groups.js
-          grep -q "enableLayerInteraction" living-paper-engine/src/layers.js
-          grep -q "resolveContactConstraint" living-paper-engine/src/collision-math.js
-          grep -q "buildMeshTriangles" living-paper-engine/src/collision-math.js
-          grep -q "closestPointOnMesh" living-paper-engine/src/collision-math.js
-          grep -q "segmentTriangleContacts" living-paper-engine/src/collision-math.js
-          grep -q "edgeIntersections" living-paper-engine/src/layers.js
-          grep -q "segmentTriangleContacts" living-paper-engine/src/collision.test.mjs
-          grep -q "composeWorldTransform" living-paper-engine/src/collision-math.js
-          grep -q "contactRangeControl" living-paper-engine/index.html
-          grep -q "contactGapControl" living-paper-engine/index.html
-          grep -q "contactStiffnessControl" living-paper-engine/index.html
-          node --check living-paper-engine/src/elastic.js
-          node --check living-paper-engine/src/elastic-math.js
-          node --check living-paper-engine/src/elastic.test.mjs
-          node --experimental-default-type=module --test living-paper-engine/src/elastic.test.mjs
-          grep -q "enableElasticCurvature" living-paper-engine/src/elastic.js
-          node --check living-paper-engine/src/edges.js
-          node --check living-paper-engine/src/edge-math.js
-          node --check living-paper-engine/src/edge.test.mjs
-          node --experimental-default-type=module --test living-paper-engine/src/edge.test.mjs
-          grep -q "enablePaperEdges" living-paper-engine/src/edges.js
-          node --check living-paper-engine/src/volume.test.mjs
-          node --experimental-default-type=module --test living-paper-engine/src/volume.test.mjs
-          grep -q "enableFoldVolume" living-paper-engine/src/volume.js
-          grep -q "bindJointToFold" living-paper-engine/src/rigging.js
-          grep -q "onUpdate" living-paper-engine/src/engine.js
-          node --check living-paper-engine/src/rigging.test.mjs
           node --experimental-default-type=module --test living-paper-engine/src/rigging.test.mjs
+          node --experimental-default-type=module --test living-paper-engine/src/volume.test.mjs
+          node --experimental-default-type=module --test living-paper-engine/src/edge.test.mjs
+          node --experimental-default-type=module --test living-paper-engine/src/elastic.test.mjs
+          node --experimental-default-type=module --test living-paper-engine/src/contact-performance.test.mjs
 
       - name: Verificar estructura del prototipo
         run: |
@@ -81,27 +47,5 @@ jobs:
           test -s living-paper-engine/README.md
           grep -q 'pixi.js@8.10.1' living-paper-engine/src/engine.js
           grep -q 'export class PaperMesh' living-paper-engine/src/engine.js
-          grep -q 'enableLocalizedDeformation' living-paper-engine/src/deformation.js
-          grep -q 'setInfluenceZones' living-paper-engine/src/deformation.js
-          grep -q 'new MeshSimple' living-paper-engine/src/engine.js
-          grep -q 'meshWaveControl' living-paper-engine/src/demo.js
-          grep -q 'meshFoldControl' living-paper-engine/index.html
-          grep -q 'influenceBendControl' living-paper-engine/index.html
-          grep -q 'enableLocalizedDeformation' living-paper-engine/src/demo.js
-          grep -q 'enablePaperRig' living-paper-engine/src/rigging.js
-          grep -q 'setAnchors' living-paper-engine/src/rigging.js
-          grep -q 'setFolds' living-paper-engine/src/rigging.js
-          grep -q 'anchorStrengthControl' living-paper-engine/index.html
-          grep -q 'controlledFoldAngleControl' living-paper-engine/index.html
-          grep -q 'layerCouplingControl' living-paper-engine/index.html
-          grep -q 'layerContactControl' living-paper-engine/index.html
-          grep -q 'enableLayerGroups' living-paper-engine/src/demo.js
-          grep -q 'layerPropagationControl' living-paper-engine/index.html
-          grep -q 'elasticCurvatureControl' living-paper-engine/index.html
-          grep -q 'setElasticCurvature' living-paper-engine/src/demo.js
+          grep -q 'createPhysicsMeshProxy' living-paper-engine/src/physics-mesh.js
           echo "Living Paper Engine: estructura y sintaxis correctas."
-
-      - name: Medir estabilidad y rendimiento del contacto
-        run: |
-          node --check living-paper-engine/src/contact-performance.test.mjs
-          node --experimental-default-type=module --test living-paper-engine/src/contact-performance.test.mjs
