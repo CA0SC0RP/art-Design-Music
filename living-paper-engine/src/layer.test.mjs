@@ -224,3 +224,36 @@ test("cambiar parámetros repetidamente no acumula correcciones antes del siguie
   engine.update(1 / 60);
   for (let i = 0; i < first.length; i++) assert.ok(Math.abs(target.vertices[i] - first[i]) < 1e-6);
 });
+
+
+test("el acoplamiento se mantiene sin deriva durante ciclos repetidos de deformación", () => {
+  const source = makeMesh("front");
+  const target = makeMesh("back");
+  const baseUpdate = source.update.bind(source);
+  let elapsed = 0;
+  source.update = time => {
+    baseUpdate(time);
+    const displacement = Math.sin(time * Math.PI * 2) * 2;
+    for (let i = 1; i < source.vertices.length; i += 2) source.vertices[i] += displacement;
+    source.mesh.vertices = source.vertices;
+  };
+  const engine = {
+    paused: false,
+    update(dt) {
+      elapsed += dt;
+      source.update(elapsed);
+      target.update(elapsed);
+    }
+  };
+  enableLayerInteraction(engine, [{
+    source, target, coupling: 0.6, clearance: 12, contactGap: 0, contactRange: 1
+  }]);
+  let afterFirstCycle;
+  for (let frame = 0; frame < 240; frame++) {
+    engine.update(1 / 120);
+    if (frame === 119) afterFirstCycle = new Float32Array(target.vertices);
+  }
+  for (let i = 0; i < afterFirstCycle.length; i++) {
+    assert.ok(Math.abs(target.vertices[i] - afterFirstCycle[i]) < 1e-5);
+  }
+});
