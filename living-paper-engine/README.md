@@ -12,6 +12,8 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Articulaciones jerárquicas con pivotes, límites angulares y oscilación controlada.
 - Flexión continua de tiras de papel mediante una curva segmentada, sin juntas visibles.
 - Deformación de superficies con malla 2D subdividida, textura RGBA y vértices animados.
+- Influencias localizadas con centro, radio suave, intensidad y curvatura independiente.
+- Actualización explícita de los búferes de vértices de PixiJS durante la deformación.
 - Movimiento heredado entre rama y hojas articuladas.
 
 ### Materiales de papel (prototipo)
@@ -21,7 +23,7 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Línea de luz sutil en el borde superior.
 - Intensidad de sombra y grosor ajustables por pieza desde el inspector.
 
-La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final.
+La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final. Las zonas de influencia se expresan en coordenadas normalizadas de la superficie y usan una caída suave para evitar límites abruptos.
 
 Los materiales son aproximaciones 2D deliberadas. Aún no representan simulación física ni una malla 3D de papel.
 
@@ -51,7 +53,8 @@ Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor
 - Articulaciones adicionales y controles de rig para alas, tallos, pétalos y otras piezas.
 - Textura procedural o mapas de textura con control de escala.
 - Importación de sprites transparentes y SVG externos.
-- Deformación de malla y articulaciones.
+- Máscara de recorte basada en la silueta real y mapas de influencia pintables.
+- Puntos de anclaje y pliegues con orientación definida por el artista.
 - Luces y sombras más precisas entre capas.
 - Serialización de escenas y editor visual.
 - Pruebas en Safari iPad y Firefox; no declarar compatibilidad hasta probarlos.
@@ -64,4 +67,5 @@ Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor
 4. Las articulaciones respetan sus límites y transmiten el movimiento a sus piezas hijas.
 5. Las tiras flexibles conservan continuidad geométrica durante la oscilación.
 4. Los loops no saltan al completar el ciclo.
-5. Los controles se mantienen utilizables en pantalla táctil.
+6. Las influencias localizadas no producen saltos en el borde de su radio.
+7. Los controles se mantienen utilizables en pantalla táctil.
