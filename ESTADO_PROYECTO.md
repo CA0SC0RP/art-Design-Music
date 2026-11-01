@@ -18,7 +18,9 @@
 
 **Estado de transición:** la auditoría técnica del 2026-10-29 queda cerrada como registro histórico del diseño anterior. El contrato v2 no está aprobado para el motor de caricaturas. La partitura audiovisual de Mountains That Breathe queda obsoleta para la planificación activa. Los documentos, prototipos y recursos antiguos se conservan como antecedentes hasta clasificarlos; no se borran.
 
-**Trabajo de desarrollo nuevo:** todavía no se ha implementado ni validado el editor de caricaturas en iPad. Siguiente paso: auditar en modo de solo lectura living-paper-engine/ y prototype/ para identificar componentes reutilizables. Después definir la primera prueba aislada de escenario editable.
+**Auditoría de reutilización completada:** docs/auditoria-reutilizacion-motor-caricaturas-ipad-2026-11-01.md. Se confirma que el laboratorio PixiJS, el escenario 2D, las transformaciones, la pausa/velocidad, algunas trayectorias y la jerarquía experimental pueden servir como base parcial. Las funciones de pliegues, papel, contacto entre hojas, cantos y volumen son específicas del proyecto anterior. Los prototipos 01–05 son demostraciones ambientales, no editores de caricaturas.
+
+**Trabajo de desarrollo nuevo:** todavía no se ha implementado ni validado el editor de caricaturas en iPad. Próximo paso: diseñar una prueba aislada de estudio visual con selección táctil directa, arrastre, escala, rotación y animación simple. No modificar el laboratorio anterior; crear la prueba de manera reversible y probarla en Safari del iPad.
 
 ---
 
