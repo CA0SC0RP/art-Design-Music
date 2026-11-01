@@ -1,0 +1,39 @@
+name: Validar Living Paper Engine
+
+on:
+  push:
+    branches:
+      - feature/living-paper-engine-foundation
+    paths:
+      - "living-paper-engine/**"
+      - ".github/workflows/living-paper-engine-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-engine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validar sintaxis JavaScript
+        run: |
+          node --check living-paper-engine/src/engine.js
+          node --check living-paper-engine/src/motion.js
+          node --check living-paper-engine/src/demo.js
+
+      - name: Verificar estructura del prototipo
+        run: |
+          test -s living-paper-engine/index.html
+          test -s living-paper-engine/styles.css
+          test -s living-paper-engine/README.md
+          grep -q 'pixi.js@8.10.1' living-paper-engine/src/engine.js
+          echo "Living Paper Engine: estructura y sintaxis correctas."
