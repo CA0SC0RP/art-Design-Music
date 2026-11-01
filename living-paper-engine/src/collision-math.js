@@ -168,7 +168,7 @@ export function buildTriangleSpatialIndex(triangles, cellSize = 64) {
 }
 
 /** Return unique triangles using reusable query stamps instead of allocating a Set per lookup. */
-export function queryTriangleSpatialIndex(index, bounds, epsilon = 1e-7) {
+export function queryTriangleSpatialIndex(index, bounds, epsilon = 1e-7, out = []) {
   const size = index.cellSize;
   const minCellX = Math.floor(bounds.minX / size), maxCellX = Math.floor(bounds.maxX / size);
   const minCellY = Math.floor(bounds.minY / size), maxCellY = Math.floor(bounds.maxY / size);
@@ -178,7 +178,7 @@ export function queryTriangleSpatialIndex(index, bounds, epsilon = 1e-7) {
     queryId = 1;
   }
   index.queryId = queryId;
-  const found = [];
+  out.length = 0;
   for (let y = minCellY; y <= maxCellY; y++) {
     for (let x = minCellX; x <= maxCellX; x++) {
       const bucket = index.cells.get(`${x},${y}`);
@@ -189,11 +189,11 @@ export function queryTriangleSpatialIndex(index, bounds, epsilon = 1e-7) {
         index.seen[id] = queryId;
         if (triangle.maxX < bounds.minX - epsilon || triangle.minX > bounds.maxX + epsilon ||
             triangle.maxY < bounds.minY - epsilon || triangle.minY > bounds.maxY + epsilon) continue;
-        found.push(triangle);
+        out.push(triangle);
       }
     }
   }
-  return found;
+  return out;
 }
 
 export function closestPointOnMesh(point, triangles, maxDistance = Infinity) {
