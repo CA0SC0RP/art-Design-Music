@@ -302,3 +302,5 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se añadieron dos pruebas geométricas: continuidad de vértices compartidos entre triángulos y traslación afín pura. Suite total: 58 pruebas automatizadas. Se añadió cobertura de persistencia de matrices de referencia para varios huesos influyentes.
 - El workflow incluye comprobaciones estructurales de pincel, captura de matrices, caché y mapeo triangular.
 - Pendiente: revisión visual en navegador de bordes y costuras, evaluación de rendimiento con personajes complejos y prueba táctil en Safari/iPad físico. No se afirma que esas validaciones se hayan realizado.
+
+- Se corrigió la persistencia de mensajes del pincel/edición: el render ya no sobrescribe inmediatamente la confirmación de pesos aplicados. El mensaje se limpia al cambiar de pieza, vértice o eliminar la malla.
