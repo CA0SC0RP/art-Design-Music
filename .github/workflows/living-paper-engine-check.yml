@@ -31,6 +31,11 @@ jobs:
           node --check living-paper-engine/src/demo.js
           node --check living-paper-engine/src/deformation.js
           node --check living-paper-engine/src/rigging.js
+          node --check living-paper-engine/src/volume.js
+          node --check living-paper-engine/src/volume-math.js
+          node --check living-paper-engine/src/volume.test.mjs
+          node --experimental-default-type=module --test living-paper-engine/src/volume.test.mjs
+          grep -q "enableFoldVolume" living-paper-engine/src/volume.js
           grep -q "bindJointToFold" living-paper-engine/src/rigging.js
           grep -q "onUpdate" living-paper-engine/src/engine.js
           node --check living-paper-engine/src/rigging.test.mjs
