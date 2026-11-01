@@ -77,3 +77,5 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - **Protecciones:** no se usó ni modificó la imagen maestra; no se añadieron recursos externos ni finales; no se generaron gastos; no se tocó `main`.
 - **Pruebas:** no se ha ejecutado todavía en navegador ni en iPad Safari. Los archivos están creados en la rama, pero la funcionalidad visual queda pendiente de verificación real.
 - **Siguiente paso:** habilitar acceso de prueba desde Safari, verificar carga de los cinco SVG y comportamiento de pausa/movimiento, corregir cualquier problema y solo entonces avanzar.
+
+- **Publicación de prueba:** se añadió `.github/workflows/prototipo-cinco-capas.yml` para GitHub Pages (runner estándar `ubuntu-latest`). La consulta de ejecuciones de Actions devolvió cero ejecuciones; por tanto, no se confirma que Pages esté habilitado ni que exista una URL pública funcional. Pendiente comprobar el flujo y no compartir una URL como operativa hasta que termine correctamente.
