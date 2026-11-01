@@ -352,3 +352,12 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Los proyectos de personaje anteriores reciben los rasgos faciales faltantes al abrirse; el preset nuevo ya los incorpora.
 - Se añadió una prueba automatizada para la persistencia de formas faciales. La ejecución completa de GitHub Actions terminó correctamente.
 - Se trata de una primera biblioteca de expresiones, no de un sistema avanzado de deformación facial ni sincronización labial.
+
+
+
+## 2026-11-01 — Primera textura de papel y controles ampliados
+
+- Se combinó el sombreado proyectado con un grano SVG de baja intensidad en las piezas del personaje y el árbol, buscando una apariencia menos plana sin introducir imágenes externas.
+- Se ampliaron los rangos de posición y escala del inspector para que los cambios de jerarquía y las transformaciones acumuladas sigan siendo editables.
+- Esta textura es provisional; las texturas artesanales de producción y los bordes de papel todavía están pendientes.
+- El cambio pasó las comprobaciones automatizadas de sintaxis e integración; la evaluación visual en Safari/iPad sigue pendiente.
