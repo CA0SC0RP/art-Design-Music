@@ -276,19 +276,56 @@ export function segmentTriangleContacts(start, end, triangles, epsilon = 1e-7, s
     if (maxX < triangle.minX - epsilon || minX > triangle.maxX + epsilon ||
         maxY < triangle.minY - epsilon || minY > triangle.maxY + epsilon) continue;
     const points = triangle.points || [triangle.a, triangle.b, triangle.c];
-    for (let edge = 0; edge < 3; edge++) {
-      const hits = segmentSegmentIntersections(start, end, points[edge], points[(edge + 1) % 3], epsilon);
-      if (!hits) continue;
-      const list = Array.isArray(hits) ? hits : [hits];
-      for (const hit of list) {
-        if (!contacts.some(item => Math.abs(item.t - hit.t) < 1e-5 &&
-            Math.hypot(item.point.x - hit.point.x, item.point.y - hit.point.y) < 1e-4)) {
-          contacts.push({ ...hit, triangle });
-        }
+    const a = points[0], b = points[1], c = points[2];
+    const area = cross(sub(b, a), sub(c, a));
+    if (Math.abs(area) <= epsilon) {
+      for (let edge = 0; edge < 3; edge++) {
+        const hits = segmentSegmentIntersections(start, end, points[edge], points[(edge + 1) % 3], epsilon);
+        if (!hits) continue;
+        const list = Array.isArray(hits) ? hits : [hits];
+        for (const hit of list) appendSegmentContact(contacts, start, end, hit.t, triangle);
       }
+      continue;
     }
+
+    const orientation = area > 0 ? 1 : -1;
+    let enter = 0, exit = 1, startOutside = false, endOutside = false;
+    let startOnBoundary = false, endOnBoundary = false, intersects = true;
+    for (let edge = 0; edge < 3; edge++) {
+      const p = points[edge], q = points[(edge + 1) % 3];
+      const ex = q.x - p.x, ey = q.y - p.y;
+      const d0 = orientation * (ex * (start.y - p.y) - ey * (start.x - p.x));
+      const d1 = orientation * (ex * (end.y - p.y) - ey * (end.x - p.x));
+      if (d0 < -epsilon && d1 < -epsilon) { intersects = false; break; }
+      if (d0 < -epsilon) {
+        startOutside = true;
+        enter = Math.max(enter, d0 / (d0 - d1));
+      } else if (Math.abs(d0) <= epsilon) startOnBoundary = true;
+      if (d1 < -epsilon) {
+        endOutside = true;
+        exit = Math.min(exit, d0 / (d0 - d1));
+      } else if (Math.abs(d1) <= epsilon) endOnBoundary = true;
+      if (enter > exit + epsilon) { intersects = false; break; }
+    }
+    if (!intersects) continue;
+    if (startOutside) appendSegmentContact(contacts, start, end, enter, triangle);
+    else if (startOnBoundary) appendSegmentContact(contacts, start, end, 0, triangle);
+    if (endOutside) appendSegmentContact(contacts, start, end, exit, triangle);
+    else if (endOnBoundary) appendSegmentContact(contacts, start, end, 1, triangle);
   }
   return contacts.sort((a, b) => a.t - b.t);
+}
+
+function appendSegmentContact(contacts, start, end, t, triangle) {
+  const boundedT = clamp(t, 0, 1);
+  const point = {
+    x: start.x + (end.x - start.x) * boundedT,
+    y: start.y + (end.y - start.y) * boundedT
+  };
+  if (!contacts.some(item => Math.abs(item.t - boundedT) < 1e-5 &&
+      Math.hypot(item.point.x - point.x, item.point.y - point.y) < 1e-4)) {
+    contacts.push({ t: boundedT, point, triangle });
+  }
 }
 
 /** Return the first intersection for callers that need a single point. */
