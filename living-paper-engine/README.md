@@ -15,7 +15,9 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Influencias localizadas con centro, radio suave, intensidad y curvatura independiente.
 - Actualización explícita de los búferes de vértices de PixiJS durante la deformación.
 - Anclajes normalizados con radio e intensidad para fijar zonas de una pieza.
-- Pliegues definidos por una línea, ángulo, lado e intensidad, con extremos suavizados.
+- Múltiples pliegues por superficie, combinados por suma de desplazamientos sobre la misma geometría de referencia.
+- Articulaciones enlazables a pliegues: el ángulo de una junta controla la flexión de una zona de la malla.
+- Anclajes y pliegues se recalculan en cada actualización sin acumular deriva.
 - Sombras sincronizadas con la geometría final después de aplicar los pliegues y anclajes.
 - Movimiento heredado entre rama y hojas articuladas.
 
