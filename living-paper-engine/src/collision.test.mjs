@@ -110,3 +110,25 @@ test("deduplica el mismo cruce compartido por dos triángulos", () => {
   assert.ok(hits.length <= 3);
   assert.ok(hits.every(hit => hit.t >= 0 && hit.t <= 1));
 });
+
+
+test("el índice espacial devuelve los mismos triángulos candidatos que la consulta lineal", async () => {
+  const { buildTriangleSpatialIndex, queryTriangleSpatialIndex } = await import("./collision-math.js");
+  const triangles = buildMeshTriangles(quadMesh({ columns: 8, rows: 6 }));
+  const index = buildTriangleSpatialIndex(triangles, 20);
+  const bounds = { minX: 12, maxX: 31, minY: 8, maxY: 27 };
+  const indexed = queryTriangleSpatialIndex(index, bounds);
+  const linear = triangles.filter(t => !(t.maxX < bounds.minX || t.minX > bounds.maxX || t.maxY < bounds.minY || t.minY > bounds.maxY));
+  assert.equal(indexed.length, linear.length);
+  assert.ok(linear.every(t => indexed.includes(t)));
+  assert.ok(index.cells.size > 1);
+});
+
+test("el índice espacial maneja coordenadas negativas y evita duplicar triángulos", async () => {
+  const { buildTriangleSpatialIndex, queryTriangleSpatialIndex } = await import("./collision-math.js");
+  const triangle = { a:{x:-15,y:-15}, b:{x:15,y:-15}, c:{x:0,y:15}, minX:-15,maxX:15,minY:-15,maxY:15 };
+  const index = buildTriangleSpatialIndex([triangle], 10);
+  const found = queryTriangleSpatialIndex(index, { minX:-4,maxX:4,minY:-4,maxY:4 });
+  assert.equal(found.length, 1);
+  assert.equal(found[0], triangle);
+});
