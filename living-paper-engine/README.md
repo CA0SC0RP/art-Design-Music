@@ -26,7 +26,10 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Sombra propia del canto y reflejo fino para separar visualmente la cara superior y el borde expuesto.
 - Perfil de espesor dependiente del ángulo, el lado del pliegue y la intensidad configurada.
 - Grupos de capas coordinadas con propagación en cascada de deformación desde la hoja frontal a las posteriores; cada tramo admite acoplamiento y separación independientes.
-- Restricción de contacto 2.5D por vértice: detección de penetración proyectada sobre un eje normal configurable, distancia mínima, rigidez y corrección máxima acotada. Añade fricción tangencial opcional para amortiguar deslizamientos con corrección limitada y distancia tangencial de reposo configurable.
+- Restricción de contacto 2.5D por vértice: detección de penetración proyectada sobre un eje normal configurable, distancia mínima, rigidez y corrección máxima acotada.
+- Fricción tangencial configurable entre hojas, con distancia de reposo y corrección máxima limitada para controlar deslizamiento relativo.
+- Diagnóstico en vivo del número de vértices en contacto y penetración media para ajustar el comportamiento sin confundirlo con una simulación física completa.
+- Pruebas independientes de fricción: oposición al deslizamiento, límite de corrección y desactivación. Añade fricción tangencial opcional para amortiguar deslizamientos con corrección limitada y distancia tangencial de reposo configurable.
 - La respuesta de contacto se recalcula desde la geometría base en cada cuadro, actualiza las sombras y evita acumular correcciones.
 - Interacción entre superficies superpuestas: transferencia de deformación, separación ajustable y respuesta de sombra por contacto suave, con control independiente de presión y desplazamiento local de sombra según la separación y el movimiento relativo.
 - Curvatura continua de superficie con campo suave de desplazamiento y dirección configurable.
