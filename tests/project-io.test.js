@@ -80,3 +80,13 @@ test("valida y conserva matrices de referencia de la malla",()=>{
  p.nodes[1].mesh.bindMatrices.arm=[1,2];assert.equal(normalizeProject(p).ok,false);
  p.nodes[1].mesh.bindMatrices={ghost:[1,0,0,1,0,0]};assert.equal(normalizeProject(p).ok,false);
 });
+
+test("conserva matrices de referencia de todos los huesos añadidos al pintar influencias",()=>{
+ const p=project();p.nodes.push({id:"forearm",name:"Antebrazo",type:"brazo",x:0,y:20,rotation:0,parent:"arm",shape:"limb",fill:"#d9ad7c"});
+ p.nodes[1].mesh={vertices:[
+  {id:"v0",x:0,y:0,weights:[{boneId:"arm",weight:.6},{boneId:"forearm",weight:.4}]},
+  {id:"v1",x:1,y:0,weights:[{boneId:"arm",weight:1}]},
+  {id:"v2",x:0,y:1,weights:[{boneId:"forearm",weight:1}]}
+ ],faces:[[0,1,2]],bindMatrices:{arm:[1,0,0,1,0,0],forearm:[1,0,0,1,0,20]}};
+ const r=normalizeProject(p);assert.equal(r.ok,true);assert.deepEqual(r.project.nodes[1].mesh.bindMatrices,p.nodes[1].mesh.bindMatrices);
+});
