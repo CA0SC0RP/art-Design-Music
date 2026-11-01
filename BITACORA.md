@@ -200,3 +200,14 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - No se modificó `main`, no hubo merge, PR ni despliegue; no se activaron servicios externos ni gastos.
 - Estado real: el prototipo `prototype/caricature-studio-v01/index.html` sigue siendo una prueba inicial; no existe aún editor completo ni renderizador local, y no se han certificado navegadores o exportación 4K/HDR.
 - Siguiente trabajo: continuar el editor de personajes como prioridad, sin adelantar el exportador ni el APK de TV.
+
+
+## 2026-11-01 — Alineación de documentos operativos con las decisiones vigentes
+
+- Se corrigieron los documentos de estado y trabajo para que no sigan presentando el escenario de prueba como la primera meta del producto.
+- Archivos actualizados: `ESTADO_PROYECTO.md`, `README.md`, `docs/vision-estudio-web-y-exportacion-de-caricaturas-2026-11-01.md`, `docs/direccion-motor-caricaturas-ipad.md`, `ARQUITECTURA.md` e `INSTRUCCIONES_PARA_IA.md`.
+- Se estableció como prioridad de desarrollo el editor visual completo de personajes. El escenario existente queda clasificado como prototipo técnico inicial.
+- Se documentó Safari como navegador de referencia inicial y Chrome, Firefox y Opera como objetivos adicionales de compatibilidad en iPad; editor y exportación deben probarse por separado.
+- Se aclaró que Codespaces es para desarrollo y que el objetivo es renderizar localmente en iPad, sin servidores de renderizado.
+- Se mantuvo la regla de no modificar `main`, no fusionar, no abrir PR ni desplegar. No se activaron servicios ni hubo gastos.
+- No se ejecutaron pruebas de navegador ni de renderizado; estos cambios son de documentación y alineación de decisiones.
