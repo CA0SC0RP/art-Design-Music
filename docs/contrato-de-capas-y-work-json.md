@@ -1,3 +1,5 @@
+> **ARCHIVADO — 2026-11-01.** Este contrato v2 pertenece al proyecto anterior de cuadros de papel recortado. No está aprobado para Living Paper Engine como motor de caricaturas y no debe utilizarse como esquema de personajes, escenas, objetos o animaciones. Se conserva como referencia histórica; el nuevo modelo de proyecto se diseñará por separado.
+
 # Contrato de capas visuales y work.json — versión 2 (propuesta)
 
 **Estado:** propuesta para revisión del usuario. No está aprobada ni implementada: no existe motor, validador ni capas finales. Sustituye al borrador inicial (que usaba `schemaVersion: 1` solo como ejemplo, nunca consumido por código). El esquema formal es [`works/work.schema.json`](../works/work.schema.json); este documento explica las reglas y el esquema las comprueba en lo que puede expresar. Las reglas entre campos están en [`plan-de-validacion-automatica.md`](plan-de-validacion-automatica.md).
