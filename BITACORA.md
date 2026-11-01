@@ -146,3 +146,18 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - **Pruebas:** se verificó la lectura y actualización de los archivos en GitHub mediante el conector. No se ha implementado ni probado todavía el editor nuevo en Safari/iPad.
 - **Siguiente paso:** auditoría de solo lectura de living-paper-engine/ y prototype/ para clasificar qué código puede reutilizarse en el primer escenario editable.
 
+
+
+## 2026-11-01 — Auditoría de reutilización para estudio de caricaturas iPad
+
+- **Alcance:** lectura directa de código y documentos en living-paper-engine/ y prototype/; no se modificó código ejecutable.
+- **Estado de rama al recibir el inventario del usuario:** feature/living-paper-engine-foundation sincronizada con origin y sin cambios locales reportados.
+- **Hallazgos:** el laboratorio PixiJS contiene escenario 2D, transformaciones de piezas, ciclo de actualización, pausa/velocidad, trayectorias y jerarquías de articulación experimentales. La interfaz demo usa un inspector HTML y selección por lista; no se encontró selección táctil directa en el escenario.
+- **Límites:** no existe un editor completo de personajes, skinning/IK, poses, timeline narrativo, secuenciador, persistencia de proyectos, deshacer/rehacer ni exportación de historias. Los módulos de pliegues, contacto entre hojas, volumen, cantos y deformación son específicos del diseño anterior.
+- **Prototipos:** level-01 a level-05 son demostraciones SVG de composición y movimiento ambiental; no son editores de caricaturas.
+- **Documento nuevo:** docs/auditoria-reutilizacion-motor-caricaturas-ipad-2026-11-01.md.
+- **Documentación actualizada:** living-paper-engine/README.md; living-paper-engine/PROJECT_DIRECTION_AND_REUSE_AUDIT.md marcado como antecedente archivado; ESTADO_PROYECTO.md.
+- **Pruebas:** se inspeccionó el código mediante GitHub. No se ejecutaron tests ni pruebas en navegador/iPad en esta revisión.
+- **Protecciones:** no se modificó código ejecutable, no se eliminaron recursos, no se tocó main, no se fusionó ni desplegó, no se activaron servicios externos ni gastos.
+- **Siguiente paso:** diseñar e implementar una prueba aislada del estudio visual para iPad, con selección táctil directa, arrastre, escala, rotación y animación básica.
+
