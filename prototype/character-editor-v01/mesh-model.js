@@ -41,12 +41,14 @@ function moveVertex(mesh,index,x,y){
  mesh.vertices[index].x=x;mesh.vertices[index].y=y;return {ok:true};
 }
 function setInfluence(mesh,index,boneId,weight){
- if(!mesh||!Array.isArray(mesh.vertices)||!mesh.vertices[index]||typeof boneId!=="string"||!Number.isFinite(weight)||weight<0)return {ok:false,message:"La influencia no es válida."};
- const v=mesh.vertices[index],existing=v.weights.find(w=>w.boneId===boneId);
- if(existing)existing.weight=weight;else if(weight>0&&v.weights.length<MAX_INFLUENCES)v.weights.push({boneId,weight});else if(weight>0)return {ok:false,message:"Un vértice admite como máximo cuatro huesos."};
- const total=v.weights.reduce((sum,w)=>sum+w.weight,0);
- if(total<=1e-10)return {ok:false,message:"Un vértice debe conservar al menos un peso positivo."};
- v.weights=v.weights.filter(w=>w.weight>0).map(w=>({...w,weight:w.weight/total}));return {ok:true};
+ if(!mesh||!Array.isArray(mesh.vertices)||!mesh.vertices[index]||typeof boneId!=="string"||!boneId||!Number.isFinite(weight)||weight<0)return {ok:false,message:"La influencia no es válida."};
+ const vertex=mesh.vertices[index],weights=Array.isArray(vertex.weights)?vertex.weights.map(w=>({...w})):[],existing=weights.find(w=>w.boneId===boneId);
+ if(existing)existing.weight=weight;
+ else if(weight>0&&weights.length<MAX_INFLUENCES)weights.push({boneId,weight});
+ else if(weight>0)return {ok:false,message:"Un vértice admite como máximo cuatro huesos."};
+ const total=weights.reduce((sum,w)=>sum+w.weight,0);
+ if(!Number.isFinite(total)||total<=1e-10)return {ok:false,message:"Un vértice debe conservar al menos un peso positivo."};
+ vertex.weights=weights.filter(w=>w.weight>0).map(w=>({...w,weight:w.weight/total}));return {ok:true};
 }
 function paintInfluence(mesh,x,y,boneId,strength,radius){
  if(!mesh||!Array.isArray(mesh.vertices)||!Number.isFinite(x)||!Number.isFinite(y)||typeof boneId!=="string"||!Number.isFinite(strength)||strength<0||strength>1||!Number.isFinite(radius)||radius<=0)return {ok:false,message:"Parámetros del pincel no válidos."};
