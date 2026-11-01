@@ -47,12 +47,12 @@ export class LivingPaperEngine{
 
 export class PaperJoint{
   constructor({id,x=0,y=0,angle=0,minAngle=-45,maxAngle=45,material="matte",thickness=3,shadowStrength=.18,draw,sway=null}){
-    this.id=id;this.minAngle=minAngle;this.maxAngle=maxAngle;this.restAngle=Math.max(minAngle,Math.min(maxAngle,angle));this.angle=this.restAngle;this.sway=sway;
+    this.id=id;this.children=[];this.minAngle=minAngle;this.maxAngle=maxAngle;this.restAngle=Math.max(minAngle,Math.min(maxAngle,angle));this.angle=this.restAngle;this.sway=sway;
     this.container=new Container();this.container.position.set(x,y);this.container.rotation=this.angle*Math.PI/180;
     this.shadow=new Graphics();this.art=new Graphics();this.container.addChild(this.shadow,this.art);
     this.drawCallback=draw;this.style={material,thickness,shadowStrength};this.drawCallback?.(this.art,this.shadow,this.style);
   }
-  addChild(joint){this.container.addChild(joint.container);return joint;}
+  addChild(joint){this.container.addChild(joint.container);this.children.push(joint);return joint;}
   setAngle(degrees){this.sway=null;this.angle=Math.max(this.minAngle,Math.min(this.maxAngle,degrees));this.container.rotation=this.angle*Math.PI/180;}
   setSway({amplitude=8,period=4,phase=0}={}){this.sway={amplitude,period:Math.max(.1,period),phase};}
   update(elapsed){
