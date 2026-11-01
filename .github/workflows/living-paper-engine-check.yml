@@ -36,4 +36,8 @@ jobs:
           test -s living-paper-engine/styles.css
           test -s living-paper-engine/README.md
           grep -q 'pixi.js@8.10.1' living-paper-engine/src/engine.js
+          grep -q 'export class PaperMesh' living-paper-engine/src/engine.js
+          grep -q 'new MeshSimple' living-paper-engine/src/engine.js
+          grep -q 'meshWaveControl' living-paper-engine/src/demo.js
+          grep -q 'meshFoldControl' living-paper-engine/index.html
           echo "Living Paper Engine: estructura y sintaxis correctas."
