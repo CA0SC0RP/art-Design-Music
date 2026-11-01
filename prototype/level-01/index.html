@@ -32,7 +32,7 @@ button:focus-visible{outline:3px solid #b7d8ff;outline-offset:3px}
 .legend span{display:inline-flex;align-items:center;gap:7px}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#8ca8d3}
 .note{margin-top:12px;font-size:.8rem;color:#91a0b6}
-@media(prefers-reduced-motion:reduce){.layer{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.layer{animation:none!important}.stage.motion-override .mountains{animation:mountainDrift 18s ease-in-out infinite alternate!important}.stage.motion-override .forest{animation:forestDrift 13s ease-in-out infinite alternate!important}.stage.motion-override .river{animation:riverDrift 5s ease-in-out infinite alternate!important}.stage.motion-override .foreground{animation:foregroundDrift 7s ease-in-out infinite alternate!important}}
 </style>
 </head>
 <body>
@@ -56,11 +56,19 @@ button:focus-visible{outline:3px solid #b7d8ff;outline-offset:3px}
 <script>
 const stage=document.getElementById('stage');
 const toggle=document.getElementById('toggle');
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+let motionEnabled=!reducedMotion.matches;
+function updateMotion(){
+ stage.classList.toggle('paused',!motionEnabled);
+ stage.classList.toggle('motion-override',motionEnabled&&reducedMotion.matches);
+ toggle.textContent=motionEnabled?'Pausar movimiento':'Activar movimiento';
+ toggle.setAttribute('aria-pressed',String(motionEnabled));
+}
 toggle.addEventListener('click',()=>{
- const paused=stage.classList.toggle('paused');
- toggle.textContent=paused?'Reanudar movimiento':'Pausar movimiento';
- toggle.setAttribute('aria-pressed',String(paused));
+ motionEnabled=!motionEnabled;
+ updateMotion();
 });
+updateMotion();
 </script>
 </body>
 </html>
