@@ -413,3 +413,12 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se implementó el mapeo afín de triángulos y el renderizado de fragmentos SVG recortados por la malla, transformando cada fragmento según los pesos y las matrices del rig. La intención es que la silueta visible siga la deformación y no únicamente el wireframe.
 - Se ajustaron los bounds iniciales de las mallas para cubrir los contornos de las piezas y se redujeron las matrices de referencia almacenadas a los huesos realmente influyentes.
 - Suite: 55 pruebas automatizadas. GitHub Actions pasó en la integración de fragmentos; la ejecución del último cambio de matrices está pendiente. No se ha realizado aún prueba visual en navegador ni en Safari/iPad.
+
+
+
+## 2026-11-01 — Consistencia de pesos y rendimiento de malla
+
+- Se corrigió la captura de matrices de referencia cuando el pincel añade influencia de un hueso nuevo.
+- Se añadió caché por render para matrices del rig y vértices deformados, evitando recalcular el rig varias veces por pieza en la misma actualización visual.
+- Se agregaron pruebas de continuidad en vértices compartidos entre triángulos y de transformación afín de traslación. Suite: 57 pruebas.
+- El workflow ahora valida la presencia de las conexiones del pincel, matrices de referencia, caché y transformación triangular. La validación visual en navegador/Safari/iPad continúa pendiente.
