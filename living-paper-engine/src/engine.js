@@ -46,6 +46,26 @@ export class LivingPaperEngine{
 
 function flat(points){return points.flatMap(([x,y])=>[x,y]);}
 export function polygon(graphics,points,color,alpha=1){graphics.poly(flat(points)).fill({color,alpha});}
+function insidePolygon(x,y,points){
+  let inside=false;
+  for(let i=0,j=points.length-1;i<points.length;j=i++){
+    const xi=points[i][0], yi=points[i][1], xj=points[j][0], yj=points[j][1];
+    const crosses=((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi+1e-9)+xi);
+    if(crosses) inside=!inside;
+  }
+  return inside;
+}
+function addPaperGrain(graphics,points,material){
+  const m=PAPER_MATERIALS[material]||PAPER_MATERIALS.matte;
+  if(m.textureAlpha<=0)return;
+  const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);
+  const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+  for(let y=minY+5;y<maxY;y+=17)for(let x=minX+5;x<maxX;x+=17){
+    const px=x+Math.sin(x*12.9898+y*78.233)*2.1;
+    const py=y+Math.cos(x*4.1414+y*31.719)*2.1;
+    if(insidePolygon(px,py,points))graphics.circle(px,py,.75).fill({color:m.texture,alpha:m.textureAlpha});
+  }
+}
 export function paperCut(art,shadow,points,{fill=0xffffff,alpha=1,material="matte",thickness=4,shadowStrength=.22}={}){
   const m=PAPER_MATERIALS[material]||PAPER_MATERIALS.matte;
   const layers=Math.max(0,Math.min(12,Math.round(thickness)));
@@ -54,8 +74,15 @@ export function paperCut(art,shadow,points,{fill=0xffffff,alpha=1,material="matt
     shadow.poly(flat(points.map(([x,y])=>[x+offset,y+offset*1.35]))).fill({color:0x27312d,alpha:shadowStrength/(1+i*.13)});
   }
   art.poly(flat(points)).fill({color:fill,alpha});
+  addPaperGrain(art,points,material);
   art.poly(flat(points)).stroke({color:m.edge,width:Math.max(1,thickness*.24),alpha:.58});
   const top=points.slice(0,Math.max(2,Math.ceil(points.length/2)));
-  if(top.length>1){const line=new Graphics();line.moveTo(top[0][0],top[0][1]);for(const p of top.slice(1))line.lineTo(p[0],p[1]);line.stroke({color:m.highlight,width:1.5,alpha:.16});art.addChild(line);}
+  if(top.length>1){
+    const line=new Graphics();
+    line.moveTo(top[0][0],top[0][1]);
+    for(const p of top.slice(1))line.lineTo(p[0],p[1]);
+    line.stroke({color:m.highlight,width:1.5,alpha:.16});
+    art.addChild(line);
+  }
 }
 export function paperShadow(graphics,points,strength=.18){for(let i=3;i>=1;i--)graphics.poly(flat(points.map(([x,y])=>[x+i*1.2,y+i*1.8]))).fill({color:0x26332f,alpha:strength*.22*i});}
