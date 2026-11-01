@@ -25,6 +25,7 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Cantos levantados dibujados sobre la línea del pliegue con espesor aparente variable.
 - Sombra propia del canto y reflejo fino para separar visualmente la cara superior y el borde expuesto.
 - Perfil de espesor dependiente del ángulo, el lado del pliegue y la intensidad configurada.
+- Interacción entre superficies superpuestas: transferencia de deformación, separación ajustable y respuesta de sombra por contacto suave.
 - Curvatura continua de superficie con campo suave de desplazamiento y dirección configurable.
 - Memoria elástica por vértice con velocidad persistente, rigidez y amortiguación configurables.
 - Recuperación progresiva al retirar la curvatura, sin acumular desplazamiento entre cuadros.
@@ -63,6 +64,9 @@ Los materiales son aproximaciones 2D deliberadas. Aún no representan simulació
 - `src/edges.js`: cantos levantados y espesor aparente.
 - `src/edge-math.js`: perfiles de espesor.
 - `src/edge.test.mjs`: pruebas de cantos.
+- `src/layers.js`: acoplamiento de movimiento y contacto visual entre capas.
+- `src/layer-math.js`: funciones puras para transferencia de desplazamiento y caída de influencia.
+- `src/layer.test.mjs`: pruebas de interacción matemática entre capas.
 - `src/elastic.js`: curvatura continua y memoria elástica.
 - `src/elastic-math.js`: funciones puras de curvatura y resorte.
 - `src/elastic.test.mjs`: pruebas de recuperación y anclajes.
@@ -81,7 +85,7 @@ Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor
 - Máscara de recorte basada en la silueta real y mapas de influencia pintables.
 - Mapas de influencia pintables y múltiples líneas de pliegue por pieza.
 - Control de tensión y curvatura de pliegue calibrado con recursos de papel reales.
-- Luces y sombras más precisas entre capas.
+- Luces y sombras más precisas entre capas y calibración visual del contacto con recursos de papel reales.
 - Serialización de escenas y editor visual.
 - Pruebas en Safari iPad y Firefox; no declarar compatibilidad hasta probarlos.
 
