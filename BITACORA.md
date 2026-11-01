@@ -129,3 +129,20 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se corrigieron las duraciones CSS de las animaciones de agua a unidades de tiempo (segundos) antes de publicar.
 - Los recursos siguen siendo SVG vectoriales provisionales. No se usa imagen maestra, arte final, audio, servicios externos ni gasto. No se modificó `main`.
 - **Validación pendiente:** comprobar ejecución de Actions y publicación; después revisar en Firefox y Safari del iPad composición, continuidad de loops, movimiento, velocidad, pausa y rendimiento. No declarar aprobado hasta recibir la comprobación visual del usuario.
+
+
+## 2026-11-01 — Cambio de objetivo: motor de caricaturas para iPad y cierre del proyecto anterior
+
+- **Objetivo:** sustituir el concepto de cuadros de papel recortado/arte en movimiento por un motor y estudio visual para crear caricaturas animadas y microhistorias, manejable desde iPad.
+- **Rama y punto de partida:** feature/living-paper-engine-foundation. La rama se verificó mediante lectura de archivos antes de los cambios; no se modificó main.
+- **Decisión de colaboración:** ChatGPT queda como único asistente de IA del flujo. Claude y otros asistentes no reciben tareas ni participan en la lectura o implementación.
+- **Experiencia deseada:** escenario visual editable, selección de personajes y objetos, panel de propiedades, acciones y animación, línea de tiempo y organización de escenas. Primera meta: seleccionar un elemento desde Safari en iPad, cambiar posición/tamaño, reproducir un movimiento sencillo y revisar el resultado.
+- **Límite documentado:** inicialmente ChatGPT modificará el código en GitHub y el usuario actualizará la vista previa en iPad. No existe aún conexión directa/continua entre ChatGPT y el lienzo de Safari; un puente específico queda como posibilidad futura.
+- **Audio:** música y sonido serán propios de cada microhistoria; la propuesta ambient/lo-fi/chillout de 72 BPM deja de ser requisito.
+- **Archivos nuevos:** docs/direccion-motor-caricaturas-ipad.md.
+- **Archivos actualizados:** INSTRUCCIONES_PARA_IA.md, ARQUITECTURA.md, ESTADO_PROYECTO.md, docs/auditoria-tecnica-2026-10-29.md y docs/partitura-audiovisual-mountains-that-breathe-propuesta-v0-1.md.
+- **Cierre de auditoría:** D1–D9 se cerraron por cambio de alcance. No se implementarán el validador, CI ni ampliaciones del contrato v2 para capas. La auditoría queda como registro histórico; el contrato v2 no está aprobado para el nuevo motor.
+- **Protecciones:** no se eliminó ningún archivo ni prototipo; no se tocó la imagen maestra; no se modificó main; no se fusionó ni desplegó; no se activaron servicios ni gastos.
+- **Pruebas:** se verificó la lectura y actualización de los archivos en GitHub mediante el conector. No se ha implementado ni probado todavía el editor nuevo en Safari/iPad.
+- **Siguiente paso:** auditoría de solo lectura de living-paper-engine/ y prototype/ para clasificar qué código puede reutilizarse en el primer escenario editable.
+
