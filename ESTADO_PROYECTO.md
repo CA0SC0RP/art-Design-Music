@@ -319,3 +319,10 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se conserva el soporte para ambas orientaciones del triángulo, se valida degeneración y la expansión cero devuelve una copia independiente.
 - Se añadieron pruebas que miden la distancia perpendicular real a cada lado en triángulos con ambos sentidos de recorrido.
 - La magnitud aplicada al recorte continúa siendo 0.35 unidades locales. La inspección visual en navegador y Safari/iPad sigue pendiente; esta mejora geométrica no demuestra por sí sola ausencia de halos.
+
+
+## Actualización — 2026-11-01: v0.9.14, operaciones atómicas de pesos
+- Se corrigió `setInfluence()` para preparar y validar una copia de las influencias antes de modificar el vértice. Si la operación deja el total de pesos en cero, excede cuatro huesos o recibe parámetros inválidos, se rechaza sin alterar los pesos originales.
+- Se reforzó la validación del identificador del hueso para impedir cadenas vacías.
+- Se añadieron pruebas para confirmar que rechazar la eliminación del último peso positivo y rechazar una quinta influencia no modifica los datos existentes.
+- Pendiente: confirmar GitHub Actions en esta revisión. La prueba visual de deformación, el rendimiento real y Safari/iPad siguen sin validarse.
