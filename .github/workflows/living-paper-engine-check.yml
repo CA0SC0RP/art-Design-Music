@@ -30,6 +30,9 @@ jobs:
           node --check living-paper-engine/src/motion.js
           node --check living-paper-engine/src/demo.js
           node --check living-paper-engine/src/deformation.js
+          node --check living-paper-engine/src/rigging.js
+          node --check living-paper-engine/src/rigging.test.mjs
+          node --experimental-default-type=module --test living-paper-engine/src/rigging.test.mjs
 
       - name: Verificar estructura del prototipo
         run: |
@@ -45,4 +48,9 @@ jobs:
           grep -q 'meshFoldControl' living-paper-engine/index.html
           grep -q 'influenceBendControl' living-paper-engine/index.html
           grep -q 'enableLocalizedDeformation' living-paper-engine/src/demo.js
+          grep -q 'enablePaperRig' living-paper-engine/src/rigging.js
+          grep -q 'setAnchors' living-paper-engine/src/rigging.js
+          grep -q 'setFolds' living-paper-engine/src/rigging.js
+          grep -q 'anchorStrengthControl' living-paper-engine/index.html
+          grep -q 'controlledFoldAngleControl' living-paper-engine/index.html
           echo "Living Paper Engine: estructura y sintaxis correctas."
