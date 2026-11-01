@@ -361,3 +361,12 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se ampliaron los rangos de posición y escala del inspector para que los cambios de jerarquía y las transformaciones acumuladas sigan siendo editables.
 - Esta textura es provisional; las texturas artesanales de producción y los bordes de papel todavía están pendientes.
 - El cambio pasó las comprobaciones automatizadas de sintaxis e integración; la evaluación visual en Safari/iPad sigue pendiente.
+
+
+
+## 2026-11-01 — Validación de proyectos guardados y migración v1
+
+- Los proyectos recuperados de `localStorage` se validan ahora mediante el mismo módulo seguro utilizado para importar archivos JSON.
+- Se mantiene compatibilidad con proyectos v1/v2, incluyendo poses antiguas sin campo de forma facial; los archivos locales inválidos no sustituyen el preset inicial.
+- Se añadió una prueba de migración v1. La suite alcanza 26 pruebas automatizadas y GitHub Actions completó todos los pasos de validación.
+- Sigue pendiente la comprobación real del flujo guardar/cerrar/abrir/importar/exportar en Safari del iPad.
