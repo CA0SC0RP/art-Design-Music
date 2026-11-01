@@ -428,3 +428,7 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 
 ## 2026-11-01 — Editor de personajes v0.9.12
 Se incorporó expansión conservadora de los polígonos de recorte triangulares (0.35 unidades locales) para mitigar posibles juntas de antialiasing durante el skinning visible. La transformación afín continúa usando los vértices originales. Se agregaron pruebas de geometría y validación de entradas. La mejora queda pendiente de inspección visual: debe comprobarse que no aparezcan halos ni distorsión en los contornos. La validación automatizada se ejecutará mediante GitHub Actions; Safari/iPad sigue pendiente.
+
+
+## 2026-11-01 — Editor de personajes v0.9.13
+Se refinó la expansión de recortes triangulares para usar offsets paralelos de distancia uniforme y no una expansión radial aproximada. Se agregaron pruebas de distancia perpendicular para ambos sentidos de orientación y de copia independiente con expansión cero. Pendiente evaluación visual de costuras, halos y bordes en navegador/Safari del iPad.
