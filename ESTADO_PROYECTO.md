@@ -176,3 +176,11 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Commit de código: `3c2d7366a4ae316dcb9b7efe87504f5eeb186c4c`.
 - Verificación estática: sintaxis JavaScript correcta, sin IDs duplicados ni referencias DOM inexistentes. No se ha ejecutado la interfaz en navegador ni validado el solver visualmente en Safari/iPad.
 - No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
+
+
+## Actualización — 2026-11-01: editor articulado v0.6
+- El editor de personajes avanzó a v0.6 con objetivos IK arrastrables directamente en el lienzo, recálculo durante el gesto y controles de fijar/liberar. Los objetivos se conservan por cadena durante la sesión, pero aún no se serializan en el proyecto.
+- El detalle técnico y las limitaciones están en `docs/prototipo-editor-articulado-personajes-v0-1.md`.
+- Se verificó estáticamente la sintaxis JavaScript, la ausencia de IDs DOM duplicados y la ausencia de referencias a IDs inexistentes. No se ejecutó navegador ni se probó en Safari/iPad; la interacción táctil sigue pendiente de validación real.
+- Rama de trabajo: `feature/living-paper-engine-foundation`. No se modificó `main`, no hubo merge, PR ni despliegue; no se añadieron dependencias ni gastos.
+- Próximo paso: validación manual de las cuatro cadenas IK, los límites, el alcance, los dos sentidos de flexión y el bloqueo/liberación en Safari del iPad.
