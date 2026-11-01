@@ -144,3 +144,13 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - Se conserva la migración de proyectos v1/v2, incluyendo pivotes, límites y poses antiguas; las poses que no almacenaban forma facial heredan la forma actual de cada pieza.
 - Se añadió una prueba explícita de migración de proyectos v1. La suite alcanza 26 pruebas automatizadas y GitHub Actions terminó correctamente.
 - La comprobación automática no reemplaza la validación manual del guardado, recarga, importación y exportación en Safari/iPad.
+
+
+
+## Iteración v0.9.8 — núcleo inicial de deformación 2D (skinning)
+
+- Se creó `mesh-skinning.js`, un módulo matemático independiente para deformación 2D por mezcla lineal de influencias (Linear Blend Skinning).
+- El módulo construye matrices de deformación a partir de matrices mundiales de referencia y actuales, invierte matrices afines, transforma vértices y combina hasta cuatro influencias por vértice con pesos normalizados.
+- Se establecieron límites defensivos iniciales: 50.000 vértices, 100 huesos y cuatro influencias por vértice. Se rechazan matrices singulares, huesos inexistentes, pesos negativos/cero, coordenadas no finitas y entradas fuera de formato; la malla de entrada no se modifica.
+- Se añadieron diez pruebas automatizadas para identidad, rotación, mezcla de pesos, construcción de matrices, matrices singulares, referencias inválidas y preservación de datos.
+- El módulo es todavía un núcleo de cálculo independiente: no está conectado a la interfaz ni a un editor de malla/pesos. La integración visual se hará después de diseñar el flujo de edición de vértices y probarlo en Safari/iPad.
