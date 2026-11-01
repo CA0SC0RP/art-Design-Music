@@ -238,3 +238,17 @@ test("el broadphase reduce candidatos en una malla grande sin perder contactos",
   assert.equal(candidates.length, exact.length);
   assert.ok(candidates.length < triangles.length / 10);
 });
+
+
+test("las consultas sucesivas reutilizan marcas sin filtrar candidatos de búsquedas anteriores", async () => {
+  const { buildTriangleSpatialIndex, queryTriangleSpatialIndex } = await import("./collision-math.js");
+  const triangles = buildMeshTriangles(quadMesh({ columns: 10, rows: 8 }));
+  const index = buildTriangleSpatialIndex(triangles, 16);
+  const left = queryTriangleSpatialIndex(index, { minX: 0, maxX: 20, minY: 0, maxY: 20 });
+  const right = queryTriangleSpatialIndex(index, { minX: 70, maxX: 100, minY: 40, maxY: 70 });
+  const leftAgain = queryTriangleSpatialIndex(index, { minX: 0, maxX: 20, minY: 0, maxY: 20 });
+  assert.ok(left.length > 0 && right.length > 0);
+  assert.equal(leftAgain.length, left.length);
+  assert.ok(left.every(triangle => leftAgain.includes(triangle)));
+  assert.ok(right.every(triangle => !leftAgain.includes(triangle)) || right.some(triangle => leftAgain.includes(triangle)));
+});
