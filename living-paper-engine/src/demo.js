@@ -1,4 +1,4 @@
-import { LivingPaperEngine, PaperPiece, PaperJoint, paperCut } from "./engine.js";
+import { LivingPaperEngine, PaperPiece, PaperJoint, PaperFlex, paperCut } from "./engine.js";
 import { MotionPath, smoothStep } from "./motion.js";
 
 const host=document.querySelector("#stage");
@@ -34,6 +34,7 @@ const leafJoint=branchJoint.addChild(new PaperJoint({id:"leaf",x:0,y:-65,angle:1
 branchJoint.addChild(new PaperJoint({id:"small-leaf",x:0,y:-38,angle:-10,minAngle:-35,maxAngle:35,sway:{amplitude:13,period:3.4,phase:2.2},draw:(g,s,style)=>{
   cut(g,s,[[0,0],[-18,-16],[-40,-14],[-48,-3],[-26,8],[-8,7]],0x638e6b,style);
 }}));
+const flexibleStem=engine.addFlex(new PaperFlex({id:"flexible-stem",x:55,y:-70,length:82,width:7,bend:0,maxBend:28,fill:0x6f9871,sway:{amplitude:13,period:4.4,phase:.8}}),tree.container);
 const bird=engine.addPiece(new PaperPiece({id:"bird",name:"Ave de prueba",depth:3,x:170,y:230,draw:(g,s,style)=>{
   const body=[[-30,0],[-10,-9],[10,-5],[30,5],[12,13],[-12,10]];
   cut(g,s,body,0x3c5960,style);
@@ -47,14 +48,16 @@ const material=document.querySelector("#materialControl"),thickness=document.que
 const scale=document.querySelector("#scaleControl"),rotation=document.querySelector("#rotationControl"),depth=document.querySelector("#depthControl"),speed=document.querySelector("#speedControl");
 const selectedName=document.querySelector("#selectedName");
 const jointSelect=document.querySelector("#jointSelect"),jointAngle=document.querySelector("#jointAngleControl");
+const flexBend=document.querySelector("#flexBendControl");
 const joints={branch:branchJoint,leaf:leafJoint};
 let selectedJoint=branchJoint;
 let selected=mountain;
 function choose(id){selected=engine.getPiece(id);select.value=id;selectedName.textContent=selected.name;scale.value=Math.round(selected.baseScale*100);rotation.value=Math.round(selected.container.rotation*180/Math.PI);depth.value=selected.depth;material.value=selected.material;thickness.value=selected.thickness;shadow.value=Math.round(selected.shadowStrength*100);syncLabels();}
-function syncLabels(){document.querySelector("#jointAngleValue").textContent=Math.round(selectedJoint.angle)+"°";document.querySelector("#scaleValue").textContent=scale.value+"%";document.querySelector("#rotationValue").textContent=rotation.value+"°";document.querySelector("#depthValue").textContent=depth.value;document.querySelector("#thicknessValue").textContent=thickness.value;document.querySelector("#shadowValue").textContent=shadow.value+"%";document.querySelector("#speedValue").textContent=(speed.value/100).toFixed(1)+"×";}
+function syncLabels(){document.querySelector("#flexBendValue").textContent=Math.round(flexibleStem.bend)+"°";document.querySelector("#jointAngleValue").textContent=Math.round(selectedJoint.angle)+"°";document.querySelector("#scaleValue").textContent=scale.value+"%";document.querySelector("#rotationValue").textContent=rotation.value+"°";document.querySelector("#depthValue").textContent=depth.value;document.querySelector("#thicknessValue").textContent=thickness.value;document.querySelector("#shadowValue").textContent=shadow.value+"%";document.querySelector("#speedValue").textContent=(speed.value/100).toFixed(1)+"×";}
 select.addEventListener("change",()=>choose(select.value));
 jointSelect.addEventListener("change",()=>{selectedJoint=joints[jointSelect.value];jointAngle.value=Math.round(selectedJoint.angle);syncLabels();});
 jointAngle.addEventListener("input",()=>{selectedJoint.setAngle(Number(jointAngle.value));syncLabels();});
+flexBend.addEventListener("input",()=>{flexibleStem.setBend(Number(flexBend.value));syncLabels();});
 scale.addEventListener("input",()=>{selected.setScale(Number(scale.value)/100);syncLabels();});
 rotation.addEventListener("input",()=>{selected.setRotation(Number(rotation.value));syncLabels();});
 depth.addEventListener("input",()=>{selected.setDepth(Number(depth.value));engine.sortDepth();syncLabels();});
@@ -63,7 +66,7 @@ thickness.addEventListener("input",()=>{selected.setThickness(Number(thickness.v
 shadow.addEventListener("input",()=>{selected.setShadowStrength(Number(shadow.value)/100);syncLabels();});
 speed.addEventListener("input",()=>{engine.setSpeed(Number(speed.value)/100);syncLabels();});
 document.querySelector("#pauseButton").addEventListener("click",event=>{engine.setPaused(!engine.paused);event.currentTarget.textContent=engine.paused?"Reanudar":"Pausar";});
-document.querySelector("#resetButton").addEventListener("click",()=>{mountain.setScale(1);mountain.setRotation(0);mountain.setDepth(5);mountain.setPosition(640,360);hill.setScale(1);hill.setRotation(0);hill.setDepth(4);hill.setPosition(640,470);tree.setScale(1);tree.setRotation(0);tree.setDepth(2);tree.setPosition(330,450);bird.setScale(1);bird.setRotation(0);bird.setDepth(3);bird.motion.time=0;branchJoint.setSway({amplitude:7,period:5,phase:.4});leafJoint.setSway({amplitude:17,period:2.8,phase:1.1});jointSelect.value="branch";selectedJoint=branchJoint;jointAngle.value=-7;for(const p of [mountain,hill,tree,bird]){p.setMaterial("matte");p.setThickness(4);p.setShadowStrength(.22);}speed.value=100;engine.setSpeed(1);choose("mountain");});
+document.querySelector("#resetButton").addEventListener("click",()=>{mountain.setScale(1);mountain.setRotation(0);mountain.setDepth(5);mountain.setPosition(640,360);hill.setScale(1);hill.setRotation(0);hill.setDepth(4);hill.setPosition(640,470);tree.setScale(1);tree.setRotation(0);tree.setDepth(2);tree.setPosition(330,450);bird.setScale(1);bird.setRotation(0);bird.setDepth(3);bird.motion.time=0;flexibleStem.setSway({amplitude:13,period:4.4,phase:.8});flexBend.value=0;branchJoint.setSway({amplitude:7,period:5,phase:.4});leafJoint.setSway({amplitude:17,period:2.8,phase:1.1});jointSelect.value="branch";selectedJoint=branchJoint;jointAngle.value=-7;for(const p of [mountain,hill,tree,bird]){p.setMaterial("matte");p.setThickness(4);p.setShadowStrength(.22);}speed.value=100;engine.setSpeed(1);choose("mountain");});
 choose("mountain");
 status.textContent="PixiJS 8 · renderer activo · 4 piezas independientes";
 window.addEventListener("beforeunload",()=>engine.destroy());
