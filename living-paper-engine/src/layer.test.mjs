@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { layerFalloff, resolveLayerResponse, sampleDisplacement, contactShadowOffset } from "./layer-math.js";
 import { enableLayerInteraction } from "./layers.js";
 import { buildLayerGroupLinks } from "./layer-groups.js";
+import { resolveContactConstraint, sampleMeshPoint } from "./collision-math.js";
 
 test("la influencia cae suavemente hacia el borde", () => {
   assert.equal(layerFalloff(0.5, 0.5, 0.2), 1);
@@ -27,7 +28,7 @@ test("el muestreo bilineal conserva el desplazamiento de una malla coincidente",
   assert.deepEqual(sample, { x: 2, y: -2 });
 });
 
-function makeMesh(id, { source = false } = {}) {
+function makeMesh(id, { source = false, sourceLift = 0 } = {}) {
   const columns = 2, rows = 2, base = [];
   for (let y = 0; y <= rows; y++) for (let x = 0; x <= columns; x++) base.push(x * 10, y * 10);
   const baseVertices = new Float32Array(base);
@@ -42,6 +43,7 @@ function makeMesh(id, { source = false } = {}) {
       this.elapsed = elapsed;
       this.vertices.set(this.baseVertices);
       if (source) this.vertices[(1 * (columns + 1) + 1) * 2] += 10;
+      if (sourceLift) this.vertices[(1 * (columns + 1) + 1) * 2 + 1] += sourceLift;
       this.shadowVertices.set(this.vertices);
       this.mesh.vertices = this.vertices;
       this.shadowMesh.vertices = this.shadowVertices;
@@ -108,4 +110,43 @@ test("un grupo propaga en cadena de la capa frontal a la posterior", () => {
 
 test("un grupo rechaza una pila con menos de dos capas", () => {
   assert.throws(() => buildLayerGroupLinks([{ layers: [makeMesh("solo")] }]), /al menos dos capas/);
+});
+
+test("el contacto calcula penetración y corrección acotada sobre el eje normal", () => {
+  const result = resolveContactConstraint({ x: 4, y: 10 }, { x: 4, y: 4 }, {
+    normalX: 0, normalY: 1, minGap: 2, stiffness: 1, maxCorrection: 4
+  });
+  assert.equal(result.gap, -6);
+  assert.equal(result.penetration, 8);
+  assert.equal(result.correction, 4);
+  assert.deepEqual({ x: result.x, y: result.y }, { x: 0, y: 4 });
+  assert.equal(result.touching, true);
+});
+
+test("el contacto no modifica puntos que ya respetan la separación", () => {
+  const result = resolveContactConstraint({ x: 0, y: 0 }, { x: 0, y: 5 }, { minGap: 2 });
+  assert.equal(result.correction, 0);
+  assert.equal(result.touching, false);
+});
+
+test("el muestreo de contacto interpola mallas con distinta resolución", () => {
+  const points = new Float32Array([0,0, 10,0, 0,10, 10,10]);
+  assert.deepEqual(sampleMeshPoint(points, 1, 1, 0.5, 0.5), { x: 5, y: 5 });
+});
+
+test("el solver evita la penetración de una hoja sin acumular correcciones", () => {
+  const source = makeMesh("front", { sourceLift: 20 });
+  const target = makeMesh("back");
+  const engine = { paused: false, update(dt) { source.update(dt); target.update(dt); } };
+  enableLayerInteraction(engine, [{
+    source, target, coupling: 0, clearance: 6, contactGap: 2,
+    contactStiffness: 0.5, maxCorrection: 8
+  }]);
+  const centerY = ((1 * 3 + 1) * 2) + 1;
+  engine.update(1 / 60);
+  const first = target.vertices[centerY];
+  assert.ok(first > 10);
+  assert.equal(engine.layerInteractions[0].lastContact.activeVertices, 1);
+  engine.update(1 / 60);
+  assert.ok(Math.abs(target.vertices[centerY] - first) < 1e-6);
 });
