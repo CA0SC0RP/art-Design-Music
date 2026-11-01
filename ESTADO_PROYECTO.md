@@ -222,7 +222,7 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 ## Actualización — 2026-11-01: importación de proyectos JSON
 - El editor incorpora **Importar JSON** para recuperar proyectos exportados y transferirlos entre dispositivos/navegadores.
 - El módulo de importación normaliza formatos v1/v2 y valida estructura, jerarquía, identificadores, formas, colores, transformaciones y poses. Los archivos mayores de 10 MB se rechazan y el texto importado se escapa antes de insertarse en HTML.
-- Se amplió GitHub Actions: validación sintáctica de módulos, 25 pruebas unitarias entre IK, importación, geometría jerárquica y expresiones faciales, comprobación de sintaxis del JavaScript integrado y revisión de integración. La ejecución del workflow terminó correctamente.
+- Se amplió GitHub Actions: validación sintáctica de módulos, 26 pruebas unitarias entre IK, importación, geometría jerárquica y expresiones faciales, comprobación de sintaxis del JavaScript integrado y revisión de integración. La ejecución del workflow terminó correctamente.
 - Falta probar el flujo real de selección e importación de archivo en Safari del iPad; la validación automatizada no sustituye esa prueba.
 
 
@@ -248,3 +248,10 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Las piezas vectoriales ahora combinan sombra proyectada y grano SVG tenue para una primera aproximación a la materialidad de papel. El efecto es provisional y aún debe inspeccionarse visualmente en navegador.
 - Se ampliaron los rangos de posición y escala del inspector para facilitar rigs con jerarquías y transformaciones acumuladas.
 - La suite se mantiene en 25 pruebas automatizadas; los últimos cambios de filtro y controles requieren completar su ejecución CI y validación visual en Safari/iPad.
+
+
+
+## Actualización — 2026-11-01: validación del guardado local
+- Los proyectos recuperados de `localStorage` ahora se validan antes de sustituir el preset inicial. Se conserva la migración de formatos v1/v2 y de poses antiguas sin forma facial.
+- La suite alcanza 26 pruebas automatizadas y el workflow de GitHub Actions completó correctamente sintaxis, pruebas e integración.
+- Falta comprobar manualmente en Safari/iPad el ciclo guardar, recargar, exportar e importar.
