@@ -7,6 +7,7 @@ on:
     paths:
       - "prototype/character-editor-v01/**"
       - "tests/ik-solver.test.js"
+      - "tests/project-io.test.js"
       - ".github/workflows/character-editor-check.yml"
   workflow_dispatch:
 
@@ -28,11 +29,16 @@ jobs:
       - name: Validar sintaxis del solver IK
         run: node --check prototype/character-editor-v01/ik-solver.js
 
-      - name: Ejecutar pruebas del solver IK
-        run: node --test tests/ik-solver.test.js
+      - name: Validar módulo de importación de proyectos
+        run: node --check prototype/character-editor-v01/project-io.js
+
+      - name: Ejecutar pruebas automatizadas
+        run: node --test tests/ik-solver.test.js tests/project-io.test.js
 
       - name: Comprobar que el editor carga el solver externo
         run: |
           grep -q 'ik-solver.js' prototype/character-editor-v01/index.html
           grep -q 'ADM_IK.solveTwoBone' prototype/character-editor-v01/index.html
+          grep -q 'project-io.js' prototype/character-editor-v01/index.html
+          grep -q 'ADM_ProjectIO.normalizeProject' prototype/character-editor-v01/index.html
           echo "Editor de personajes: comprobaciones estructurales correctas."
