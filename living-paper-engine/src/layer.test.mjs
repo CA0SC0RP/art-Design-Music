@@ -195,3 +195,18 @@ test("el contacto permanece estable con rotación y escala no uniforme anidadas"
   for (let i = 0; i < first.length; i++) assert.ok(Math.abs(target.vertices[i] - first[i]) < 1e-5);
   assert.ok(engine.layerInteractions[0].lastContact.indexedCells > 0);
 });
+
+
+test("la deformación propagada respeta rotación y escala de la capa fuente", () => {
+  const source = makeMesh("front", { source: true });
+  const target = makeMesh("back");
+  source.container.scale = { x: 2, y: 1 };
+  source.container.rotation = Math.PI / 2;
+  target.container.position.y = 200;
+  const engine = { paused: false, update(dt) { source.update(dt); target.update(dt); } };
+  enableLayerInteraction(engine, [{ source, target, coupling: 0.4, clearance: 0, contactRange: 1 }]);
+  engine.update(1 / 60);
+  const center = (1 * 3 + 1) * 2;
+  assert.ok(Math.abs(target.vertices[center] - 10) < 1e-5);
+  assert.ok(Math.abs(target.vertices[center + 1] - 18) < 1e-5);
+});
