@@ -135,3 +135,12 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - Se ampliaron los rangos de los controles de posición y escala para facilitar el reparentado y la composición de rigs con transformaciones acumuladas.
 - Es una primera aproximación visual de materialidad; todavía no sustituye texturas de cartulina de alta resolución, cantos de papel, biseles ni un sistema de materiales editable.
 - GitHub Actions completó las comprobaciones automatizadas de la iteración anterior; el cambio visual requiere inspección en navegador y Safari/iPad.
+
+
+
+## Iteración v0.9.7 — validación del guardado local y migración
+
+- El proyecto guardado en `localStorage` ahora pasa por el mismo normalizador que los archivos importados antes de cargarse. Los datos locales dañados o incompatibles no sustituyen el preset seguro inicial.
+- Se conserva la migración de proyectos v1/v2, incluyendo pivotes, límites y poses antiguas; las poses que no almacenaban forma facial heredan la forma actual de cada pieza.
+- Se añadió una prueba explícita de migración de proyectos v1. La suite alcanza 26 pruebas automatizadas y GitHub Actions terminó correctamente.
+- La comprobación automática no reemplaza la validación manual del guardado, recarga, importación y exportación en Safari/iPad.
