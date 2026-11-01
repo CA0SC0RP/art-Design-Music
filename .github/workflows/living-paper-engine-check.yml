@@ -40,6 +40,8 @@ jobs:
           node --check living-paper-engine/src/layer-math.js
           node --check living-paper-engine/src/layer.test.mjs
           node --experimental-default-type=module --test living-paper-engine/src/layer.test.mjs
+          node --check living-paper-engine/src/collision.test.mjs
+          node --experimental-default-type=module --test living-paper-engine/src/collision.test.mjs
           grep -q "enableLayerGroups" living-paper-engine/src/layer-groups.js
           grep -q "enableLayerInteraction" living-paper-engine/src/layers.js
           grep -q "resolveContactConstraint" living-paper-engine/src/collision-math.js
