@@ -68,7 +68,8 @@ for (const resolution of [32, 64, 128]) {
       Math.max(max, Math.abs(value - target.baseVertices[index])), 0);
 
     assert.equal(triangleCount, resolution * resolution * 2);
-    assert.equal(stats.testedVertices, (resolution + 1) ** 2);
+    // pointInPolygon intentionally excludes the exact silhouette boundary, so only interior vertices are tested.
+    assert.equal(stats.testedVertices, resolution ** 2);
     assert.ok(stats.testedEdges > resolution * resolution * 2);
     assert.ok(stats.indexedCells > 0);
     assert.ok(vertexCandidateRatio < 0.1, `búsqueda de vértices demasiado amplia: ${vertexCandidateRatio}`);
