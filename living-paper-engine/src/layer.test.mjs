@@ -285,3 +285,53 @@ test("el contacto transformado mantiene estabilidad con ambas capas bajo el mism
     assert.ok(Math.abs(target.vertices[i] - first[i]) < 1e-5);
   }
 });
+
+
+test("destruir la interacción restaura geometría, sombra y métodos originales", () => {
+  const source = makeMesh("front", { source: true });
+  const target = makeMesh("back");
+  const engine = {
+    paused: false,
+    destroyed: false,
+    update(dt) { source.update(dt); target.update(dt); },
+    destroy() { this.destroyed = true; }
+  };
+  const originalUpdate = engine.update;
+  const originalDestroy = engine.destroy;
+  enableLayerInteraction(engine, [{ source, target, coupling: 0.4, clearance: 6, maxDisplacement: 20 }]);
+  engine.update(1 / 60);
+  assert.notDeepEqual(target.vertices, target.baseVertices);
+  engine.destroyLayerInteractions();
+  assert.equal(engine.update, originalUpdate);
+  assert.equal(engine.destroy, originalDestroy);
+  assert.equal(engine.setLayerInteraction, undefined);
+  assert.equal(engine.getLayerInteractions, undefined);
+  assert.equal(engine.layerInteractions, undefined);
+  assert.equal(target.container.position.y, 20);
+  assert.deepEqual([...target.vertices], [...target.baseVertices]);
+  assert.equal(target.shadowMesh.alpha, 0.2);
+  assert.equal(target.shadowVertices[0], target.baseVertices[0] + 4);
+  assert.equal(target.shadowVertices[1], target.baseVertices[1] + 5);
+  engine.destroy();
+  assert.equal(engine.destroyed, true);
+});
+
+test("destruir el motor ejecuta la limpieza de contactos antes de destruir recursos", () => {
+  const source = makeMesh("front", { source: true });
+  const target = makeMesh("back");
+  const engine = {
+    paused: false,
+    destroyed: false,
+    update(dt) { source.update(dt); target.update(dt); },
+    destroy() { this.destroyed = true; }
+  };
+  const originalDestroy = engine.destroy;
+  enableLayerInteraction(engine, [{ source, target, coupling: 0.4, clearance: 6 }]);
+  engine.update(1 / 60);
+  engine.destroy();
+  assert.equal(engine.destroyed, true);
+  assert.equal(engine.destroy, originalDestroy);
+  assert.equal(engine.update.name, "update");
+  assert.equal(engine.layerInteractions, undefined);
+  assert.deepEqual([...target.vertices], [...target.baseVertices]);
+});
