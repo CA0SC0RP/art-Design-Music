@@ -39,7 +39,9 @@ function makeMesh(id, { source = false, sourceLift = 0 } = {}) {
     container: { position: { y: 20 } },
     mesh: { vertices }, shadowMesh: { vertices: shadowVertices, alpha: 0.2 },
     elapsed: 0,
+    updateCount: 0,
     update(elapsed) {
+      this.updateCount++;
       this.elapsed = elapsed;
       this.vertices.set(this.baseVertices);
       if (source) this.vertices[(1 * (columns + 1) + 1) * 2] += 10;
@@ -61,6 +63,7 @@ test("la capa receptora sigue la deformación sin acumular deriva", () => {
   enableLayerInteraction(engine, [{ source, target, coupling: 0.4, clearance: 6, maxDisplacement: 20 }]);
   const center = (1 * 3 + 1) * 2;
   engine.update(1 / 60);
+  assert.equal(target.updateCount, 1, "la capa receptora solo debe actualizarse una vez por frame");
   assert.ok(Math.abs(target.vertices[center] - 14) < 1e-6);
   const first = target.vertices[center];
   engine.update(1 / 60);
@@ -172,4 +175,23 @@ test("la fricción conserva el desplazamiento tangencial de reposo", () => {
     normalX: 0, normalY: 1, minGap: 0, tangentRestGap: -8, friction: 1
   });
   assert.ok(Math.abs(result.frictionCorrection) < 1e-12);
+});
+
+
+test("el contacto permanece estable con rotación y escala no uniforme anidadas", () => {
+  const source = makeMesh("front", { sourceLift: 20 });
+  const target = makeMesh("back");
+  const parent = { position: { x: 30, y: -12 }, scale: { x: 1.3, y: 0.8 }, rotation: 0.31, pivot: { x: 0, y: 0 }, parent: null };
+  target.container.parent = parent;
+  target.container.position.x = 4;
+  target.container.position.y = 20;
+  target.container.scale = { x: 0.9, y: 1.2 };
+  target.container.rotation = -0.17;
+  const engine = { paused: false, update(dt) { source.update(dt); target.update(dt); } };
+  enableLayerInteraction(engine, [{ source, target, coupling: 0, clearance: 6, contactGap: 2, contactStiffness: 0.5, maxCorrection: 8 }]);
+  engine.update(1 / 60);
+  const first = new Float32Array(target.vertices);
+  engine.update(1 / 60);
+  for (let i = 0; i < first.length; i++) assert.ok(Math.abs(target.vertices[i] - first[i]) < 1e-5);
+  assert.ok(engine.layerInteractions[0].lastContact.indexedCells > 0);
 });
