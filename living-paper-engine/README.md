@@ -41,7 +41,7 @@ Los materiales son aproximaciones 2D deliberadas. Aún no representan simulació
 
 ## Prueba manual
 
-Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor y sombra. Probar pausa/reanudación y velocidad global.
+Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor y sombra. Probar las articulaciones, la flexión del tallo, la ondulación y el pliegue de la hoja de malla, además de pausa y velocidad global.
 
 ## Pendiente
 
