@@ -299,3 +299,14 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se añadieron estilos de foco visible para botones, campos y selectores.
 - **Verificación estática:** JavaScript pasó compilación sintáctica con `new Function`; no se encontraron IDs DOM duplicados; balance de llaves CSS revisado. No se ejecutó navegador ni se probó todavía en Safari del iPad.
 - **Siguiente paso:** prueba táctil manual en Safari: seleccionar y mover piezas, arrastrar pivotes y los cuatro objetivos IK, fijar/liberar, usar sliders, guardar y exportar JSON. Mouse queda para una validación posterior.
+
+
+## 2026-11-01 — Solver IK v0.9: restricciones anatómicas iniciales
+
+- Se extrajo el cálculo IK de dos segmentos a un módulo independiente `prototype/character-editor-v01/ik-solver.js`.
+- Se añadió validación de datos finitos, longitudes, alcance geométrico y sentido de flexión.
+- Se limitaron inicialmente hombro/cadera a ±165° y codo/rodilla a una flexión direccional máxima de 150°, respetando cualquier límite individual más estricto ya configurado.
+- El solver calcula y valida la solución antes de aplicar cambios, para evitar dejar articulaciones parcialmente actualizadas si el objetivo es inválido.
+- Se añadió `tests/ik-solver.test.js` con pruebas automatizadas basadas en Node.js, sin dependencias externas. La ejecución de la suite en Codespaces todavía debe confirmarse.
+- Cambios guardados en la rama `feature/living-paper-engine-foundation`; no se modificó `main`, no hubo merge, PR, despliegue ni gastos.
+- Pendiente inmediato: ejecutar la suite en Codespaces y después preparar una prueba táctil sencilla en Safari del iPad. No se declara validación de navegador.
