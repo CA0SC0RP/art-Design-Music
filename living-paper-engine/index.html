@@ -71,6 +71,17 @@
         <div class="control-heading"><label for="shadowControl">Intensidad de sombra</label><output id="shadowValue">22%</output></div>
         <input id="shadowControl" type="range" min="0" max="60" value="22">
       </div>
+      <div class="control-group articulation-panel">
+        <strong class="control-section-title">ARTICULACIÓN</strong>
+        <label for="jointSelect">Articulación seleccionada</label>
+        <select id="jointSelect">
+          <option value="branch">Rama flexible</option>
+          <option value="leaf">Hoja terminal</option>
+        </select>
+        <div class="control-heading"><label for="jointAngleControl">Ángulo de articulación</label><output id="jointAngleValue">-7°</output></div>
+        <input id="jointAngleControl" type="range" min="-40" max="40" value="-7">
+        <p class="control-hint">Al mover el control, la articulación pasa a modo manual. Reiniciar recupera el movimiento natural.</p>
+      </div>
       <div class="control-group">
         <div class="control-heading"><label for="speedControl">Velocidad global</label><output id="speedValue">1.0×</output></div>
         <input id="speedControl" type="range" min="50" max="180" value="100">
