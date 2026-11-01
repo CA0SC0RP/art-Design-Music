@@ -261,5 +261,11 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 ## Actualización — 2026-11-01: núcleo inicial de skinning 2D
 - Se creó `prototype/character-editor-v01/mesh-skinning.js`, un módulo independiente para deformar vértices 2D mediante Linear Blend Skinning, con matrices afines, matrices de referencia/actuales y hasta cuatro influencias normalizadas por vértice.
 - Límites defensivos iniciales: 50.000 vértices, 100 huesos y cuatro influencias. Se validan matrices, pesos, coordenadas y referencias antes de deformar; no se modifica la malla original.
-- La suite queda en 36 pruebas automatizadas (12 IK, 10 importación/migración, 4 geometría jerárquica y 10 skinning). El módulo todavía no está conectado a la interfaz; falta diseñar la edición visual de malla y pesos y validarla en Safari/iPad.
+- La suite queda en 38 pruebas automatizadas (12 IK, 10 importación/migración, 6 geometría jerárquica y 10 skinning). El módulo todavía no está conectado a la interfaz; falta diseñar la edición visual de malla y pesos y validarla en Safari/iPad.
 - El prototipo se identifica ahora como v0.9.8. No es todavía alfa/beta formal ni versión 1.0.
+
+
+
+### Complemento — matrices mundiales del rig
+- `rig-geometry.js` expone matrices afines mundiales que acumulan traslación, rotación, escala y pivotes de cada pieza. Estas matrices sirven como entrada coherente para el cálculo de deformación entre pose de referencia y pose actual.
+- Se añadieron dos pruebas de matrices mundiales; la suite queda en 38 pruebas automatizadas. GitHub Actions completó la ejecución correctamente.
