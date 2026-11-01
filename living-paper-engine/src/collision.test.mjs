@@ -190,3 +190,13 @@ test("los segmentos colineales separados no generan contactos", () => {
   };
   assert.deepEqual(segmentTriangleContacts({ x: 12, y: 0 }, { x: 18, y: 0 }, [triangle]), []);
 });
+
+
+test("la triangulación conserva celdas que cruzan parcialmente el límite de silueta", () => {
+  const mesh = quadMesh({
+    columns: 1, rows: 1,
+    shape: [[0.85,0.05],[0.95,0.05],[0.9,0.15]]
+  });
+  const triangles = buildMeshTriangles(mesh);
+  assert.equal(triangles.length, 2);
+});
