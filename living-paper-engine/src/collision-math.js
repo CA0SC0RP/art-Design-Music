@@ -267,8 +267,9 @@ function mix(a,b,t){return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t};}
 function clamp(value,min,max){return Math.max(min,Math.min(max,Number.isFinite(Number(value))?Number(value):min));}
 
 /** Return robust segment/triangle boundary crossings in world coordinates. */
-export function segmentTriangleContacts(start, end, triangles, epsilon = 1e-7) {
-  const contacts = [];
+export function segmentTriangleContacts(start, end, triangles, epsilon = 1e-7, scratch = null) {
+  const contacts = scratch?.contacts || [];
+  contacts.length = 0;
   const minX = Math.min(start.x, end.x), maxX = Math.max(start.x, end.x);
   const minY = Math.min(start.y, end.y), maxY = Math.max(start.y, end.y);
   for (const triangle of triangles) {
