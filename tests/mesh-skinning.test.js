@@ -49,3 +49,15 @@ test("calcula la transformación afín que lleva un triángulo a su versión def
 test("rechaza triángulos degenerados al construir el mapeo",()=>{
  const r=skin.triangleTransform([{x:0,y:0},{x:1,y:1},{x:2,y:2}],[{x:0,y:0},{x:1,y:0},{x:0,y:1}]);assert.equal(r.ok,false);
 });
+
+test("dos triángulos vecinos conservan la misma posición en sus vértices compartidos",()=>{
+ const a=[{x:0,y:0},{x:10,y:0},{x:10,y:10}],b=[{x:0,y:0},{x:10,y:10},{x:0,y:10}];
+ const moved=[{x:3,y:-2},{x:16,y:1},{x:14,y:15},{x:-2,y:12}];
+ const ta=skin.triangleTransform(a,[moved[0],moved[1],moved[2]]),tb=skin.triangleTransform(b,[moved[0],moved[2],moved[3]]);
+ assert.equal(ta.ok,true);assert.equal(tb.ok,true);
+ for(const p of [a[0],a[2]]){const x=skin.transformPoint(ta.matrix,p),y=skin.transformPoint(tb.matrix,p);close(x.x,y.x);close(x.y,y.y);}
+});
+test("el mapeo triangular admite traslación pura sin alterar distancias",()=>{
+ const src=[{x:-4,y:2},{x:8,y:2},{x:1,y:11}],dst=src.map(p=>({x:p.x+17,y:p.y-9})),r=skin.triangleTransform(src,dst);
+ assert.equal(r.ok,true);assert.deepEqual(r.matrix,[1,0,0,1,17,-9]);
+});
