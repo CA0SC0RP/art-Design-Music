@@ -266,3 +266,15 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Commit de código: `3c2d7366a4ae316dcb9b7efe87504f5eeb186c4c`.
 - Verificación estática: sintaxis JavaScript correcta, sin IDs duplicados ni referencias DOM inexistentes. No se ha ejecutado la interfaz en navegador ni validado el solver visualmente en Safari/iPad.
 - No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
+
+
+## 2026-11-01 — Editor de personajes v0.6: objetivos IK manipulables en el lienzo
+- Se añadieron marcadores SVG para los objetivos de las cuatro cadenas IK del preset Personaje (brazo izquierdo/derecho y pierna izquierda/derecha).
+- El marcador se puede tocar y arrastrar directamente en el lienzo. Durante el movimiento, el puntero se convierte a coordenadas locales del torso y el solver recalcula las articulaciones sin transición retardada.
+- Se añadieron controles para fijar/liberar el objetivo. Cada cadena conserva su objetivo en memoria al cambiar de selección; los objetivos aún no se persisten en el proyecto ni en el JSON.
+- El solver conserva la última pose válida cuando el objetivo se sale del alcance o la solución viola los límites. El modelo continúa siendo una cadena rígida de dos segmentos y mantiene las precondiciones geométricas documentadas.
+- Se actualizó el documento técnico a v0.6. Código: `prototype/character-editor-v01/index.html`; documentación: `docs/prototipo-editor-articulado-personajes-v0-1.md`.
+- Commits de código de esta etapa: `062981972060aaaec5d5961ac6500dce1657db76`, `9f54d9fe5ea2f879e617ab0e8ef746456d6f997e`, `8cf1153defcad22af77b4631f7bb04a5abad80f7`, `d431986a46a2d9b815c2c8c3cb765ce5f76cb530`. Documento: `22d58ff87cbbd45cd2a9b149d5945bff6cb93046`.
+- **Verificación:** se revisó el código fuente y se confirmó que los controles y eventos están presentes. No se ha ejecutado el editor en navegador ni probado el arrastre táctil, el solver visual o el bloqueo en Safari/iPad; no se declara validación funcional.
+- No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
+- Siguiente paso: validación manual en Safari del iPad con las cuatro cadenas, objetivos dentro/fuera del alcance, ambos lados de flexión y fijar/liberar.
