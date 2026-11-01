@@ -26,11 +26,14 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Sombra propia del canto y reflejo fino para separar visualmente la cara superior y el borde expuesto.
 - Perfil de espesor dependiente del ángulo, el lado del pliegue y la intensidad configurada.
 - Grupos de capas coordinadas con propagación en cascada de deformación desde la hoja frontal a las posteriores; cada tramo admite acoplamiento y separación independientes.
-- Restricción de contacto 2.5D por vértice: detección de penetración proyectada sobre un eje normal configurable, distancia mínima, rigidez y corrección máxima acotada.
+- Contacto geométrico 2.5D entre superficies trianguladas: cada vértice receptor busca el punto más cercano sobre los triángulos transformados de la capa fuente, aunque ambas mallas tengan distinta resolución.
 - Fricción tangencial configurable entre hojas, con distancia de reposo y corrección máxima limitada para controlar deslizamiento relativo.
 - Diagnóstico en vivo del número de vértices en contacto y penetración media para ajustar el comportamiento sin confundirlo con una simulación física completa.
 - Pruebas independientes de fricción: oposición al deslizamiento, límite de corrección y desactivación. Añade fricción tangencial opcional para amortiguar deslizamientos con corrección limitada y distancia tangencial de reposo configurable.
 - La respuesta de contacto se recalcula desde la geometría base en cada cuadro, actualiza las sombras y evita acumular correcciones.
+- Las consultas consideran posición, escala y rotación acumuladas de contenedores anidados, convierten la corrección de mundo a coordenadas locales y descartan candidatos fuera del radio de búsqueda.
+- La malla conserva su silueta normalizada; las celdas triangulares completamente externas a la silueta no participan en el contacto.
+- El inspector muestra vértices activos, triángulos consultados y penetración media, y permite ajustar el radio de búsqueda.
 - Interacción entre superficies superpuestas: transferencia de deformación, separación ajustable y respuesta de sombra por contacto suave, con control independiente de presión y desplazamiento local de sombra según la separación y el movimiento relativo.
 - Curvatura continua de superficie con campo suave de desplazamiento y dirección configurable.
 - Memoria elástica por vértice con velocidad persistente, rigidez y amortiguación configurables.
@@ -45,7 +48,7 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Línea de luz sutil en el borde superior.
 - Intensidad de sombra y grosor ajustables por pieza desde el inspector.
 
-La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final. Las zonas de influencia se expresan en coordenadas normalizadas de la superficie y usan una caída suave para evitar límites abruptos. Los anclajes conservan regiones de la malla cerca de su posición de reposo. Los pliegues aplican una aproximación geométrica 2D a un lado de una línea de pliegue; la capa de volumen añade iluminación y sombra mapeadas para sugerir relieve; los cantos levantados añaden una banda visible de espesor variable. La curvatura elástica es una aproximación 2D amortiguada. El contacto entre capas usa restricciones 2.5D sobre una dirección normal configurable y fricción tangencial opcional; evita parte de la penetración proyectada y amortigua el deslizamiento, pero no es un solver volumétrico, FEM ni geometría 3D.
+La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final. Las zonas de influencia se expresan en coordenadas normalizadas de la superficie y usan una caída suave para evitar límites abruptos. Los anclajes conservan regiones de la malla cerca de su posición de reposo. Los pliegues aplican una aproximación geométrica 2D a un lado de una línea de pliegue; la capa de volumen añade iluminación y sombra mapeadas para sugerir relieve; los cantos levantados añaden una banda visible de espesor variable. La curvatura elástica es una aproximación 2D amortiguada. El contacto entre capas consulta la superficie triangular transformada de la hoja fuente para cada vértice de la hoja receptora, con separación proyectada sobre una normal configurable y fricción tangencial opcional. Es una aproximación 2.5D de contacto de superficies; no es un solver volumétrico, FEM ni geometría 3D. El recorte de silueta descarta triángulos completamente externos, aunque la frontera de cada celda todavía es una aproximación de la máscara.
 
 Los materiales son aproximaciones 2D deliberadas. Aún no representan simulación física ni una malla 3D de papel.
 
@@ -71,7 +74,7 @@ Los materiales son aproximaciones 2D deliberadas. Aún no representan simulació
 - `src/edge-math.js`: perfiles de espesor.
 - `src/edge.test.mjs`: pruebas de cantos.
 - `src/layers.js`: acoplamiento de movimiento, restricciones de contacto y respuesta visual entre capas.
-- `src/collision-math.js`: cálculo de penetración, separación, deslizamiento tangencial y correcciones normal/tangencial acotadas entre vértices.
+- `src/collision-math.js`: transformaciones afines, triangulación de mallas, búsqueda de punto más cercano, máscara de silueta y restricciones normal/tangencial.
 - `src/layer-groups.js`: creación de pilas multicapa y propagación en cascada.
 - `src/layer.test.mjs`: pruebas de interacción y topología de grupos multicapa.
 - `src/layer-math.js`: funciones puras para transferencia de desplazamiento, caída de influencia y desplazamiento de sombra de contacto.
@@ -108,3 +111,17 @@ Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor
 4. Los loops no saltan al completar el ciclo.
 6. Las influencias localizadas no producen saltos en el borde de su radio.
 7. Los controles se mantienen utilizables en pantalla táctil.
+
+
+## Auditoría final antes de declarar el motor terminado
+
+La finalización requiere una auditoría separada del desarrollo por módulos. Debe incluir:
+- revisión de arquitectura, imports, ciclo de actualización, destrucción y limpieza de recursos;
+- pruebas unitarias y de integración para mallas con distinta resolución, siluetas, transformaciones anidadas, rotación, escala, contacto y ausencia de deriva;
+- pruebas de regresión de materiales, deformación, anclajes, pliegues, volumen, cantos, articulaciones, grupos y loops;
+- inspección de buffers y compatibilidad real de PixiJS 8.10.1;
+- medición de rendimiento con mallas pequeñas, medias y grandes;
+- pruebas manuales en Firefox, Safari/iPad y Chrome, con registro explícito de resultados;
+- corrección de hallazgos y repetición completa de CI antes de considerar cerrada la fundación.
+
+Un CI exitoso no sustituye la inspección visual ni demuestra compatibilidad en todos los navegadores.
