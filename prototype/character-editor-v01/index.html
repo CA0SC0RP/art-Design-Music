@@ -81,13 +81,13 @@ function meshDeformedShape(n){
  const original=n.mesh.vertices,posed=meshDisplayVertices(n);
  if(!posed||posed.length!==original.length)return shape(n);
  const base=shape(n).replace(/\s+filter="[^"]*"/g,"");
- const prefix="skin_"+data.nodes.indexOf(n)+"_"+String(n.id).replace(/[^a-zA-Z0-9_-]/g,"_"),defs=[],fragments=[];
+ const prefix="skin_"+data.nodes.indexOf(n)+"_"+String(n.id).replace(/[^a-zA-Z0-9_-]/g,"_"),shapeId=prefix+"_source",defs=['<g id="'+shapeId+'">'+base+'</g>'],fragments=[];
  for(let i=0;i<n.mesh.faces.length;i++){
   const face=n.mesh.faces[i],source=face.map(index=>original[index]),target=face.map(index=>posed[index]);
   const mapped=window.ADM_MeshSkinning.triangleTransform(source,target);if(!mapped.ok)continue;
   const expanded=window.ADM_MeshSkinning.expandTriangle(source,0.35),clipId=prefix+"_"+i,clipPoints=expanded.ok?expanded.triangle:source,points=clipPoints.map(p=>p.x+","+p.y).join(" ");
   defs.push('<clipPath id="'+clipId+'" clipPathUnits="userSpaceOnUse"><polygon points="'+points+'"/></clipPath>');
-  fragments.push('<g class="mesh-skin-fragment" transform="matrix('+mapped.matrix.join(" ")+')" clip-path="url(#'+clipId+')">'+base+'</g>');
+  fragments.push('<g class="mesh-skin-fragment" transform="matrix('+mapped.matrix.join(" ")+')" clip-path="url(#'+clipId+')"><use href="#'+shapeId+'"/></g>');
  }
  return fragments.length?'<defs>'+defs.join("")+'</defs><g class="mesh-skin" filter="url(#shadow)">'+fragments.join("")+'</g>':shape(n);
 }
