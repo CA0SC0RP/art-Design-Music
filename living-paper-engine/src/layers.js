@@ -1,5 +1,5 @@
 import { layerFalloff, resolveLayerResponse, sampleDisplacement, contactShadowOffset } from "./layer-math.js";
-import { resolveContactConstraint, sampleMeshPoint } from "./collision-math.js";
+import { resolveContactConstraint, composeWorldTransform, transformPoint, inverseTransformVector, buildMeshTriangles, closestPointOnMesh, pointInPolygon } from "./collision-math.js";
 
 /**
  * Couples overlapping PaperMesh surfaces with a bounded 2.5D contact response.
@@ -57,48 +57,71 @@ export function enableLayerInteraction(engine, links = []) {
 function applyLink(link) {
   const { source, target } = link;
   target.update(target.elapsed, true);
-  const columns = target.columns, rows = target.rows;
-  let totalPressure = 0, totalPenetration = 0, contactCount = 0;
-  for (let row = 0; row <= rows; row++) {
-    for (let col = 0; col <= columns; col++) {
-      const i = (row * (columns + 1) + col) * 2;
-      const u = col / columns, v = row / rows;
+  const sourceTransform = composeWorldTransform(source.container);
+  const targetTransform = composeWorldTransform(target.container);
+  const sourceTriangles = buildMeshTriangles(source, sourceTransform);
+  const inverseTarget = targetTransform;
+  let totalPressure = 0, totalPenetration = 0, contactCount = 0, testedVertices = 0;
+
+  for (let row = 0; row <= target.rows; row++) {
+    for (let col = 0; col <= target.columns; col++) {
+      const i = (row * (target.columns + 1) + col) * 2;
+      const u = col / target.columns, v = row / target.rows;
+      if (target.shape && !pointInPolygon(u, v, target.shape)) continue;
+
       const delta = sampleDisplacement(source.vertices, source.baseVertices, source.columns, source.rows, u, v);
       const weight = layerFalloff(u, v, link.edgeRadius);
       const response = resolveLayerResponse(delta.x, delta.y, { ...link, weight });
       target.vertices[i] += response.x;
       target.vertices[i + 1] += response.y;
 
-      const sourcePoint = sampleMeshPoint(source.vertices, source.columns, source.rows, u, v);
-      const contact = resolveContactConstraint(
-        {
-          x: sourcePoint.x + (source.container.position.x || 0),
-          y: sourcePoint.y + (source.container.position.y || 0)
-        },
-        {
-          x: target.vertices[i] + (target.container.position.x || 0),
-          y: target.vertices[i + 1] + (target.container.position.y || 0)
-        },
-        { normalX: link.contactNormalX, normalY: link.contactNormalY, minGap: link.contactGap, stiffness: link.contactStiffness, maxCorrection: link.maxCorrection, tangentRestGap: link.tangentRestGap, friction: link.friction, maxTangentialCorrection: link.maxTangentialCorrection }
-      );
-      target.vertices[i] += contact.x;
-      target.vertices[i + 1] += contact.y;
-      totalPenetration += contact.penetration;
-      if (contact.touching) contactCount++;
+      const localPoint = { x: target.vertices[i], y: target.vertices[i + 1] };
+      const worldPoint = transformPoint(targetTransform, localPoint);
+      const closest = closestPointOnMesh(worldPoint, sourceTriangles);
+      testedVertices++;
+      let contact = { x: 0, y: 0, penetration: 0, touching: false };
+      if (closest) {
+        const dx = worldPoint.x - closest.x, dy = worldPoint.y - closest.y;
+        const distance = Math.hypot(dx, dy);
+        const normalX = distance > 1e-7 ? dx / distance : link.contactNormalX;
+        const normalY = distance > 1e-7 ? dy / distance : link.contactNormalY;
+        contact = resolveContactConstraint(
+          { x: closest.x, y: closest.y },
+          worldPoint,
+          {
+            normalX, normalY, minGap: link.contactGap,
+            stiffness: link.contactStiffness, maxCorrection: link.maxCorrection,
+            tangentRestGap: link.tangentRestGap, friction: link.friction,
+            maxTangentialCorrection: link.maxTangentialCorrection
+          }
+        );
+        const localCorrection = inverseTransformVector(inverseTarget, { x: contact.x, y: contact.y });
+        target.vertices[i] += localCorrection.x;
+        target.vertices[i + 1] += localCorrection.y;
+        totalPenetration += contact.penetration;
+        if (contact.touching) contactCount++;
+      }
 
-      const shadowOffset = contactShadowOffset(delta.x, delta.y, { contact: link.contact, clearance: link.clearance, maxOffset: link.shadowReach });
+      const shadowOffset = contactShadowOffset(delta.x, delta.y, {
+        contact: link.contact, clearance: link.clearance, maxOffset: link.shadowReach
+      });
       target.shadowVertices[i] = target.vertices[i] + 4 + shadowOffset.x;
       target.shadowVertices[i + 1] = target.vertices[i + 1] + 5 + shadowOffset.y;
       totalPressure += response.pressure + contact.penetration / Math.max(1, link.contactGap) * link.contactStiffness * 0.15;
     }
   }
-  const count = (columns + 1) * (rows + 1);
+
+  const count = Math.max(1, testedVertices);
   target.mesh.vertices = target.vertices;
   target.shadowMesh.vertices = target.shadowVertices;
   target.shadowMesh.alpha = clamp(link.baseShadowAlpha + (totalPressure / count) * 0.28, 0, 0.65);
-  link.lastContact = { activeVertices: contactCount, averagePenetration: totalPenetration / count };
+  link.lastContact = {
+    activeVertices: contactCount,
+    averagePenetration: totalPenetration / count,
+    testedVertices,
+    sourceTriangles: sourceTriangles.length
+  };
 }
-
 function normalizeLink(link = {}) {
   return {
     source: link.source,
