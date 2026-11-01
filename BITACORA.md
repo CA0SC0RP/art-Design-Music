@@ -331,3 +331,13 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se añadieron pruebas automatizadas de importación y seguridad de datos. GitHub Actions ahora valida ambos módulos, ejecuta las suites, comprueba la sintaxis del JavaScript del editor y revisa las referencias de integración.
 - La ejecución completa del workflow terminó correctamente. La importación todavía requiere prueba manual en Safari/iPad; no se declara validación de navegador.
 - Todo permanece en `feature/living-paper-engine-foundation`, sin modificar `main`, sin despliegue, sin nuevas dependencias y sin gastos.
+
+
+
+## 2026-11-01 — Reparentado con conservación de transformación
+
+- Se corrigió el comportamiento del selector de padre: cambiar la relación jerárquica ya no debe desplazar visualmente la pieza de forma inesperada.
+- Se creó `prototype/character-editor-v01/rig-geometry.js` para resolver transformaciones mundiales y calcular una transformación local equivalente, considerando posición, rotación, escala y pivote del padre.
+- El cambio rechaza ciclos y soluciones fuera de los límites articulares sin mutar el rig. Los descendientes conservan su transformación mundial al cambiar el padre de un ancestro.
+- Se añadieron cuatro pruebas automatizadas de geometría jerárquica y se incorporaron al workflow de GitHub Actions, que completó correctamente las verificaciones.
+- Pendiente: validación visual y táctil real en Safari del iPad.
