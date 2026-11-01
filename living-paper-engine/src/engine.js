@@ -26,7 +26,7 @@ export class PaperPiece{
 }
 
 export class LivingPaperEngine{
-  constructor(host){this.host=host;this.app=null;this.world=null;this.pieces=new Map();this.speed=1;this.paused=false;this.elapsed=0;}
+  constructor(host){this.host=host;this.app=null;this.world=null;this.pieces=new Map();this.articulations=new Set();this.speed=1;this.paused=false;this.elapsed=0;}
   async init(){
     this.app=new Application();
     await this.app.init({background:0xdce5df,antialias:true,autoDensity:true,resolution:Math.min(window.devicePixelRatio||1,2),resizeTo:this.host});
@@ -37,14 +37,33 @@ export class LivingPaperEngine{
   addPiece(piece){this.pieces.set(piece.id,piece);this.world.addChild(piece.container);this.sortDepth();return piece;}
   getPiece(id){return this.pieces.get(id);}
   sortDepth(){const items=[...this.pieces.values()].sort((a,b)=>b.depth-a.depth);items.forEach((p,i)=>this.world.setChildIndex(p.container,i));}
-  setSpeed(v){this.speed=Math.max(.1,Math.min(3,v));}
+  addArticulation(joint,parent){(parent||this.world).addChild(joint.container);this.articulations.add(joint);return joint;}\n  setSpeed(v){this.speed=Math.max(.1,Math.min(3,v));}
   setPaused(v){this.paused=Boolean(v);}
-  update(dt){if(this.paused)return;const step=dt*this.speed;this.elapsed+=step;for(const p of this.pieces.values())p.motion?.update(step,this.elapsed,p);}
+  update(dt){if(this.paused)return;const step=dt*this.speed;this.elapsed+=step;for(const p of this.pieces.values())p.motion?.update(step,this.elapsed,p);for(const joint of this.articulations)joint.update(this.elapsed);}
   layout(){if(!this.app||!this.world)return;const w=this.host.clientWidth||960,h=this.host.clientHeight||540;this.app.renderer.resize(w,h);const s=Math.min(w/1280,h/720);this.world.scale.set(s);this.world.position.set((w-1280*s)/2,(h-720*s)/2);}
-  destroy(){this.resizeObserver?.disconnect();this.app?.destroy(true,{children:true});this.pieces.clear();}
+  destroy(){this.resizeObserver?.disconnect();this.app?.destroy(true,{children:true});this.pieces.clear();this.articulations.clear();}
 }
 
-function flat(points){return points.flatMap(([x,y])=>[x,y]);}
+
+export class PaperJoint{
+  constructor({id,x=0,y=0,angle=0,minAngle=-45,maxAngle=45,material="matte",thickness=3,shadowStrength=.18,draw,sway=null}){
+    this.id=id;this.minAngle=minAngle;this.maxAngle=maxAngle;this.restAngle=Math.max(minAngle,Math.min(maxAngle,angle));this.angle=this.restAngle;this.sway=sway;
+    this.container=new Container();this.container.position.set(x,y);this.container.rotation=this.angle*Math.PI/180;
+    this.shadow=new Graphics();this.art=new Graphics();this.container.addChild(this.shadow,this.art);
+    this.drawCallback=draw;this.style={material,thickness,shadowStrength};this.drawCallback?.(this.art,this.shadow,this.style);
+  }
+  addChild(joint){this.container.addChild(joint.container);return joint;}
+  setAngle(degrees){this.sway=null;this.angle=Math.max(this.minAngle,Math.min(this.maxAngle,degrees));this.container.rotation=this.angle*Math.PI/180;}
+  setSway({amplitude=8,period=4,phase=0}={}){this.sway={amplitude,period:Math.max(.1,period),phase};}
+  update(elapsed){
+    if(!this.sway)return;
+    const {amplitude,period,phase}=this.sway;
+    const swing=Math.sin((elapsed/period)*Math.PI*2+phase)*amplitude;
+    this.angle=Math.max(this.minAngle,Math.min(this.maxAngle,this.restAngle+swing));
+    this.container.rotation=this.angle*Math.PI/180;
+  }
+}
+\nfunction flat(points){return points.flatMap(([x,y])=>[x,y]);}
 export function polygon(graphics,points,color,alpha=1){graphics.poly(flat(points)).fill({color,alpha});}
 function insidePolygon(x,y,points){
   let inside=false;
