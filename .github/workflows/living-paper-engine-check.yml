@@ -27,6 +27,8 @@ jobs:
       - name: Validar sintaxis JavaScript
         run: |
           node --check living-paper-engine/src/engine.js
+          grep -q "autoUpdate=true" living-paper-engine/src/engine.js
+          grep -q "overlay.autoUpdate = true" living-paper-engine/src/volume.js
           node --check living-paper-engine/src/motion.js
           node --check living-paper-engine/src/demo.js
           node --check living-paper-engine/src/deformation.js
