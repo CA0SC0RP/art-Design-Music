@@ -458,3 +458,9 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - Se añadieron pruebas específicas para caras colineales y triángulos casi degenerados, y se separó el caso de índices repetidos/fuera de rango.
 - Esta protección evita aceptar topología que luego no puede generar una transformación afín válida durante el skinning.
 - Pendiente: confirmar CI y continuar con auditoría de topología, pesos y rendimiento. La inspección visual en Safari/iPad aún no se ha realizado.
+
+
+## 2026-11-01 — Editor de personajes v0.9.17, pincel de pesos transaccional
+- `paintInfluence()` ahora prepara las modificaciones en copias temporales, valida pesos, huesos, duplicados y límite de cuatro influencias y solo confirma los cambios cuando todos los vértices afectados son válidos.
+- Se evita que una malla parcialmente corrupta deje algunos vértices pintados y otros sin modificar tras un rechazo. También se rechazan identificadores de hueso vacíos y se trata fuerza cero como operación sin cambios.
+- Se añadieron pruebas de regresión para corrupción detectada en un vértice posterior y para identificador vacío. Pendiente confirmar la ejecución de CI que incluye estas pruebas.
