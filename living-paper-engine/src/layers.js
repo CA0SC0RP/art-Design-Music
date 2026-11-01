@@ -134,6 +134,7 @@ function applyLink(link) {
   const normalLength = Math.hypot(link.contactNormalX, link.contactNormalY) || 1;
   const nx = link.contactNormalX / normalLength, ny = link.contactNormalY / normalLength;
   const gridIndex = (x, y) => y * (target.columns + 1) + x;
+  const edgeContactScratch = { contacts: [] };
   const testEdge = (ia, ib) => {
     const ax = target.vertices[ia * 2], ay = target.vertices[ia * 2 + 1];
     const bx = target.vertices[ib * 2], by = target.vertices[ib * 2 + 1];
@@ -146,7 +147,7 @@ function applyLink(link) {
     const candidates = queryTriangleSpatialIndex(spatialIndex, { minX, maxX, minY, maxY }, 1e-7, edgeCandidates);
     edgeCandidateTriangles += candidates.length;
     edgeTests++;
-    const hits = segmentTriangleContacts(worldA, worldB, candidates);
+    const hits = segmentTriangleContacts(worldA, worldB, candidates, 1e-7, edgeContactScratch);
     for (const hit of hits) {
       const triangleCenter = {
         x: (hit.triangle.a.x + hit.triangle.b.x + hit.triangle.c.x) / 3,
