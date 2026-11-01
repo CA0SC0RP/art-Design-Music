@@ -95,6 +95,41 @@ export function buildMeshTriangles(mesh, matrix = composeWorldTransform(mesh.con
  * Build a uniform-grid broadphase for transformed triangles.
  * The returned index is rebuilt per contact pass because the source mesh moves.
  */
+function triangleOverlapsPolygon(a, b, c, polygon) {
+  const triangle = [a, b, c];
+  const centroid = { x: (a.x + b.x + c.x) / 3, y: (a.y + b.y + c.y) / 3 };
+  if (pointInPolygon(centroid.x, centroid.y, polygon)) return true;
+  if (triangle.some(point => pointInPolygon(point.x, point.y, polygon))) return true;
+  if (polygon.some(([x, y]) => pointInTriangle({ x, y }, a, b, c))) return true;
+  const triangleEdges = [[a, b], [b, c], [c, a]];
+  const polygonPoints = polygon.map(([x, y]) => ({ x, y }));
+  for (let i = 0; i < polygonPoints.length; i++) {
+    const p = polygonPoints[i], q = polygonPoints[(i + 1) % polygonPoints.length];
+    if (triangleEdges.some(([start, end]) => segmentSegmentIntersection(start, end, p, q))) return true;
+  }
+  return false;
+}
+
+function pointInTriangle(point, a, b, c) {
+  const abVector = sub(b, a), acVector = sub(c, a);
+  if (Math.abs(cross(abVector, acVector)) < 1e-10) {
+    return pointOnSegment(point, a, b) || pointOnSegment(point, b, c) || pointOnSegment(point, c, a);
+  }
+  const ab = cross(abVector, sub(point, a));
+  const bc = cross(sub(c, b), sub(point, b));
+  const ca = cross(sub(a, c), sub(point, c));
+  const hasNegative = ab < -1e-8 || bc < -1e-8 || ca < -1e-8;
+  const hasPositive = ab > 1e-8 || bc > 1e-8 || ca > 1e-8;
+  return !(hasNegative && hasPositive);
+}
+
+function pointOnSegment(point, a, b) {
+  const edge = sub(b, a), relative = sub(point, a);
+  if (Math.abs(cross(edge, relative)) > 1e-8) return false;
+  const projection = dot(relative, edge);
+  return projection >= -1e-8 && projection <= dot(edge, edge) + 1e-8;
+}
+
 export function buildTriangleSpatialIndex(triangles, cellSize = 64) {
   const size = Math.max(1, Number.isFinite(cellSize) ? cellSize : 64);
   const cells = new Map();
