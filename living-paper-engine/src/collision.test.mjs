@@ -200,3 +200,26 @@ test("la triangulación conserva celdas que cruzan parcialmente el límite de si
   const triangles = buildMeshTriangles(mesh);
   assert.equal(triangles.length, 2);
 });
+
+
+test("el índice espacial coincide con la búsqueda lineal en múltiples regiones y coordenadas negativas", async () => {
+  const { buildTriangleSpatialIndex, queryTriangleSpatialIndex } = await import("./collision-math.js");
+  const triangles = buildMeshTriangles(quadMesh({ columns: 12, rows: 9, x: -35, y: -22 }));
+  const index = buildTriangleSpatialIndex(triangles, 13);
+  const regions = [
+    { minX: -36, maxX: -18, minY: -23, maxY: -7 },
+    { minX: -10, maxX: 4, minY: -5, maxY: 12 },
+    { minX: 18, maxX: 42, minY: 21, maxY: 48 },
+    { minX: 75, maxX: 110, minY: 60, maxY: 100 },
+    { minX: -80, maxX: -50, minY: 20, maxY: 45 }
+  ];
+  for (const bounds of regions) {
+    const indexed = queryTriangleSpatialIndex(index, bounds);
+    const linear = triangles.filter(triangle =>
+      !(triangle.maxX < bounds.minX || triangle.minX > bounds.maxX ||
+        triangle.maxY < bounds.minY || triangle.minY > bounds.maxY)
+    );
+    assert.equal(indexed.length, linear.length);
+    assert.ok(linear.every(triangle => indexed.includes(triangle)));
+  }
+});
