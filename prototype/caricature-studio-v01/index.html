@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111820">
+  <title>Art Design Music · Estudio de caricaturas v0.1</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111820;
+      --panel: #1a2530;
+      --panel-2: #202e3b;
+      --line: #334554;
+      --text: #edf3f6;
+      --muted: #9aabb8;
+      --accent: #70d6c4;
+      --accent-2: #ffb58f;
+      --stage: #e9edf0;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body { font: 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    button { min-height: 44px; border: 1px solid var(--line); border-radius: 10px; padding: 9px 13px; background: var(--panel-2); color: var(--text); font: inherit; font-weight: 650; cursor: pointer; touch-action: manipulation; }
+    button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    button.primary { background: var(--accent); border-color: var(--accent); color: #102129; }
+    button:disabled { opacity: .45; cursor: default; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:18px clamp(16px,3vw,34px); border-bottom:1px solid var(--line); }
+    .eyebrow { margin:0 0 3px; color:var(--accent); font-size:10px; font-weight:800; letter-spacing:.16em; }
+    h1 { margin:0; font-size:clamp(21px,3vw,29px); letter-spacing:-.035em; }
+    .subtitle { margin:3px 0 0; color:var(--muted); font-size:12px; }
+    .version { border:1px solid #54776f; color:#a9e9dc; border-radius:30px; padding:6px 10px; font-size:10px; font-weight:750; letter-spacing:.08em; white-space:nowrap; }
+    .workspace { width:min(1440px,100%); margin:0 auto; padding:18px; display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:16px; }
+    .stage-card, .inspector { min-width:0; border:1px solid var(--line); border-radius:15px; overflow:hidden; background:var(--panel); }
+    .panel-head { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:13px 15px; }
+    .panel-title { font-weight:750; }
+    .panel-subtitle { display:block; margin-top:2px; color:var(--muted); font-size:11px; }
+    .transport { display:flex; gap:7px; flex-wrap:wrap; }
+    .stage-wrap { position:relative; width:100%; aspect-ratio:16/9; background:var(--stage); overflow:hidden; }
+    #stage { display:block; width:100%; height:100%; touch-action:none; user-select:none; -webkit-user-select:none; }
+    #character { cursor:grab; }
+    #character.dragging { cursor:grabbing; }
+    .selection-outline { opacity:0; pointer-events:none; }
+    #character.selected .selection-outline { opacity:1; }
+    .stage-hint { display:flex; justify-content:space-between; gap:12px; padding:10px 14px; color:var(--muted); font-size:11px; }
+    .inspector { padding:16px; display:flex; flex-direction:column; gap:14px; }
+    .inspector-heading { padding-bottom:12px; border-bottom:1px solid var(--line); }
+    .section-label { margin:0 0 4px; color:var(--accent); font-size:10px; font-weight:800; letter-spacing:.14em; }
+    .selected-name { font-size:17px; font-weight:750; }
+    .help { margin:4px 0 0; color:var(--muted); font-size:11px; }
+    .control-block { padding-top:2px; }
+    .control-title { display:flex; justify-content:space-between; gap:10px; margin-bottom:8px; font-size:12px; color:#d5e0e7; }
+    output { color:var(--accent); font-variant-numeric:tabular-nums; }
+    .button-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .button-row button { width:100%; }
+    .position-readout { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .readout { padding:9px 10px; border:1px solid var(--line); border-radius:9px; background:#15202a; }
+    .readout span { display:block; color:var(--muted); font-size:10px; }
+    .readout strong { display:block; margin-top:2px; font-size:14px; font-variant-numeric:tabular-nums; }
+    .note { margin-top:auto; padding:11px; border:1px solid var(--line); border-radius:10px; background:#15202a; color:var(--muted); font-size:11px; }
+    .note strong { color:var(--text); }
+    .footer { padding:0 20px 20px; color:var(--muted); font-size:10px; text-align:center; }
+    @media (max-width:900px) {
+      .workspace { grid-template-columns:1fr; }
+      .inspector { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .inspector-heading, .note { grid-column:1/-1; }
+    }
+    @media (max-width:560px) {
+      .topbar { align-items:flex-start; flex-direction:column; }
+      .workspace { padding:10px; gap:10px; }
+      .panel-head { align-items:flex-start; flex-direction:column; }
+      .transport { width:100%; }
+      .transport button { flex:1; }
+      .inspector { display:flex; }
+      .stage-hint { flex-direction:column; }
+      .version { align-self:flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">ART DESIGN MUSIC · LIVING PAPER ENGINE</p>
+      <h1>Estudio de caricaturas</h1>
+      <p class="subtitle">Prueba de interacción táctil · escenario y personaje provisional</p>
+    </div>
+    <span class="version">PROTOTIPO TÉCNICO · 0.1</span>
+  </header>
+
+  <main class="workspace">
+    <section class="stage-card" aria-label="Área de trabajo">
+      <div class="panel-head">
+        <div>
+          <span class="panel-title">Escenario</span>
+          <span class="panel-subtitle">Toca el personaje y arrástralo para cambiar su posición</span>
+        </div>
+        <div class="transport">
+          <button id="playButton" class="primary" type="button">▶ Reproducir</button>
+          <button id="pauseButton" type="button" disabled>Ⅱ Pausar</button>
+          <button id="resetButton" type="button">↺ Reiniciar</button>
+        </div>
+      </div>
+
+      <div class="stage-wrap">
+        <svg id="stage" viewBox="0 0 1000 562.5" role="img" aria-label="Escenario con un personaje vectorial provisional que puedes seleccionar y mover">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#d9e7ed"/>
+              <stop offset="1" stop-color="#f2eee7"/>
+            </linearGradient>
+            <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#55b9ad"/>
+              <stop offset="1" stop-color="#287c83"/>
+            </linearGradient>
+            <filter id="softShadow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="12"/>
+            </filter>
+          </defs>
+          <rect width="1000" height="562.5" fill="url(#sky)"/>
+          <circle cx="820" cy="105" r="43" fill="#f4c78e" opacity=".85"/>
+          <path d="M0 390 Q180 335 340 390 T690 385 T1000 370 V562 H0Z" fill="#c9d8cf"/>
+          <path d="M0 440 Q200 390 420 440 T820 420 T1000 435 V562 H0Z" fill="#b7cec2"/>
+          <path d="M0 505 Q260 470 500 500 T1000 490 V562 H0Z" fill="#9eb8ac"/>
+          <ellipse id="characterShadow" cx="500" cy="472" rx="105" ry="18" fill="#344d52" opacity=".2" filter="url(#softShadow)"/>
+
+          <g id="character" class="selected" transform="translate(500 300)">
+            <rect class="selection-outline" x="-105" y="-205" width="210" height="390" rx="24" fill="none" stroke="#087f79" stroke-width="4" stroke-dasharray="10 8"/>
+            <g id="bodyMotion">
+              <g id="leftLeg" transform="rotate(-5 -30 105)">
+                <path d="M-31 95 Q-42 150 -50 194" fill="none" stroke="#314e67" stroke-width="29" stroke-linecap="round"/>
+                <path d="M-54 192 Q-83 202 -77 216 Q-45 229 -17 214 Q-9 205 -27 194Z" fill="#f0a47e"/>
+              </g>
+              <g id="rightLeg" transform="rotate(5 30 105)">
+                <path d="M31 95 Q42 150 50 194" fill="none" stroke="#314e67" stroke-width="29" stroke-linecap="round"/>
+                <path d="M47 194 Q25 204 29 217 Q57 230 84 213 Q88 203 66 194Z" fill="#f0a47e"/>
+              </g>
+              <path d="M-67 -20 Q-77 5 -65 88 Q0 118 65 88 Q77 5 67 -20 Q0 -53 -67 -20Z" fill="url(#shirt)" stroke="#236b70" stroke-width="4"/>
+              <path d="M-35 -14 Q0 4 35 -14" fill="none" stroke="#d5f1e9" stroke-width="5" stroke-linecap="round" opacity=".75"/>
+              <g id="leftArm" transform="rotate(18 -62 -12)">
+                <path d="M-62 -12 Q-91 25 -106 65" fill="none" stroke="#e9a17e" stroke-width="23" stroke-linecap="round"/>
+                <circle cx="-108" cy="69" r="13" fill="#f0ad8b"/>
+              </g>
+              <g id="rightArm" transform="rotate(-18 62 -12)">
+                <path d="M62 -12 Q91 25 106 65" fill="none" stroke="#e9a17e" stroke-width="23" stroke-linecap="round"/>
+                <circle cx="108" cy="69" r="13" fill="#f0ad8b"/>
+              </g>
+              <path d="M-54 -122 Q-61 -181 0 -188 Q61 -181 54 -122 L49 -74 Q0 -51 -49 -74Z" fill="#f0ad8b" stroke="#d88d70" stroke-width="4"/>
+              <path d="M-57 -139 Q-71 -192 -17 -207 Q41 -218 64 -174 Q73 -146 48 -132 Q21 -151 -2 -143 Q-30 -134 -57 -139Z" fill="#4c3d3b"/>
+              <path d="M-45 -100 Q-25 -84 -8 -100 M9 -100 Q28 -84 46 -100" fill="none" stroke="#6a4943" stroke-width="4" stroke-linecap="round"/>
+              <ellipse cx="-23" cy="-119" rx="5" ry="8" fill="#28363c"/>
+              <ellipse cx="23" cy="-119" rx="5" ry="8" fill="#28363c"/>
+              <path d="M-10 -89 Q0 -80 12 -89" fill="none" stroke="#a9574d" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="-43" cy="-91" r="9" fill="#e98c82" opacity=".5"/>
+              <circle cx="43" cy="-91" r="9" fill="#e98c82" opacity=".5"/>
+            </g>
+            <text x="0" y="252" text-anchor="middle" fill="#31464b" font-size="18" font-weight="700">PERSONAJE DE PRUEBA</text>
+          </g>
+          <text x="28" y="36" fill="#52676c" font-size="15" font-weight="650">ESCENA 01 · PRUEBA DE MOVIMIENTO</text>
+        </svg>
+      </div>
+
+      <div class="stage-hint">
+        <span id="statusText" aria-live="polite">Personaje seleccionado. Arrástralo directamente en el escenario.</span>
+        <span>Área de prueba · 16:9</span>
+      </div>
+    </section>
+
+    <aside class="inspector" aria-label="Controles del personaje">
+      <div class="inspector-heading">
+        <p class="section-label">INSPECTOR</p>
+        <div class="selected-name">Personaje provisional</div>
+        <p class="help">Controles básicos del elemento seleccionado.</p>
+      </div>
+
+      <div class="control-block">
+        <div class="control-title"><span>Posición del personaje</span><output id="positionValue">X 500 · Y 300</output></div>
+        <div class="position-readout">
+          <div class="readout"><span>Horizontal</span><strong id="xValue">500</strong></div>
+          <div class="readout"><span>Vertical</span><strong id="yValue">300</strong></div>
+        </div>
+      </div>
+
+      <div class="control-block">
+        <div class="control-title"><span>Escala</span><output id="scaleValue">100%</output></div>
+        <div class="button-row">
+          <button id="scaleDown" type="button" aria-label="Reducir tamaño">− Reducir</button>
+          <button id="scaleUp" type="button" aria-label="Aumentar tamaño">＋ Aumentar</button>
+        </div>
+      </div>
+
+      <div class="control-block">
+        <div class="control-title"><span>Rotación</span><output id="rotationValue">0°</output></div>
+        <div class="button-row">
+          <button id="rotateLeft" type="button">↶ −15°</button>
+          <button id="rotateRight" type="button">↷ +15°</button>
+        </div>
+      </div>
+
+      <div class="control-block">
+        <div class="control-title"><span>Acciones rápidas</span></div>
+        <div class="button-row">
+          <button id="centerButton" type="button">Centrar</button>
+          <button id="resetTransform" type="button">Restablecer</button>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>Alcance de esta prueba</strong>
+        <p>Comprueba selección táctil, arrastre, escala, rotación y reproducción/pausa. El personaje es geométrico y provisional. Todavía no hay guardado de proyectos, editor de huesos, timeline ni exportación de vídeo.</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="footer">Art Design Music · Prototipo aislado · No modifica el laboratorio experimental anterior</footer>
+
+  <script>
+    (() => {
+      const svg = document.getElementById("stage");
+      const character = document.getElementById("character");
+      const statusText = document.getElementById("statusText");
+      const playButton = document.getElementById("playButton");
+      const pauseButton = document.getElementById("pauseButton");
+
+      const state = { x: 500, y: 300, scale: 1, rotation: 0, playing: false, frame: 0, startTime: 0, drag: null };
+      const initial = { x: 500, y: 300, scale: 1, rotation: 0 };
+
+      function updateTransform() {
+        character.setAttribute("transform", `translate(${state.x} ${state.y}) rotate(${state.rotation}) scale(${state.scale})`);
+        document.getElementById("xValue").textContent = Math.round(state.x);
+        document.getElementById("yValue").textContent = Math.round(state.y);
+        document.getElementById("positionValue").textContent = `X ${Math.round(state.x)} · Y ${Math.round(state.y)}`;
+        document.getElementById("scaleValue").textContent = `${Math.round(state.scale * 100)}%`;
+        document.getElementById("rotationValue").textContent = `${Math.round(state.rotation)}°`;
+        document.getElementById("characterShadow").setAttribute("cx", state.x);
+        document.getElementById("characterShadow").setAttribute("cy", state.y + 172 * state.scale);
+        document.getElementById("characterShadow").setAttribute("rx", 105 * state.scale);
+      }
+
+      function toSvgPoint(event) {
+        const point = svg.createSVGPoint();
+        point.x = event.clientX;
+        point.y = event.clientY;
+        return point.matrixTransform(svg.getScreenCTM().inverse());
+      }
+
+      function selectCharacter() {
+        character.classList.add("selected");
+        statusText.textContent = "Personaje seleccionado. Arrástralo directamente en el escenario.";
+      }
+
+      svg.addEventListener("pointerdown", (event) => {
+        if (!event.target.closest("#character")) return;
+        event.preventDefault();
+        selectCharacter();
+        const point = toSvgPoint(event);
+        state.drag = { pointerId: event.pointerId, startX: point.x, startY: point.y, originX: state.x, originY: state.y };
+        character.classList.add("dragging");
+        svg.setPointerCapture(event.pointerId);
+      });
+
+      svg.addEventListener("pointermove", (event) => {
+        if (!state.drag || state.drag.pointerId !== event.pointerId) return;
+        const point = toSvgPoint(event);
+        state.x = Math.max(95, Math.min(905, state.drag.originX + point.x - state.drag.startX));
+        state.y = Math.max(205, Math.min(390, state.drag.originY + point.y - state.drag.startY));
+        updateTransform();
+      });
+
+      function endDrag(event) {
+        if (!state.drag || (event && state.drag.pointerId !== event.pointerId)) return;
+        state.drag = null;
+        character.classList.remove("dragging");
+      }
+      svg.addEventListener("pointerup", endDrag);
+      svg.addEventListener("pointercancel", endDrag);
+      svg.addEventListener("lostpointercapture", () => endDrag());
+
+      function setScale(delta) {
+        state.scale = Math.max(.55, Math.min(1.6, state.scale + delta));
+        updateTransform();
+      }
+      function setRotation(delta) {
+        state.rotation = ((state.rotation + delta + 180) % 360) - 180;
+        updateTransform();
+      }
+      function resetTransform() {
+        state.x = initial.x;
+        state.y = initial.y;
+        state.scale = initial.scale;
+        state.rotation = initial.rotation;
+        updateTransform();
+      }
+
+      document.getElementById("scaleDown").addEventListener("click", () => setScale(-.1));
+      document.getElementById("scaleUp").addEventListener("click", () => setScale(.1));
+      document.getElementById("rotateLeft").addEventListener("click", () => setRotation(-15));
+      document.getElementById("rotateRight").addEventListener("click", () => setRotation(15));
+      document.getElementById("centerButton").addEventListener("click", () => { state.x = 500; state.y = 300; updateTransform(); });
+      document.getElementById("resetTransform").addEventListener("click", resetTransform);
+      document.getElementById("resetButton").addEventListener("click", () => { pause(); resetTransform(); statusText.textContent = "Escena restablecida."; });
+
+      function animate(timestamp) {
+        if (!state.playing) return;
+        const elapsed = (timestamp - state.startTime) / 1000;
+        const phase = elapsed * Math.PI * 2 * .8;
+        const swing = Math.sin(phase) * 22;
+        const bob = Math.abs(Math.sin(phase)) * 7;
+        document.getElementById("bodyMotion").setAttribute("transform", `translate(0 ${-bob})`);
+        document.getElementById("leftArm").setAttribute("transform", `rotate(${18 + swing} -62 -12)`);
+        document.getElementById("rightArm").setAttribute("transform", `rotate(${-18 - swing} 62 -12)`);
+        document.getElementById("leftLeg").setAttribute("transform", `rotate(${-5 - swing * .35} -30 105)`);
+        document.getElementById("rightLeg").setAttribute("transform", `rotate(${5 + swing * .35} 30 105)`);
+        state.frame = requestAnimationFrame(animate);
+      }
+
+      function play() {
+        if (state.playing) return;
+        state.playing = true;
+        state.startTime = performance.now();
+        playButton.disabled = true;
+        pauseButton.disabled = false;
+        statusText.textContent = "Animación sencilla en reproducción.";
+        state.frame = requestAnimationFrame(animate);
+      }
+
+      function pause() {
+        state.playing = false;
+        if (state.frame) cancelAnimationFrame(state.frame);
+        state.frame = 0;
+        document.getElementById("bodyMotion").setAttribute("transform", "translate(0 0)");
+        document.getElementById("leftArm").setAttribute("transform", "rotate(18 -62 -12)");
+        document.getElementById("rightArm").setAttribute("transform", "rotate(-18 62 -12)");
+        document.getElementById("leftLeg").setAttribute("transform", "rotate(-5 -30 105)");
+        document.getElementById("rightLeg").setAttribute("transform", "rotate(5 30 105)");
+        playButton.disabled = false;
+        pauseButton.disabled = true;
+        if (statusText.textContent.includes("reproducción")) statusText.textContent = "Animación pausada.";
+      }
+
+      playButton.addEventListener("click", play);
+      pauseButton.addEventListener("click", pause);
+      updateTransform();
+    })();
+  </script>
+</body>
+</html>
