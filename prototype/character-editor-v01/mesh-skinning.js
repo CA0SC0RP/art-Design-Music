@@ -19,9 +19,22 @@ function transformPoint(m,p){
 function expandTriangle(triangle,amount){
  if(!Array.isArray(triangle)||triangle.length!==3||!triangle.every(p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y))||!Number.isFinite(amount)||amount<0)return {ok:false,message:"Triángulo o expansión no válidos."};
  const area=(triangle[1].x-triangle[0].x)*(triangle[2].y-triangle[0].y)-(triangle[2].x-triangle[0].x)*(triangle[1].y-triangle[0].y);
- if(Math.abs(area)<1e-9)return {ok:false,message:"No se puede expandir un triángulo degenerado."};
- const center={x:(triangle[0].x+triangle[1].x+triangle[2].x)/3,y:(triangle[0].y+triangle[1].y+triangle[2].y)/3};
- const expanded=triangle.map(p=>{const dx=p.x-center.x,dy=p.y-center.y,length=Math.hypot(dx,dy);return length<1e-9?{x:p.x,y:p.y}:{x:p.x+dx/length*amount,y:p.y+dy/length*amount};});
+ if(!Number.isFinite(area)||Math.abs(area)<1e-9)return {ok:false,message:"No se puede expandir un triángulo degenerado."};
+ if(amount===0)return {ok:true,triangle:triangle.map(p=>({x:p.x,y:p.y}))};
+ const orientation=area>0?1:-1,lines=[];
+ for(let i=0;i<3;i++){
+  const a=triangle[i],b=triangle[(i+1)%3],dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy);
+  if(length<1e-9)return {ok:false,message:"El triángulo contiene un lado degenerado."};
+  const nx=orientation*dy/length,ny=-orientation*dx/length;
+  lines.push({x:a.x+nx*amount,y:a.y+ny*amount,dx,dy});
+ }
+ const expanded=[];
+ for(let i=0;i<3;i++){
+  const previous=lines[(i+2)%3],current=lines[i],det=previous.dx*current.dy-previous.dy*current.dx;
+  if(Math.abs(det)<1e-9)return {ok:false,message:"No se pudo calcular el desplazamiento del vértice."};
+  const qx=current.x-previous.x,qy=current.y-previous.y,t=(qx*current.dy-qy*current.dx)/det;
+  expanded.push({x:previous.x+t*previous.dx,y:previous.y+t*previous.dy});
+ }
  return expanded.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y))?{ok:true,triangle:expanded}:{ok:false,message:"La expansión produjo coordenadas no válidas."};
 }
 function triangleTransform(source,target){
