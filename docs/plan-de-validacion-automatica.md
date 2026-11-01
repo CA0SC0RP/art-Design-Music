@@ -1,3 +1,5 @@
+> **ARCHIVADO — 2026-11-01.** Este plan valida el contrato v2 de capas del proyecto anterior. Su validador y CI no se implementarán como parte del motor de caricaturas. La validación técnica del nuevo editor se definirá cuando exista su arquitectura y modelo de proyecto.
+
 # Plan de validación automática
 
 **Estado:** plan propuesto. **No hay validador implementado ni CI.** Sí existe `tests/test_contrato_v2.py`, que prueba el esquema y fija con comprobaciones de referencia el comportamiento esperado de dos reglas que el esquema no puede expresar; **no es el validador** (ver §4, que separa lo ejecutado de lo pendiente). Describe qué comprobará el validador cuando el usuario apruebe el contrato v2 y este plan. Hasta entonces, cualquier afirmación de «validado» debe indicar exactamente qué se ejecutó (por ejemplo, «el JSON cumple el esquema», no «la obra está validada»).
