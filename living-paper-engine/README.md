@@ -134,7 +134,7 @@ Un CI exitoso no sustituye la inspección visual ni demuestra compatibilidad en 
 
 - La malla receptora se actualiza una sola vez por frame; el solver aplica después la respuesta de contacto, evitando ejecutar dos veces los wrappers de deformación con estado.
 - La deformación transmitida entre capas se convierte de espacio local fuente a espacio mundo y después a espacio local receptor. Así se conserva la dirección y magnitud ante rotación y escalas distintas.
-- La detección de proximidad usa un índice espacial uniforme reconstruido por pasada de contacto. Las consultas de vértices y aristas examinan solo triángulos candidatos cuyas cajas se solapan con la región consultada.
+- La detección de proximidad usa un índice espacial uniforme reconstruido por pasada de contacto. Las consultas de vértices y aristas examinan solo triángulos candidatos cuyas cajas se solapan con la región consultada. Las búsquedas reutilizan marcas numéricas por consulta en lugar de crear un `Set` para cada vértice o arista.
 - La telemetría distingue triángulos fuente, candidatos de vértices, candidatos de aristas, cruces detectados y celdas ocupadas.
 - Las pruebas automatizadas cubren consultas espaciales, coordenadas negativas, una sola actualización por frame, transformaciones anidadas y propagación de deformación con rotación/escala.
 - Esto mejora la estabilidad y el coste de búsqueda, pero no sustituye la auditoría de rendimiento ni las pruebas visuales en Firefox, Chrome y Safari/iPad.
