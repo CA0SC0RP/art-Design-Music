@@ -261,8 +261,8 @@
       svg.addEventListener("pointermove", (event) => {
         if (!state.drag || state.drag.pointerId !== event.pointerId) return;
         const point = toSvgPoint(event);
-        state.x = Math.max(95, Math.min(905, state.drag.originX + point.x - state.drag.startX));
-        state.y = Math.max(205, Math.min(390, state.drag.originY + point.y - state.drag.startY));
+        state.x = Math.max(125, Math.min(875, state.drag.originX + point.x - state.drag.startX));
+        state.y = Math.max(220, Math.min(310, state.drag.originY + point.y - state.drag.startY));
         updateTransform();
       });
 
@@ -280,7 +280,7 @@
         updateTransform();
       }
       function setRotation(delta) {
-        state.rotation = ((state.rotation + delta + 180) % 360) - 180;
+        state.rotation = (((state.rotation + delta + 180) % 360) + 360) % 360 - 180;
         updateTransform();
       }
       function resetTransform() {
