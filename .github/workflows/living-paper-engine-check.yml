@@ -100,3 +100,8 @@ jobs:
           grep -q 'elasticCurvatureControl' living-paper-engine/index.html
           grep -q 'setElasticCurvature' living-paper-engine/src/demo.js
           echo "Living Paper Engine: estructura y sintaxis correctas."
+
+      - name: Medir estabilidad y rendimiento del contacto
+        run: |
+          node --check living-paper-engine/src/contact-performance.test.mjs
+          node --experimental-default-type=module --test living-paper-engine/src/contact-performance.test.mjs
