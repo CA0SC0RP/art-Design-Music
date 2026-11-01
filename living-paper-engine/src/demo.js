@@ -34,18 +34,22 @@ const bird=engine.addPiece(new PaperPiece({id:"bird",name:"Ave de prueba",depth:
 bird.motion=new MotionPath({points:[{x:150,y:235},{x:360,y:190},{x:610,y:245},{x:880,y:165},{x:1120,y:220},{x:150,y:235}],duration:24,loop:true,phase:.08,easing:smoothStep});
 
 const select=document.querySelector("#pieceSelect");
+const material=document.querySelector("#materialControl"),thickness=document.querySelector("#thicknessControl"),shadow=document.querySelector("#shadowControl");
 const scale=document.querySelector("#scaleControl"),rotation=document.querySelector("#rotationControl"),depth=document.querySelector("#depthControl"),speed=document.querySelector("#speedControl");
 const selectedName=document.querySelector("#selectedName");
 let selected=mountain;
-function choose(id){selected=engine.getPiece(id);select.value=id;selectedName.textContent=selected.name;scale.value=Math.round(selected.baseScale*100);rotation.value=Math.round(selected.container.rotation*180/Math.PI);depth.value=selected.depth;syncLabels();}
-function syncLabels(){document.querySelector("#scaleValue").textContent=scale.value+"%";document.querySelector("#rotationValue").textContent=rotation.value+"°";document.querySelector("#depthValue").textContent=depth.value;document.querySelector("#speedValue").textContent=(speed.value/100).toFixed(1)+"×";}
+function choose(id){selected=engine.getPiece(id);select.value=id;selectedName.textContent=selected.name;scale.value=Math.round(selected.baseScale*100);rotation.value=Math.round(selected.container.rotation*180/Math.PI);depth.value=selected.depth;material.value=selected.material;thickness.value=selected.thickness;shadow.value=Math.round(selected.shadowStrength*100);syncLabels();}
+function syncLabels(){document.querySelector("#scaleValue").textContent=scale.value+"%";document.querySelector("#rotationValue").textContent=rotation.value+"°";document.querySelector("#depthValue").textContent=depth.value;document.querySelector("#thicknessValue").textContent=thickness.value;document.querySelector("#shadowValue").textContent=shadow.value+"%";document.querySelector("#speedValue").textContent=(speed.value/100).toFixed(1)+"×";}
 select.addEventListener("change",()=>choose(select.value));
 scale.addEventListener("input",()=>{selected.setScale(Number(scale.value)/100);syncLabels();});
 rotation.addEventListener("input",()=>{selected.setRotation(Number(rotation.value));syncLabels();});
 depth.addEventListener("input",()=>{selected.setDepth(Number(depth.value));engine.sortDepth();syncLabels();});
+material.addEventListener("change",()=>selected.setMaterial(material.value));
+thickness.addEventListener("input",()=>{selected.setThickness(Number(thickness.value));syncLabels();});
+shadow.addEventListener("input",()=>{selected.setShadowStrength(Number(shadow.value)/100);syncLabels();});
 speed.addEventListener("input",()=>{engine.setSpeed(Number(speed.value)/100);syncLabels();});
 document.querySelector("#pauseButton").addEventListener("click",event=>{engine.setPaused(!engine.paused);event.currentTarget.textContent=engine.paused?"Reanudar":"Pausar";});
-document.querySelector("#resetButton").addEventListener("click",()=>{mountain.setScale(1);mountain.setRotation(0);mountain.setDepth(5);mountain.setPosition(640,360);hill.setScale(1);hill.setRotation(0);hill.setDepth(4);hill.setPosition(640,470);tree.setScale(1);tree.setRotation(0);tree.setDepth(2);tree.setPosition(330,450);bird.setScale(1);bird.setRotation(0);bird.setDepth(3);bird.motion.time=0;speed.value=100;engine.setSpeed(1);choose("mountain");});
+document.querySelector("#resetButton").addEventListener("click",()=>{mountain.setScale(1);mountain.setRotation(0);mountain.setDepth(5);mountain.setPosition(640,360);hill.setScale(1);hill.setRotation(0);hill.setDepth(4);hill.setPosition(640,470);tree.setScale(1);tree.setRotation(0);tree.setDepth(2);tree.setPosition(330,450);bird.setScale(1);bird.setRotation(0);bird.setDepth(3);bird.motion.time=0;for(const p of [mountain,hill,tree,bird]){p.setMaterial("matte");p.setThickness(4);p.setShadowStrength(.22);}speed.value=100;engine.setSpeed(1);choose("mountain");});
 choose("mountain");
 status.textContent="PixiJS 8 · renderer activo · 4 piezas independientes";
 window.addEventListener("beforeunload",()=>engine.destroy());
