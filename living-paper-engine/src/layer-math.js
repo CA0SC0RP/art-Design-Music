@@ -36,3 +36,14 @@ export function sampleDisplacement(vertices, baseVertices, columns, rows, u, v) 
 
 function mix(a, b, t) { return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }; }
 function clamp(value, min, max) { return Math.max(min, Math.min(max, Number.isFinite(Number(value)) ? Number(value) : min)); }
+
+/** Contact shadow offset follows the local gap and relative sheet displacement. */
+export function contactShadowOffset(dx, dy, { contact = 0.35, clearance = 5, maxOffset = 12 } = {}) {
+  const pressure = clamp(contact, 0, 1);
+  const gap = clamp(clearance / 18, 0, 1);
+  const reach = Math.max(0, maxOffset) * pressure * (1 - gap * 0.55);
+  const magnitude = Math.hypot(dx, dy);
+  if (magnitude < 1e-6 || reach === 0) return { x: 0, y: 0 };
+  const scale = Math.min(1, magnitude / 24) * reach;
+  return { x: -(dx / magnitude) * scale, y: -(dy / magnitude) * scale };
+}
