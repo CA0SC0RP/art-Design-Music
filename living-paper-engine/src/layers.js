@@ -17,10 +17,10 @@ export function enableLayerInteraction(engine, links = []) {
     link.target.container.position.y = link.restY + link.clearance;
   }
 
-  const originalUpdate = engine.update.bind(engine);
+  const originalUpdate = engine.update;
   const originalDestroy = engine.destroy;
   engine.update = dt => {
-    originalUpdate(dt);
+    originalUpdate.call(engine, dt);
     if (engine.paused) return;
     for (const link of normalized) applyLink(link);
   };
