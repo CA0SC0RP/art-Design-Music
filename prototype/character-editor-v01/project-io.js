@@ -21,13 +21,13 @@ function normalizeProject(raw){
   const rotationMin=finite(source.rotationMin,-180),rotationMax=finite(source.rotationMax,180);
   const pivotX=finite(source.pivotX,0),pivotY=finite(source.pivotY,0),scale=finite(source.scale,1);
   if(![x,y,rotation,rotationMin,rotationMax,pivotX,pivotY,scale].every(Number.isFinite)||rotationMin>rotationMax||rotationMin< -360||rotationMax>360||scale<0.05||scale>10)return {ok:false,message:"Una pieza contiene transformaciones o límites no válidos."};
-  nodes.push({id,name,type,x,y,rotation:Math.max(rotationMin,Math.min(rotationMax,rotation)),rotationMin,rotationMax,pivotX,pivotY,scale,shape,fill,parent:source.parent==null?null:String(source.parent),children:[]});
+  nodes.push({id,name,type,x,y,rotation:Math.max(rotationMin,Math.min(rotationMax,rotation)),rotationMin,rotationMax,pivotX,pivotY,scale,shape,fill,parent:source.parent==null?null:String(source.parent),children:[],_meshRaw:source.mesh});
  }
  if(!ids.has(raw.root))return {ok:false,message:"La pieza raíz no existe en el proyecto."};
  const rootNode=nodes.find(n=>n.id===raw.root);
  if(rootNode.parent!==null)return {ok:false,message:"La pieza raíz no puede tener padre."};
  for(const n of nodes){if(n.id!==raw.root&&!ids.has(n.parent))return {ok:false,message:"Una pieza hace referencia a un padre inexistente."};}
- const byId=new Map(nodes.map(n=>[n.id,n]));
+ const byId=new Map(nodes.map(n=>[n.id,n]));\n for(const n of nodes){const rawMesh=n._meshRaw;delete n._meshRaw;if(rawMesh!=null){const mesh=normalizeMesh(rawMesh,ids);if(!mesh)return {ok:false,message:"Una malla contiene vértices, caras o pesos no válidos."};n.mesh=mesh;}}
  for(const n of nodes){const seen=new Set([n.id]);let p=n.parent;while(p){if(seen.has(p))return {ok:false,message:"La jerarquía contiene un ciclo."};seen.add(p);p=byId.get(p)?.parent||null;}}
  const poses=[],poseIds=new Set();
  if(raw.poses!=null&&!Array.isArray(raw.poses))return {ok:false,message:"La biblioteca de poses tiene un formato incorrecto."};
@@ -46,6 +46,21 @@ function normalizeProject(raw){
   const poseId=String(pose.id||"pose_importada").slice(0,100);if(poseIds.has(poseId))return {ok:false,message:"Hay identificadores de pose repetidos."};poseIds.add(poseId);poses.push({id:poseId,name:String(pose.name||"Pose importada").slice(0,80),nodes:poseNodes});
  }
  return {ok:true,project:{version:2,name:String(raw.name||"Proyecto importado").slice(0,100),root:raw.root,nodes,poses}};
+}
+function normalizeMesh(raw,ids){
+ if(!raw||typeof raw!=="object"||!Array.isArray(raw.vertices)||!Array.isArray(raw.faces)||raw.vertices.length<3||raw.vertices.length>50000||raw.faces.length>100000)return null;
+ const vertexIds=new Set(),vertices=[];
+ for(const v of raw.vertices){
+  if(!v||typeof v.id!=="string"||!/^v[0-9A-Za-z_-]{1,80}$/.test(v.id)||vertexIds.has(v.id)||!finite(v.x,NaN)&&v.x!==0||!finite(v.y,NaN)&&v.y!==0||!Array.isArray(v.weights)||v.weights.length<1||v.weights.length>4)return null;
+  const x=Number(v.x),y=Number(v.y);if(!Number.isFinite(x)||!Number.isFinite(y))return null;
+  vertexIds.add(v.id);let total=0;const seen=new Set(),weights=[];
+  for(const w of v.weights){if(!w||typeof w.boneId!=="string"||!ids.has(w.boneId)||seen.has(w.boneId)||!Number.isFinite(w.weight)||w.weight<0)return null;seen.add(w.boneId);total+=w.weight;weights.push({boneId:w.boneId,weight:w.weight});}
+  if(!Number.isFinite(total)||total<=1e-10)return null;
+  vertices.push({id:v.id,x,y,weights:weights.map(w=>({...w,weight:w.weight/total}))});
+ }
+ const faces=[];
+ for(const f of raw.faces){if(!Array.isArray(f)||f.length!==3||!f.every(i=>Number.isInteger(i)&&i>=0&&i<vertices.length)||new Set(f).size!==3)return null;faces.push([...f]);}
+ return {version:1,columns:Number.isInteger(raw.columns)?raw.columns:null,rows:Number.isInteger(raw.rows)?raw.rows:null,vertices,faces};
 }
 function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 return {normalizeProject,escapeHtml};
