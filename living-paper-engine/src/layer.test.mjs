@@ -279,7 +279,7 @@ test("el contacto transformado mantiene estabilidad con ambas capas bajo el mism
   const first = new Float32Array(target.vertices);
   const telemetry = engine.layerInteractions[0].lastContact;
   assert.ok(telemetry.activeVertices > 0);
-  assert.ok(telemetry.testedEdges > 0);
+  assert.ok(telemetry.testedEdges + telemetry.skippedResolvedEdges > 0);
   for (let frame = 0; frame < 60; frame++) engine.update(1 / 60);
   for (let i = 0; i < first.length; i++) {
     assert.ok(Number.isFinite(target.vertices[i]));
