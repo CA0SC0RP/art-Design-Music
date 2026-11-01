@@ -214,25 +214,72 @@ export function segmentTriangleContacts(start, end, triangles, epsilon = 1e-7) {
         maxY < triangle.minY - epsilon || minY > triangle.maxY + epsilon) continue;
     const edges = [[triangle.a, triangle.b], [triangle.b, triangle.c], [triangle.c, triangle.a]];
     for (const [a, b] of edges) {
-      const hit = segmentSegmentIntersection(start, end, a, b, epsilon);
-      if (!hit) continue;
-      if (!contacts.some(item => Math.abs(item.t - hit.t) < 1e-5 &&
-          Math.hypot(item.point.x - hit.point.x, item.point.y - hit.point.y) < 1e-4)) {
-        contacts.push({ ...hit, triangle });
+      for (const hit of segmentSegmentIntersections(start, end, a, b, epsilon)) {
+        if (!contacts.some(item => Math.abs(item.t - hit.t) < 1e-5 &&
+            Math.hypot(item.point.x - hit.point.x, item.point.y - hit.point.y) < 1e-4)) {
+          contacts.push({ ...hit, triangle });
+        }
       }
     }
   }
   return contacts.sort((a, b) => a.t - b.t);
 }
 
+/** Return the first intersection for callers that need a single point. */
 export function segmentSegmentIntersection(a, b, c, d, epsilon = 1e-7) {
-  const r = sub(b, a), s = sub(d, c);
-  const denominator = cross(r, s), q = sub(c, a);
-  if (Math.abs(denominator) <= epsilon) return null;
+  return segmentSegmentIntersections(a, b, c, d, epsilon)[0] || null;
+}
+
+/** Handles ordinary crossings, endpoint touches, and collinear overlapping segments. */
+function segmentSegmentIntersections(a, b, c, d, epsilon = 1e-7) {
+  const r = sub(b, a), s = sub(d, c), q = sub(c, a);
+  const denominator = cross(r, s), qCrossR = cross(q, r);
+  const rr = dot(r, r), ss = dot(s, s);
+
+  if (rr <= epsilon * epsilon && ss <= epsilon * epsilon) {
+    return Math.hypot(a.x - c.x, a.y - c.y) <= epsilon
+      ? [{ t: 0, edgeT: 0, point: { x: a.x, y: a.y } }]
+      : [];
+  }
+  if (rr <= epsilon * epsilon) {
+    const u = ss ? dot(sub(a, c), s) / ss : 0;
+    const projected = { x: c.x + s.x * u, y: c.y + s.y * u };
+    return u >= -epsilon && u <= 1 + epsilon &&
+      Math.hypot(projected.x - a.x, projected.y - a.y) <= epsilon
+      ? [{ t: 0, edgeT: clamp(u, 0, 1), point: { x: a.x, y: a.y } }]
+      : [];
+  }
+  if (ss <= epsilon * epsilon) {
+    const t = dot(q, r) / rr;
+    const projected = { x: a.x + r.x * t, y: a.y + r.y * t };
+    return t >= -epsilon && t <= 1 + epsilon &&
+      Math.hypot(projected.x - c.x, projected.y - c.y) <= epsilon
+      ? [{ t: clamp(t, 0, 1), edgeT: 0, point: { x: c.x, y: c.y } }]
+      : [];
+  }
+
+  if (Math.abs(denominator) <= epsilon) {
+    if (Math.abs(qCrossR) > epsilon) return [];
+    const t0 = dot(q, r) / rr, t1 = t0 + dot(s, r) / rr;
+    const overlapStart = Math.max(0, Math.min(t0, t1));
+    const overlapEnd = Math.min(1, Math.max(t0, t1));
+    if (overlapEnd < overlapStart - epsilon) return [];
+    const parameters = Math.abs(overlapEnd - overlapStart) <= epsilon
+      ? [(overlapStart + overlapEnd) / 2]
+      : [overlapStart, overlapEnd];
+    return parameters.map(t => {
+      const point = { x: a.x + r.x * t, y: a.y + r.y * t };
+      return { t: clamp(t, 0, 1), edgeT: clamp(dot(sub(point, c), s) / ss, 0, 1), point };
+    });
+  }
+
   const t = cross(q, s) / denominator, u = cross(q, r) / denominator;
-  if (t < -epsilon || t > 1 + epsilon || u < -epsilon || u > 1 + epsilon) return null;
+  if (t < -epsilon || t > 1 + epsilon || u < -epsilon || u > 1 + epsilon) return [];
   const boundedT = clamp(t, 0, 1);
-  return { t: boundedT, edgeT: clamp(u, 0, 1), point: { x: a.x + r.x * boundedT, y: a.y + r.y * boundedT } };
+  return [{
+    t: boundedT, edgeT: clamp(u, 0, 1),
+    point: { x: a.x + r.x * boundedT, y: a.y + r.y * boundedT }
+  }];
 }
 
 function cross(a, b) { return a.x * b.y - a.y * b.x; }
