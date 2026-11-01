@@ -1,4 +1,4 @@
-import { layerFalloff, resolveLayerResponse, sampleDisplacement } from "./layer-math.js";
+import { layerFalloff, resolveLayerResponse, sampleDisplacement, contactShadowOffset } from "./layer-math.js";
 
 /**
  * Couples overlapping PaperMesh surfaces with a lightweight 2.5D response.
@@ -29,8 +29,8 @@ export function enableLayerInteraction(engine, links = []) {
   engine.setLayerInteraction = (index, options = {}) => {
     const link = normalized[index];
     if (!link) throw new RangeError("Índice de interacción de capas inexistente.");
-    for (const key of ["coupling", "clearance", "contact", "maxDisplacement", "edgeRadius"]) {
-      if (options[key] !== undefined) link[key] = clamp(Number(options[key]), key === "clearance" ? 0 : 0, key === "maxDisplacement" ? 40 : key === "edgeRadius" ? 0.8 : key === "clearance" ? 24 : 1);
+    for (const key of ["coupling", "clearance", "contact", "maxDisplacement", "edgeRadius", "shadowReach"]) {
+      if (options[key] !== undefined) link[key] = clamp(Number(options[key]), key === "clearance" ? 0 : 0, key === "maxDisplacement" ? 40 : key === "edgeRadius" ? 0.8 : key === "clearance" || key === "shadowReach" ? 24 : 1);
     }
     link.target.container.position.y = link.restY + link.clearance;
     applyLink(link);
@@ -68,8 +68,9 @@ function applyLink(link) {
       const response = resolveLayerResponse(delta.x, delta.y, { ...link, weight });
       target.vertices[i] += response.x;
       target.vertices[i + 1] += response.y;
-      target.shadowVertices[i] = target.vertices[i] + 4;
-      target.shadowVertices[i + 1] = target.vertices[i + 1] + 5;
+      const shadowOffset = contactShadowOffset(delta.x, delta.y, { contact: link.contact, clearance: link.clearance, maxOffset: link.shadowReach });
+      target.shadowVertices[i] = target.vertices[i] + 4 + shadowOffset.x;
+      target.shadowVertices[i + 1] = target.vertices[i + 1] + 5 + shadowOffset.y;
       totalPressure += response.pressure;
     }
   }
@@ -88,6 +89,7 @@ function normalizeLink(link = {}) {
     contact: clamp(Number(link.contact ?? 0.35), 0, 1),
     maxDisplacement: clamp(Number(link.maxDisplacement ?? 18), 0, 40),
     edgeRadius: clamp(Number(link.edgeRadius ?? 0.18), 0.05, 0.8),
+    shadowReach: clamp(Number(link.shadowReach ?? 10), 0, 24),
     restY: 0,
     baseShadowAlpha: 0
   };
