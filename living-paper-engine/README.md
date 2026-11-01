@@ -8,7 +8,9 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Escena 2D con PixiJS 8.10.1.
 - Piezas independientes con posición, escala, rotación y profundidad.
 - Orden de composición por plano.
-- Trayectoria de movimiento determinista, loop y velocidad global.\n- Articulaciones jerárquicas con pivotes, límites angulares y oscilación controlada.\n- Movimiento heredado entre rama y hojas articuladas.
+- Trayectoria de movimiento determinista, loop y velocidad global.
+- Articulaciones jerárquicas con pivotes, límites angulares y oscilación controlada.
+- Movimiento heredado entre rama y hojas articuladas.
 
 ### Materiales de papel (prototipo)
 - Presets: papel mate, cartulina, papel artesanal y papel translúcido.
@@ -41,7 +43,9 @@ Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor
 
 ## Pendiente
 
-- Deformación de malla para flexión continua de piezas completas.\n- Articulaciones adicionales y controles de rig para alas, tallos, pétalos y otras piezas.\n- Textura procedural o mapas de textura con control de escala.
+- Deformación de malla para flexión continua de piezas completas.
+- Articulaciones adicionales y controles de rig para alas, tallos, pétalos y otras piezas.
+- Textura procedural o mapas de textura con control de escala.
 - Importación de sprites transparentes y SVG externos.
 - Deformación de malla y articulaciones.
 - Luces y sombras más precisas entre capas.
@@ -52,6 +56,7 @@ Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor
 
 1. Las propiedades de una pieza no alteran las demás.
 2. El grosor aparente y la sombra permanecen coherentes con la pieza.
-3. Cambiar material no reinicia la trayectoria ni la escena.\n4. Las articulaciones respetan sus límites y transmiten el movimiento a sus piezas hijas.
+3. Cambiar material no reinicia la trayectoria ni la escena.
+4. Las articulaciones respetan sus límites y transmiten el movimiento a sus piezas hijas.
 4. Los loops no saltan al completar el ciclo.
 5. Los controles se mantienen utilizables en pantalla táctil.
