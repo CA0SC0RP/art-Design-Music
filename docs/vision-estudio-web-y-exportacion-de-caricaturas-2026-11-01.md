@@ -12,7 +12,7 @@ El editor será una aplicación web: tendrá interfaz, proyectos, biblioteca de 
 
 Cada cuadro/obra podrá representar una caricatura o historia independiente. El estudio deberá organizar una biblioteca de proyectos, cada uno con sus personajes, escenarios, objetos, escenas, animaciones, diálogos, música, efectos y exportaciones.
 
-No se fija todavía una estética definitiva. El objetivo es producir personajes digitales y caricaturas mediante herramientas visuales; la animación dibujada a mano no es un objetivo del producto.
+La dirección visual aprobada es papel artesanal recortado en 2D con perspectiva, profundidad, texturas de alta calidad, bordes nítidos, iluminación y sombras entre capas. La animación dibujada a mano no es un objetivo del producto. El orden de desarrollo y los requisitos de renderizado local están definidos en `docs/decisiones-editor-personajes-y-render-local-2026-11-01.md`.
 
 ## 2. Flujo de trabajo previsto
 
@@ -35,7 +35,7 @@ Un vídeo no elimina el motor de renderizado: cambia su salida. El motor debe ca
 
 Para una historia de 60 segundos a 30 fps se deben generar 1,800 fotogramas. El sistema debe controlar la secuencia temporal de forma determinista para que la previsualización y la exportación representen la misma animación.
 
-La exportación se investigará primero en el navegador, mediante capacidades nativas como WebCodecs cuando estén disponibles y sean adecuadas. La disponibilidad real de cada códec, la memoria, el rendimiento y las limitaciones de cada navegador/dispositivo deben detectarse en tiempo de ejecución y validarse en Safari de iPad, Chrome y Firefox.
+El objetivo aprobado es que el renderizado final se ejecute localmente en el iPad; Codespaces se utilizará para desarrollo, no para renderizar historias. La exportación podrá investigar capacidades nativas como WebCodecs cuando estén disponibles y sean adecuadas. La disponibilidad real de cada códec, la memoria, el rendimiento y las limitaciones de cada navegador/dispositivo deben detectarse en tiempo de ejecución. Safari en iPad será la referencia inicial; también se intentará compatibilidad con Chrome, Firefox y Opera en iPad.
 
 No se asumirá que una única combinación de formato/códec funciona en todos los dispositivos. Se evaluará una salida ampliamente compatible y, si resulta conveniente, un formato abierto alternativo. El soporte de reproducción no equivale automáticamente a soporte de codificación.
 
@@ -79,12 +79,13 @@ Esta política es una guía técnica preventiva, no asesoría legal.
 
 ## 7. Secuencia de implementación
 
-### Etapa A — prototipo de interacción
-- Escenario adaptable a iPad.
-- Personaje vectorial provisional formado por partes.
-- Selección directa, arrastre, escala y rotación.
-- Reproducción y pausa.
-- Validación manual en Safari iPad y posteriormente Chrome/Firefox.
+### Etapa A — editor visual de personajes
+- Construcción e importación de partes y jerarquías.
+- Herramientas de rig/huesos, articulación y pivotes.
+- Deformación y estiramiento cuando aporten valor.
+- Texturas, poses y expresiones.
+- Selección, manipulación y previsualización táctil.
+- Validación inicial en Safari iPad y pruebas adicionales en Chrome, Firefox y Opera.
 
 ### Etapa B — documento de escena
 - Modelo de datos versionado.
