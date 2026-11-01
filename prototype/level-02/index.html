@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Art Design Music — Prueba de sprites 01</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#101b20;color:#edf3ed}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;background:radial-gradient(ellipse at 50% 0%,#29434a,#101b20 70%)}
+main{width:min(100%,1100px)}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+h1{font-size:clamp(18px,3vw,25px);font-weight:600;margin:0}
+p{margin:4px 0 0;color:#b8c8c1;font-size:13px}
+button{border:1px solid #82978c;background:#263a38;color:#fff;border-radius:999px;padding:9px 16px;font:inherit}
+.scene{overflow:hidden;border:1px solid #637d72;border-radius:16px;box-shadow:0 18px 55px #0008;background:#9bc5c3}
+svg{display:block;width:100%;height:auto}
+.sprite{will-change:transform}
+.bird{animation:bird-flight var(--duration) ease-in-out infinite alternate;animation-delay:var(--delay);transform-box:fill-box;transform-origin:center}
+.wing{animation:wing-flap .48s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 90%}
+.butterfly{animation:flutter var(--duration) ease-in-out infinite;animation-delay:var(--delay);transform-box:fill-box;transform-origin:center}
+.bfly-wing{animation:butterfly-wing .22s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 50%}
+.leaf{animation:leaf-fall var(--duration) linear infinite;animation-delay:var(--delay);transform-box:fill-box;transform-origin:center}
+.fish{animation:fish-swim var(--duration) ease-in-out infinite alternate;animation-delay:var(--delay);transform-box:fill-box;transform-origin:center}
+.ripple{animation:ripple 3.2s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes bird-flight{0%{transform:translate(0,0)}50%{transform:translate(34px,-18px)}100%{transform:translate(72px,3px)}}
+@keyframes wing-flap{from{transform:scaleY(.45)}to{transform:scaleY(1.15)}}
+@keyframes flutter{0%,100%{transform:translate(0,0) rotate(-5deg)}25%{transform:translate(18px,-16px) rotate(8deg)}55%{transform:translate(35px,4px) rotate(-7deg)}80%{transform:translate(12px,12px) rotate(5deg)}}
+@keyframes butterfly-wing{from{transform:scaleX(.18)}to{transform:scaleX(1)}}
+@keyframes leaf-fall{0%{transform:translate(0,-35px) rotate(0deg);opacity:0}12%{opacity:1}50%{transform:translate(35px,105px) rotate(150deg)}100%{transform:translate(-8px,230px) rotate(330deg);opacity:0}}
+@keyframes fish-swim{0%{transform:translateX(-24px) scaleX(1)}48%{transform:translateX(36px) scaleX(1)}50%{transform:translateX(36px) scaleX(-1)}100%{transform:translateX(-24px) scaleX(-1)}}
+@keyframes ripple{0%{transform:scale(.4);opacity:.65}100%{transform:scale(1.8);opacity:0}}
+.paused *{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.sprite,.wing,.bfly-wing,.ripple{animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header><div><h1>Prueba 02 · Sprites independientes</h1><p>14 objetos animados · vuelos, aleteos, caída y nado</p></div><button id="toggle" type="button">Pausar movimiento</button></header>
+<div class="scene" id="scene">
+<svg viewBox="0 0 1200 675" role="img" aria-label="Paisaje de montañas, bosque y río con aves, mariposas, hojas y peces en movimiento">
+<defs>
+<linearGradient id="sky" x2="0" y2="1"><stop stop-color="#82b8c0"/><stop offset="1" stop-color="#d6e6cf"/></linearGradient>
+<linearGradient id="water" x2="0" y2="1"><stop stop-color="#70b9b1"/><stop offset="1" stop-color="#286c70"/></linearGradient>
+<linearGradient id="hill" x2="0" y2="1"><stop stop-color="#789b77"/><stop offset="1" stop-color="#385d4c"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="url(#sky)"/>
+<circle cx="970" cy="110" r="52" fill="#f4df9b" opacity=".9"/>
+<path d="M0 350 180 145 320 300 490 110 710 345 870 180 1080 360 1200 250V675H0Z" fill="#809f9b"/>
+<path d="m180 145 55 78-55-20-55 35zm310-35 75 112-77-32-64 45zm380 70 70 90-72-28-50 40z" fill="#e4ece1" opacity=".9"/>
+<path d="M0 370Q250 285 480 375T900 355T1200 345V675H0Z" fill="url(#hill)"/>
+<path d="M0 460Q260 390 500 460T930 430T1200 455V675H0Z" fill="#426c50"/>
+<path d="M0 535Q240 490 420 535T790 510T1200 530V675H0Z" fill="#315b48"/>
+<path d="M0 570Q240 520 430 580T800 555T1200 575V675H0Z" fill="url(#water)"/>
+<path d="M0 608Q260 570 470 615T880 590T1200 610" fill="none" stroke="#b0dfd0" stroke-width="5" opacity=".6"/>
+<g fill="#244b3c"><path d="M90 480v-150l-55 90h35l-45 65h130l-45-65h35l-55-90v150z"/><path d="M1080 470V300l-65 100h42l-52 70h150l-52-70h42l-65-100v170z"/><path d="M1010 505V365l-48 76h30l-38 55h112l-38-55h30l-48-76v140z"/></g>
+<g fill="#71916a"><path d="M190 520v-115l-42 68h28l-34 47h96l-34-47h28l-42-68v115z"/><path d="M880 520v-130l-48 78h32l-39 52h110l-39-52h32l-48-78v130z"/></g>
+<!-- 3 aves: cada grupo tiene trayectoria y alas propias -->
+<g class="sprite bird" style="--duration:8s;--delay:-2s" transform="translate(220 145)" fill="#344b46"><g class="wing"><path d="M0 0Q-18 -23 -38 -15Q-24 -2 0 5Q22 -18 39 -12Q25 4 0 7Z"/></g></g>
+<g class="sprite bird" style="--duration:11s;--delay:-7s" transform="translate(470 205) scale(.72)" fill="#435c50"><g class="wing"><path d="M0 0Q-18 -23 -38 -15Q-24 -2 0 5Q22 -18 39 -12Q25 4 0 7Z"/></g></g>
+<g class="sprite bird" style="--duration:9s;--delay:-4s" transform="translate(740 130) scale(.85)" fill="#344b46"><g class="wing"><path d="M0 0Q-18 -23 -38 -15Q-24 -2 0 5Q22 -18 39 -12Q25 4 0 7Z"/></g></g>
+<!-- 4 mariposas -->
+<g class="sprite butterfly" style="--duration:7s;--delay:-1s" transform="translate(270 390)"><g fill="#e9b96e"><ellipse class="bfly-wing" cx="-7" cy="-4" rx="8" ry="12"/><ellipse class="bfly-wing" cx="7" cy="-4" rx="8" ry="12"/></g><path d="M0 -10V12" stroke="#493d32" stroke-width="2"/></g>
+<g class="sprite butterfly" style="--duration:9s;--delay:-5s" transform="translate(620 410) scale(.8)"><g fill="#dca5b8"><ellipse class="bfly-wing" cx="-7" cy="-4" rx="8" ry="12"/><ellipse class="bfly-wing" cx="7" cy="-4" rx="8" ry="12"/></g><path d="M0 -10V12" stroke="#493d32" stroke-width="2"/></g>
+<g class="sprite butterfly" style="--duration:8s;--delay:-3s" transform="translate(920 390) scale(.7)"><g fill="#e8d68d"><ellipse class="bfly-wing" cx="-7" cy="-4" rx="8" ry="12"/><ellipse class="bfly-wing" cx="7" cy="-4" rx="8" ry="12"/></g><path d="M0 -10V12" stroke="#493d32" stroke-width="2"/></g>
+<g class="sprite butterfly" style="--duration:10s;--delay:-7s" transform="translate(430 455) scale(.65)"><g fill="#a8c9d1"><ellipse class="bfly-wing" cx="-7" cy="-4" rx="8" ry="12"/><ellipse class="bfly-wing" cx="7" cy="-4" rx="8" ry="12"/></g><path d="M0 -10V12" stroke="#493d32" stroke-width="2"/></g>
+<!-- 4 hojas que caen desde distintas posiciones -->
+<g class="sprite leaf" style="--duration:8s;--delay:-2s" transform="translate(120 360)"><path d="M0 0Q28 -22 24 4Q15 23 -3 14Q-12 7 0 0Z" fill="#d4a65f"/><path d="m-3 14 24-19" stroke="#775c3d" fill="none"/></g>
+<g class="sprite leaf" style="--duration:10s;--delay:-6s" transform="translate(1040 330)"><path d="M0 0Q28 -22 24 4Q15 23 -3 14Q-12 7 0 0Z" fill="#c77f53"/><path d="m-3 14 24-19" stroke="#775c3d" fill="none"/></g>
+<g class="sprite leaf" style="--duration:9s;--delay:-4s" transform="translate(820 350)"><path d="M0 0Q28 -22 24 4Q15 23 -3 14Q-12 7 0 0Z" fill="#d9bd69"/><path d="m-3 14 24-19" stroke="#775c3d" fill="none"/></g>
+<g class="sprite leaf" style="--duration:11s;--delay:-8s" transform="translate(360 330)"><path d="M0 0Q28 -22 24 4Q15 23 -3 14Q-12 7 0 0Z" fill="#bb7652"/><path d="m-3 14 24-19" stroke="#775c3d" fill="none"/></g>
+<!-- 3 peces con nado alternado -->
+<g class="sprite fish" style="--duration:6s;--delay:-1s" transform="translate(330 610)" fill="#e5c58a"><path d="M-20 0Q0 -17 22 0Q0 17 -20 0Z"/><path d="m20 0 15-12v24z" fill="#c99565"/><circle cx="-10" cy="-2" r="2" fill="#273e3c"/></g>
+<g class="sprite fish" style="--duration:8s;--delay:-4s" transform="translate(700 635) scale(.8)" fill="#b8d1bd"><path d="M-20 0Q0 -17 22 0Q0 17 -20 0Z"/><path d="m20 0 15-12v24z" fill="#83aaa0"/><circle cx="-10" cy="-2" r="2" fill="#273e3c"/></g>
+<g class="sprite fish" style="--duration:7s;--delay:-2s" transform="translate(970 605) scale(.65)" fill="#d9ad83"><path d="M-20 0Q0 -17 22 0Q0 17 -20 0Z"/><path d="m20 0 15-12v24z" fill="#b97d62"/><circle cx="-10" cy="-2" r="2" fill="#273e3c"/></g>
+</svg>
+</div>
+<p>Prueba técnica: 14 sprites vectoriales de demostración. No son todavía los recursos gráficos definitivos.</p>
+</main>
+<script>
+const scene=document.getElementById('scene');
+const button=document.getElementById('toggle');
+button.addEventListener('click',()=>{const paused=scene.classList.toggle('paused');button.textContent=paused?'Reanudar movimiento':'Pausar movimiento';});
+</script>
+</body>
+</html>
