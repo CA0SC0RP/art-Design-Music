@@ -87,17 +87,16 @@ Esta política es una guía técnica preventiva, no asesoría legal.
 - Selección, manipulación y previsualización táctil.
 - Validación inicial en Safari iPad y pruebas adicionales en Chrome, Firefox y Opera.
 
-### Etapa B — documento de escena
-- Modelo de datos versionado.
-- Guardar/cargar escena local.
-- Jerarquía de objetos, inspector y deshacer/rehacer.
-- Múltiples personajes y objetos.
+### Etapa B — escenas y animación
+- Modelo de escena versionado.
+- Fondos, objetos, cámara y composición.
+- Colocación de personajes y acciones.
+- Guardar/cargar proyectos y deshacer/rehacer.
 
-### Etapa C — personajes
-- Importación de recursos propios.
-- Partes y jerarquía.
-- Controles de pose y expresiones.
-- Mallas/deformación solo cuando aporten valor y se validen en dispositivo.
+### Etapa C — líneas de tiempo e historias
+- Timeline, keyframes, curvas y clips.
+- Organización de escenas y tomas.
+- Sincronización de movimientos y acciones.
 
 ### Etapa D — animación e historias
 - Timeline y keyframes.
@@ -119,7 +118,7 @@ Esta política es una guía técnica preventiva, no asesoría legal.
 
 ## 8. Próximo paso inmediato
 
-Continuar el prototipo aislado `prototype/caricature-studio-v01/index.html` y validarlo en el iPad. La siguiente mejora de arquitectura, una vez comprobada la interacción, será separar el estado de escena del dibujo SVG y crear un documento de proyecto mínimo que pueda guardarse y restaurarse. No implementar todavía importación compleja de personajes, render remoto ni exportación final antes de tener una escena reproducible.
+Continuar el desarrollo del editor visual de personajes como primera prioridad. El prototipo `prototype/caricature-studio-v01/index.html` es solo una prueba de interacción y no representa el editor completo. La siguiente fase debe avanzar hacia partes editables, jerarquías, pivotes, controles de rig/huesos, poses y deformación, manteniendo pruebas pequeñas y reversibles en iPad. No adelantar todavía el renderizador, la exportación final ni el reproductor de TV.
 
 ## 9. Estado y límites
 
