@@ -33,6 +33,11 @@ jobs:
           node --check living-paper-engine/src/rigging.js
           node --check living-paper-engine/src/volume.js
           node --check living-paper-engine/src/volume-math.js
+          node --check living-paper-engine/src/edges.js
+          node --check living-paper-engine/src/edge-math.js
+          node --check living-paper-engine/src/edge.test.mjs
+          node --experimental-default-type=module --test living-paper-engine/src/edge.test.mjs
+          grep -q "enablePaperEdges" living-paper-engine/src/edges.js
           node --check living-paper-engine/src/volume.test.mjs
           node --experimental-default-type=module --test living-paper-engine/src/volume.test.mjs
           grep -q "enableFoldVolume" living-paper-engine/src/volume.js
