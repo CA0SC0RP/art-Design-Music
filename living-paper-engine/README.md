@@ -25,6 +25,10 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Cantos levantados dibujados sobre la línea del pliegue con espesor aparente variable.
 - Sombra propia del canto y reflejo fino para separar visualmente la cara superior y el borde expuesto.
 - Perfil de espesor dependiente del ángulo, el lado del pliegue y la intensidad configurada.
+- Curvatura continua de superficie con campo suave de desplazamiento y dirección configurable.
+- Memoria elástica por vértice con velocidad persistente, rigidez y amortiguación configurables.
+- Recuperación progresiva al retirar la curvatura, sin acumular desplazamiento entre cuadros.
+- Las zonas ancladas reducen la movilidad de la respuesta elástica.
 - Movimiento heredado entre rama y hojas articuladas.
 
 ### Materiales de papel (prototipo)
@@ -34,7 +38,7 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Línea de luz sutil en el borde superior.
 - Intensidad de sombra y grosor ajustables por pieza desde el inspector.
 
-La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final. Las zonas de influencia se expresan en coordenadas normalizadas de la superficie y usan una caída suave para evitar límites abruptos. Los anclajes conservan regiones de la malla cerca de su posición de reposo. Los pliegues aplican una aproximación geométrica 2D a un lado de una línea de pliegue; la capa de volumen añade iluminación y sombra mapeadas para sugerir relieve; los cantos levantados añaden una banda visible de espesor variable. No es geometría 3D ni simulación física de papel.
+La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final. Las zonas de influencia se expresan en coordenadas normalizadas de la superficie y usan una caída suave para evitar límites abruptos. Los anclajes conservan regiones de la malla cerca de su posición de reposo. Los pliegues aplican una aproximación geométrica 2D a un lado de una línea de pliegue; la capa de volumen añade iluminación y sombra mapeadas para sugerir relieve; los cantos levantados añaden una banda visible de espesor variable. La curvatura elástica es una aproximación 2D amortiguada, no un solver físico ni geometría 3D.
 
 Los materiales son aproximaciones 2D deliberadas. Aún no representan simulación física ni una malla 3D de papel.
 
@@ -52,11 +56,21 @@ Los materiales son aproximaciones 2D deliberadas. Aún no representan simulació
 - `styles.css`: interfaz adaptable.
 - `src/engine.js`: renderer, piezas, materiales y geometría paper-cut.
 - `src/motion.js`: trayectorias y loops.
-- `src/rigging.js`: anclajes, pliegues múltiples y vínculos con articulaciones.\n- `src/volume.js`: iluminación y sombra mapeadas para volumen aparente.\n- `src/volume-math.js`: cálculo puro de perfiles de luz y sombra.\n- `src/volume.test.mjs`: pruebas de perfiles de volumen.\n- `src/demo.js`: escena de prueba y controles.
+- `src/rigging.js`: anclajes, pliegues múltiples y vínculos con articulaciones.
+- `src/volume.js`: iluminación y sombra mapeadas para volumen aparente.
+- `src/volume-math.js`: cálculo puro de perfiles de luz y sombra.
+- `src/volume.test.mjs`: pruebas de perfiles de volumen.
+- `src/edges.js`: cantos levantados y espesor aparente.
+- `src/edge-math.js`: perfiles de espesor.
+- `src/edge.test.mjs`: pruebas de cantos.
+- `src/elastic.js`: curvatura continua y memoria elástica.
+- `src/elastic-math.js`: funciones puras de curvatura y resorte.
+- `src/elastic.test.mjs`: pruebas de recuperación y anclajes.
+- `src/demo.js`: escena de prueba y controles.
 
 ## Prueba manual
 
-Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor y sombra. Probar las articulaciones, la flexión del tallo, la ondulación, la influencia localizada, el anclaje, el ángulo del pliegue y la intensidad/anchura del relieve de la hoja de malla, además de pausa y velocidad global.
+Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor y sombra. Probar las articulaciones, la flexión del tallo, la ondulación, la influencia localizada, el anclaje, los pliegues, el volumen, el espesor del canto y la curvatura elástica de la hoja, además de pausa y velocidad global.
 
 ## Pendiente
 
