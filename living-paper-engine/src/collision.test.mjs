@@ -146,3 +146,16 @@ test("la transformación de vectores conserva dirección y escala sin trasladar 
   assert.ok(Math.abs(local.x - 3) < 1e-6);
   assert.ok(Math.abs(local.y - 4) < 1e-6);
 });
+
+
+test("el contacto encuentra el punto más cercano en triángulos degenerados", () => {
+  const triangle = {
+    a: { x: 0, y: 0 }, b: { x: 5, y: 0 }, c: { x: 10, y: 0 },
+    minX: 0, maxX: 10, minY: 0, maxY: 0
+  };
+  const closest = closestPointOnMesh({ x: 6, y: 3 }, [triangle]);
+  assert.ok(closest);
+  assert.ok(Math.abs(closest.x - 6) < 1e-6);
+  assert.ok(Math.abs(closest.y) < 1e-6);
+  assert.ok(Math.abs(closest.distance - 3) < 1e-6);
+});
