@@ -68,5 +68,5 @@ speed.addEventListener("input",()=>{engine.setSpeed(Number(speed.value)/100);syn
 document.querySelector("#pauseButton").addEventListener("click",event=>{engine.setPaused(!engine.paused);event.currentTarget.textContent=engine.paused?"Reanudar":"Pausar";});
 document.querySelector("#resetButton").addEventListener("click",()=>{mountain.setScale(1);mountain.setRotation(0);mountain.setDepth(5);mountain.setPosition(640,360);hill.setScale(1);hill.setRotation(0);hill.setDepth(4);hill.setPosition(640,470);tree.setScale(1);tree.setRotation(0);tree.setDepth(2);tree.setPosition(330,450);bird.setScale(1);bird.setRotation(0);bird.setDepth(3);bird.motion.time=0;flexibleStem.setSway({amplitude:13,period:4.4,phase:.8});flexBend.value=0;branchJoint.setSway({amplitude:7,period:5,phase:.4});leafJoint.setSway({amplitude:17,period:2.8,phase:1.1});jointSelect.value="branch";selectedJoint=branchJoint;jointAngle.value=-7;for(const p of [mountain,hill,tree,bird]){p.setMaterial("matte");p.setThickness(4);p.setShadowStrength(.22);}speed.value=100;engine.setSpeed(1);choose("mountain");});
 choose("mountain");
-status.textContent="PixiJS 8 · renderer activo · 4 piezas independientes";
+status.textContent="PixiJS 8 · 4 piezas · articulaciones jerárquicas · flexión continua";
 window.addEventListener("beforeunload",()=>engine.destroy());
