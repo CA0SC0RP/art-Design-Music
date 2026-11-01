@@ -4,7 +4,10 @@ export function resolveContactConstraint(source, target, {
   normalY = 1,
   minGap = 2,
   stiffness = 0.65,
-  maxCorrection = 10
+  maxCorrection = 10,
+  tangentRestGap = 0,
+  friction = 0,
+  maxTangentialCorrection = 4
 } = {}) {
   const length = Math.hypot(normalX, normalY);
   if (length < 1e-8) throw new RangeError("El eje normal de contacto no puede ser cero.");
@@ -12,12 +15,19 @@ export function resolveContactConstraint(source, target, {
   const gap = (target.x - source.x) * nx + (target.y - source.y) * ny;
   const penetration = Math.max(0, minGap - gap);
   const correction = Math.min(Math.max(0, maxCorrection), penetration * clamp(stiffness, 0, 1));
+  const tangentX = -ny, tangentY = nx;
+  const tangentGap = (target.x - source.x) * tangentX + (target.y - source.y) * tangentY;
+  const slip = tangentGap - tangentRestGap;
+  const frictionCorrection = clamp(-slip * clamp(friction, 0, 1), -Math.max(0, maxTangentialCorrection), Math.max(0, maxTangentialCorrection));
   return {
     gap,
     penetration,
     correction,
-    x: nx * correction,
-    y: ny * correction,
+    tangentGap,
+    slip,
+    frictionCorrection,
+    x: nx * correction + tangentX * frictionCorrection,
+    y: ny * correction + tangentY * frictionCorrection,
     touching: penetration > 0
   };
 }
