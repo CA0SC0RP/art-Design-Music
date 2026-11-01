@@ -6,7 +6,7 @@
 
 El usuario debe poder construir y editar una caricatura desde una interfaz visual en su iPad: ver el escenario, seleccionar personajes y objetos, modificar sus propiedades, definir movimientos y revisar la animación. La evolución prevista incluye línea de tiempo, varias escenas, diálogos, efectos, música original para cada historia y exportación de vídeo.
 
-La primera meta es un escenario editable y animable desde Safari en iPad. No asumir que el motor completo, la conexión directa con ChatGPT o la exportación ya existen.
+La primera prioridad es construir el editor visual completo de personajes: partes, jerarquías, rigs/huesos, articulación, deformación, texturas, poses y expresiones. Safari en iPad es el navegador de referencia inicial; también se intentará compatibilidad con Chrome, Firefox y Opera. No asumir que el editor completo, la conexión directa con ChatGPT o la exportación ya existen.
 
 ## Responsabilidades
 
@@ -31,7 +31,7 @@ Al inicio, el ciclo será: el usuario describe el cambio en el chat; ChatGPT mod
 9. No tratar recursos provisionales como finales. La aprobación creativa corresponde al usuario.
 10. No imponer al motor nuevo la estética de papel recortado, el marco ornamental, la escena Mountains That Breathe, el paralaje ni el comportamiento ambiental del proyecto anterior.
 11. La música y el sonido se diseñan para cada microhistoria cuando la narrativa esté definida; no imponer ambient, lo-fi, chillout ni un tempo global.
-12. Priorizar una interfaz táctil clara y usable en iPad Safari. Evitar exigir que el usuario escriba código.
+12. Priorizar una interfaz táctil clara y usable en iPad. Safari será el navegador de referencia inicial; probar también Chrome, Firefox y Opera en iPad. Evitar exigir que el usuario escriba código.
 13. Mantener los recursos, prototipos y documentos anteriores como antecedentes hasta clasificarlos. No borrarlos durante la transición.
 14. Registrar en la bitácora fecha, objetivo, rama y commit de partida, archivos afectados, cambios, pruebas reales, problemas y siguiente paso.
 15. No declarar una función como compatible con Safari/iPad hasta que el usuario o una prueba verificable confirme su funcionamiento.
@@ -48,9 +48,7 @@ Al inicio, el ciclo será: el usuario describe el cambio en el chat; ChatGPT mod
 
 ## Alcance de desarrollo inmediato
 
-Primero auditar en modo de solo lectura living-paper-engine/ y prototype/ para determinar qué código puede reutilizarse en un editor de caricaturas. Después definir una arquitectura mínima y construir una prueba de escenario editable para iPad.
-
-La prueba inicial debe permitir abrir un escenario, seleccionar un elemento, cambiar su posición y tamaño con controles visuales, reproducir una animación sencilla y revisar el resultado desde Safari en iPad.
+Continuar el editor visual de personajes como primera prioridad. El prototipo actual de escenario y personaje geométrico es solo una prueba técnica; no debe confundirse con el editor completo. Diseñar e implementar de forma incremental herramientas de partes, jerarquía, pivotes, rig/huesos, deformación, texturas, poses y expresiones. Validar las interacciones táctiles en Safari del iPad y probar después Chrome, Firefox y Opera. No adelantar escenas completas, timeline, renderizador ni exportación hasta completar la base de personajes.
 
 ## Documentación anterior
 
