@@ -1,5 +1,9 @@
 
 **Decisiones vigentes aprobadas el 2026-11-01:** la estética del producto es papel artesanal recortado 2D con profundidad, perspectiva y texturas de alta calidad; el editor completo de personajes es la primera prioridad. Codespaces se reserva para desarrollo y el iPad será el objetivo de renderizado local, sin servidores de render. Safari será el navegador de referencia inicial y se buscará compatibilidad con Chrome, Firefox y Opera en iPad. Objetivo de salida: 4K UHD y 24/30 fps; 10-bit/HDR10 y códecs concretos quedan sujetos a pruebas. Detalle: `docs/decisiones-editor-personajes-y-render-local-2026-11-01.md`.
+
+
+**Requisito permanente de interacción del editor (2026-11-01):** interfaz táctil prioritaria para iPad y compatibilidad simultánea con mouse/puntero. Las herramientas principales deben poder operarse con dedo o mouse; los controles táctiles tendrán áreas de toque amplias y la interacción con mouse conservará precisión. El prototipo v0.7 refuerza esta base mediante Pointer Events y estilos adaptados a puntero grueso. La compatibilidad real aún debe validarse en Safari con pantalla táctil y mouse conectado.
+
 # Estado vigente — cambio de objetivo 2026-11-01
 
 **Objetivo actual:** construir un estudio web para crear caricaturas digitales y microhistorias audiovisuales con estética de papel artesanal recortado en 2D, profundidad, perspectiva y texturas de alta calidad. Safari en iPad será el navegador de referencia inicial; se buscará compatibilidad con Chrome, Firefox y Opera en iPad. El producto principal será el editor web y la salida final será vídeo. ChatGPT es el único asistente de IA que modifica y revisa el código.
