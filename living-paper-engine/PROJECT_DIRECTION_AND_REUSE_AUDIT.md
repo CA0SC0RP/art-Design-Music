@@ -1,3 +1,5 @@
+> **ARCHIVADO — 2026-11-01.** Este documento describe una dirección intermedia anterior basada en microhistorias de papel multicapa. Ya no define el producto. La dirección vigente es un motor y estudio visual de caricaturas para iPad, según `docs/direccion-motor-caricaturas-ipad.md`. Su inventario técnico se conserva como antecedente; la evaluación actual de reutilización está en `docs/auditoria-reutilizacion-motor-caricaturas-ipad-2026-11-01.md`.
+
 # Living Paper Engine — nueva dirección y auditoría inicial de reutilización
 
 Fecha de revisión: 2026-11-01  
