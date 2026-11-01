@@ -424,3 +424,7 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - El workflow ahora valida la presencia de las conexiones del pincel, matrices de referencia, caché y transformación triangular. La validación visual en navegador/Safari/iPad continúa pendiente.
 
 - Se corrigió la retroalimentación del inspector: los mensajes de pesos aplicados ya no se pierden cuando se vuelve a renderizar el lienzo; se limpian al cambiar de pieza/vértice o eliminar la malla.
+
+
+## 2026-11-01 — Editor de personajes v0.9.12
+Se incorporó expansión conservadora de los polígonos de recorte triangulares (0.35 unidades locales) para mitigar posibles juntas de antialiasing durante el skinning visible. La transformación afín continúa usando los vértices originales. Se agregaron pruebas de geometría y validación de entradas. La mejora queda pendiente de inspección visual: debe comprobarse que no aparezcan halos ni distorsión en los contornos. La validación automatizada se ejecutará mediante GitHub Actions; Safari/iPad sigue pendiente.
