@@ -32,6 +32,8 @@ function normalizeMesh(raw,boneIds){
  const faces=[];
  for(const f of raw.faces){
   if(!Array.isArray(f)||f.length!==3||!f.every(i=>Number.isInteger(i)&&i>=0&&i<vertices.length)||new Set(f).size!==3)return {ok:false,message:"Una cara debe contener tres índices de vértice distintos y válidos."};
+  const [a,b,c]=f.map(i=>vertices[i]),area2=(b.x-a.x)*(c.y-a.y)-(c.x-a.x)*(b.y-a.y);
+  if(!Number.isFinite(area2)||Math.abs(area2)<1e-9)return {ok:false,message:"Una cara no puede tener área nula o ser geométricamente degenerada."};
   faces.push([...f]);
  }
  return {ok:true,mesh:{version:1,columns:Number.isInteger(raw.columns)?raw.columns:null,rows:Number.isInteger(raw.rows)?raw.rows:null,vertices,faces}};
