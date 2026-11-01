@@ -159,3 +159,34 @@ test("el contacto encuentra el punto más cercano en triángulos degenerados", (
   assert.ok(Math.abs(closest.y) < 1e-6);
   assert.ok(Math.abs(closest.distance - 3) < 1e-6);
 });
+
+
+test("detecta ambos extremos de un solapamiento colineal con el borde del triángulo", () => {
+  const triangle = {
+    a: { x: 0, y: 0 }, b: { x: 10, y: 0 }, c: { x: 5, y: 10 },
+    minX: 0, maxX: 10, minY: 0, maxY: 10
+  };
+  const hits = segmentTriangleContacts({ x: 2, y: 0 }, { x: 8, y: 0 }, [triangle]);
+  assert.equal(hits.length, 2);
+  assert.ok(Math.abs(hits[0].t) < 1e-6);
+  assert.ok(Math.abs(hits[1].t - 1) < 1e-6);
+  assert.ok(hits.every(hit => Math.abs(hit.point.y) < 1e-6));
+});
+
+test("detecta un único contacto cuando dos segmentos colineales solo se tocan en un extremo", () => {
+  const triangle = {
+    a: { x: 0, y: 0 }, b: { x: 10, y: 0 }, c: { x: 5, y: 10 },
+    minX: 0, maxX: 10, minY: 0, maxY: 10
+  };
+  const hits = segmentTriangleContacts({ x: -4, y: 0 }, { x: 0, y: 0 }, [triangle]);
+  assert.equal(hits.length, 1);
+  assert.ok(Math.abs(hits[0].point.x) < 1e-6);
+});
+
+test("los segmentos colineales separados no generan contactos", () => {
+  const triangle = {
+    a: { x: 0, y: 0 }, b: { x: 10, y: 0 }, c: { x: 5, y: 10 },
+    minX: 0, maxX: 10, minY: 0, maxY: 10
+  };
+  assert.deepEqual(segmentTriangleContacts({ x: 12, y: 0 }, { x: 18, y: 0 }, [triangle]), []);
+});
