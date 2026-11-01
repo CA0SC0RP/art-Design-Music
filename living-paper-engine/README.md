@@ -21,6 +21,8 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Línea de luz sutil en el borde superior.
 - Intensidad de sombra y grosor ajustables por pieza desde el inspector.
 
+La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final.
+
 Los materiales son aproximaciones 2D deliberadas. Aún no representan simulación física ni una malla 3D de papel.
 
 ## Tecnología
