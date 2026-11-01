@@ -70,7 +70,7 @@ function applyLink(link) {
   const sourceTriangles = buildMeshTriangles(source, sourceTransform);
   const spatialIndex = buildTriangleSpatialIndex(sourceTriangles, Math.max(24, link.contactRange));
   let totalPressure = 0, totalPenetration = 0, contactCount = 0, testedVertices = 0, candidateTriangles = 0;
-  const vertexTouching = new Uint8Array(target.vertices.length / 2);
+  const vertexTouching = new Uint8Array(target.vertices.length / 2);\n  const vertexCandidates = [];\n  const edgeCandidates = [];
 
   for (let row = 0; row <= target.rows; row++) {
     for (let col = 0; col <= target.columns; col++) {
@@ -145,7 +145,7 @@ function applyLink(link) {
     const worldB = transformPoint(targetTransform, { x: bx, y: by });
     const minX = Math.min(worldA.x, worldB.x), maxX = Math.max(worldA.x, worldB.x);
     const minY = Math.min(worldA.y, worldB.y), maxY = Math.max(worldA.y, worldB.y);
-    const candidates = queryTriangleSpatialIndex(spatialIndex, { minX, maxX, minY, maxY });
+    const candidates = queryTriangleSpatialIndex(spatialIndex, { minX, maxX, minY, maxY }, 1e-7, edgeCandidates);
     edgeCandidateTriangles += candidates.length;
     edgeTests++;
     const hits = segmentTriangleContacts(worldA, worldB, candidates);
