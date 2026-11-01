@@ -57,8 +57,8 @@ test("la capa receptora sigue la deformación sin acumular deriva", () => {
   };
   enableLayerInteraction(engine, [{ source, target, coupling: 0.4, clearance: 6, maxDisplacement: 20 }]);
   const center = (1 * 3 + 1) * 2;
-  assert.ok(Math.abs(target.vertices[center] - 14) < 1e-6);
   engine.update(1 / 60);
+  assert.ok(Math.abs(target.vertices[center] - 14) < 1e-6);
   const first = target.vertices[center];
   engine.update(1 / 60);
   assert.ok(Math.abs(target.vertices[center] - first) < 1e-6);
