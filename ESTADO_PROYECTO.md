@@ -147,3 +147,13 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Código con validación estática de sintaxis JavaScript y comprobación de IDs del DOM: sin errores de sintaxis, IDs duplicados ni referencias a IDs inexistentes.
 - La validación estática no sustituye ejecutar el editor: aún falta probar en navegador, especialmente arrastre táctil y rotación en Safari del iPad.
 - No se modificó `main`, no hubo merge, PR ni despliegue; no se instalaron dependencias ni hubo gastos.
+
+
+## Actualización — 2026-11-01: biblioteca de poses reutilizables v0.3
+- Se añadió al editor una biblioteca de poses por proyecto: captura la posición X/Y, rotación y escala de todas las piezas con un nombre elegido por el usuario.
+- Se puede seleccionar una pose guardada, aplicarla mediante transición interpolada de aproximadamente 520 ms y eliminarla.
+- Las poses se guardan junto al proyecto en localStorage y se incluyen en el JSON exportado. Los proyectos antiguos sin biblioteca continúan cargando con una lista vacía.
+- La transición se interrumpe al iniciar manipulación manual, para que el usuario recupere el control del personaje.
+- Se actualizó el documento técnico del editor.
+- Verificación estática: sintaxis JavaScript correcta en esta versión. No se ha ejecutado la interfaz en navegador ni validado la interacción táctil en iPad.
+- No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
