@@ -21,9 +21,17 @@ test("rechaza huesos desconocidos y pesos negativos",()=>{
  assert.equal(model.normalizeMesh(base,["a"]).ok,false);
  base.vertices[0].weights=[{boneId:"a",weight:-1}];assert.equal(model.normalizeMesh(base,["a"]).ok,false);
 });
-test("rechaza caras degeneradas o con índices inválidos",()=>{
+test("rechaza caras con índices repetidos o fuera de rango",()=>{
  const base={vertices:[{id:"v0",x:0,y:0,weights:[{boneId:"a",weight:1}]},{id:"v1",x:1,y:0,weights:[{boneId:"a",weight:1}]},{id:"v2",x:0,y:1,weights:[{boneId:"a",weight:1}]}],faces:[[0,1,1]]};
  assert.equal(model.normalizeMesh(base,["a"]).ok,false);base.faces=[[0,1,3]];assert.equal(model.normalizeMesh(base,["a"]).ok,false);
+});
+test("rechaza caras colineales aunque sus índices sean distintos",()=>{
+ const base={vertices:[{id:"v0",x:0,y:0,weights:[{boneId:"a",weight:1}]},{id:"v1",x:5,y:5,weights:[{boneId:"a",weight:1}]},{id:"v2",x:10,y:10,weights:[{boneId:"a",weight:1}]}],faces:[[0,1,2]]};
+ assert.equal(model.normalizeMesh(base,["a"]).ok,false);
+});
+test("rechaza triángulos con área prácticamente nula",()=>{
+ const base={vertices:[{id:"v0",x:0,y:0,weights:[{boneId:"a",weight:1}]},{id:"v1",x:1,y:0,weights:[{boneId:"a",weight:1}]},{id:"v2",x:2,y:1e-12,weights:[{boneId:"a",weight:1}]}],faces:[[0,1,2]]};
+ assert.equal(model.normalizeMesh(base,["a"]).ok,false);
 });
 test("mueve vértices sin alterar sus influencias",()=>{
  const r=model.createGrid({width:20,height:20,columns:2,rows:2,boneId:"root"}),weights=JSON.stringify(r.mesh.vertices[0].weights);
