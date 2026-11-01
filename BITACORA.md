@@ -451,3 +451,10 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 ## 2026-11-01 — Validación automatizada v0.9.15
 - GitHub Actions, ejecución #70 (commit `9d49a828f6950f4eb216b753c175bfd349352ee3`): completada con éxito. Sintaxis de módulos y JavaScript integrado correctas; comprobaciones estructurales del editor correctas.
 - Suite completa: 63 pruebas superadas, 0 fallidas. Esto valida lógica y estructura automatizable; no sustituye la revisión visual ni la prueba táctil en Safari/iPad.
+
+
+## 2026-11-01 — Editor de personajes v0.9.16, validación geométrica de caras
+- `normalizeMesh()` ahora verifica el área geométrica de cada cara, además de validar índices y unicidad de vértices. Rechaza triángulos colineales, de área nula o prácticamente nula antes de incorporarlos al proyecto.
+- Se añadieron pruebas específicas para caras colineales y triángulos casi degenerados, y se separó el caso de índices repetidos/fuera de rango.
+- Esta protección evita aceptar topología que luego no puede generar una transformación afín válida durante el skinning.
+- Pendiente: confirmar CI y continuar con auditoría de topología, pesos y rendimiento. La inspección visual en Safari/iPad aún no se ha realizado.
