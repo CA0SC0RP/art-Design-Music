@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171a1c">
+  <title>Living Paper Engine · Laboratorio 05.5</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">ART DESIGN MUSIC · LABORATORIO 05.5</p>
+      <h1>Living Paper Engine</h1>
+      <p class="subtitle">Motor experimental de composición y movimiento para escenas de papel</p>
+    </div>
+    <span class="status">PROTOTIPO FUNDACIONAL</span>
+  </header>
+
+  <main class="workspace">
+    <section class="stage-panel" aria-label="Escena de prueba">
+      <div class="stage-heading">
+        <div><strong>Escena de capas</strong><span>Selecciona una pieza para editarla</span></div>
+        <div class="stage-actions">
+          <button id="pauseButton" class="secondary">Pausar</button>
+          <button id="resetButton" class="secondary">Reiniciar</button>
+        </div>
+      </div>
+      <div id="stage" class="stage">
+        <div id="loading" class="loading">Preparando el motor…</div>
+      </div>
+      <div class="stage-footer"><span id="engineStatus">Inicializando renderer</span><span>16:9 · Escena vectorial provisional</span></div>
+    </section>
+
+    <aside class="inspector">
+      <div class="inspector-title"><span>INSPECTOR</span><span id="selectedName">Montaña lejana</span></div>
+      <label for="pieceSelect">Pieza seleccionada</label>
+      <select id="pieceSelect">
+        <option value="mountain">Montaña lejana</option>
+        <option value="hill">Colina intermedia</option>
+        <option value="tree">Árbol de papel</option>
+        <option value="bird">Ave de prueba</option>
+      </select>
+
+      <div class="control-group">
+        <div class="control-heading"><label for="scaleControl">Escala</label><output id="scaleValue">100%</output></div>
+        <input id="scaleControl" type="range" min="50" max="160" value="100">
+      </div>
+      <div class="control-group">
+        <div class="control-heading"><label for="rotationControl">Rotación</label><output id="rotationValue">0°</output></div>
+        <input id="rotationControl" type="range" min="-25" max="25" value="0">
+      </div>
+      <div class="control-group">
+        <div class="control-heading"><label for="depthControl">Profundidad</label><output id="depthValue">3</output></div>
+        <input id="depthControl" type="range" min="1" max="5" value="3">
+      </div>
+      <div class="control-group">
+        <div class="control-heading"><label for="speedControl">Velocidad global</label><output id="speedValue">1.0×</output></div>
+        <input id="speedControl" type="range" min="50" max="180" value="100">
+      </div>
+      <div class="inspector-note">
+        <strong>Qué estamos comprobando</strong>
+        <p>Transformaciones independientes, orden de capas, sombra aparente, trayectoria continua y control global del tiempo.</p>
+      </div>
+    </aside>
+  </main>
+  <footer class="page-footer">Las figuras son geometría de prueba. Las ilustraciones artesanales, texturas y sprites finales se incorporarán después de validar el motor.</footer>
+  <script type="module" src="./src/demo.js"></script>
+</body>
+</html>
