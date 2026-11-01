@@ -69,7 +69,8 @@ function applyLink(link) {
   const targetTransform = composeWorldTransform(target.container);
   const sourceTriangles = buildMeshTriangles(source, sourceTransform);
   const spatialIndex = buildTriangleSpatialIndex(sourceTriangles, Math.max(24, link.contactRange));
-  let totalPressure = 0, totalPenetration = 0, contactCount = 0, testedVertices = 0, candidateTriangles = 0;\n  const vertexTouching = new Uint8Array(target.vertices.length / 2);
+  let totalPressure = 0, totalPenetration = 0, contactCount = 0, testedVertices = 0, candidateTriangles = 0;
+  const vertexTouching = new Uint8Array(target.vertices.length / 2);
 
   for (let row = 0; row <= target.rows; row++) {
     for (let col = 0; col <= target.columns; col++) {
@@ -128,6 +129,9 @@ function applyLink(link) {
   const nx = link.contactNormalX / normalLength, ny = link.contactNormalY / normalLength;
   const gridIndex = (x, y) => y * (target.columns + 1) + x;
   const testEdge = (ia, ib) => {
+    // Both endpoints already satisfy the same normal contact constraint; their connecting
+    // linear edge does not need another boundary-intersection pass.
+    if (vertexTouching[ia] && vertexTouching[ib]) { skippedResolvedEdges++; return; }
     const ax = target.vertices[ia * 2], ay = target.vertices[ia * 2 + 1];
     const bx = target.vertices[ib * 2], by = target.vertices[ib * 2 + 1];
     const midpoint = { x: (ax + bx) / 2, y: (ay + by) / 2 };
