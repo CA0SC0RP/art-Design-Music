@@ -37,7 +37,7 @@ jobs:
 
       - name: Validar sintaxis del JavaScript integrado en el editor
         run: |
-          node -e 'const fs=require("node:fs"); const html=fs.readFileSync("prototype/character-editor-v01/index.html","utf8"); const scripts=[...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)]; if(!scripts.length) throw new Error("No se encontró el script principal"); scripts.forEach((item)=>new Function(item[1])); console.log("JavaScript integrado: sintaxis correcta.");'
+          node -e 'const fs=require("node:fs"); const html=fs.readFileSync("prototype/character-editor-v01/index.html","utf8"); const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)]; if(!scripts.length) throw new Error("No se encontró el script principal"); scripts.forEach((item)=>new Function(item[1])); console.log("JavaScript integrado: sintaxis correcta.");'
 
       - name: Comprobar que el editor carga el solver externo
         run: |
