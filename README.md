@@ -15,6 +15,8 @@ El usuario dirige la creación. ChatGPT es el único asistente de IA que partici
 - [Arquitectura inicial](ARQUITECTURA.md)
 - [Instrucciones de trabajo](INSTRUCCIONES_PARA_IA.md)
 - [Bitácora](BITACORA.md)
+- [Investigación de Umamo y decisión de arquitectura](docs/investigacion-umamo-y-decision-arquitectura-2026-11-01.md)
+- [Primera prueba aislada del estudio de caricaturas](prototype/caricature-studio-v01/index.html)
 
 ## Experiencia prevista
 
@@ -25,7 +27,7 @@ El usuario dirige la creación. ChatGPT es el único asistente de IA que partici
 - Diálogo, efectos y música original para cada microhistoria.
 - Exportación de vídeo en una etapa posterior.
 
-Estas funciones son objetivos de desarrollo, no funciones ya implementadas.
+Estas funciones son objetivos del editor completo. Existe una primera prueba técnica aislada con escenario, selección táctil, arrastre, escala, rotación y animación sencilla; todavía no equivale al editor completo ni está validada en Safari del iPad.
 
 ## Cómo se trabajará desde el iPad
 
@@ -33,7 +35,7 @@ En la primera etapa, el usuario describe los cambios en el chat; ChatGPT modific
 
 ## Estado técnico
 
-El editor nuevo todavía no está implementado ni validado en Safari del iPad. El siguiente paso es auditar el código experimental y los prototipos existentes para identificar qué puede reutilizarse.
+El primer prototipo aislado está en `prototype/caricature-studio-v01/index.html`. No se ha probado todavía en navegador ni en Safari del iPad. El siguiente paso es validarlo desde Codespaces en el iPad y ajustar la interacción táctil.
 
 La rama de trabajo autorizada es feature/living-paper-engine-foundation. No modificar main, fusionar, abrir PR ni desplegar sin autorización expresa.
 
