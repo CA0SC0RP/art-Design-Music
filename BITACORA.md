@@ -118,3 +118,14 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Commits: escena `c649da4`; README `7055c5c`; workflow `e9aea3c`.
 - Recursos SVG provisionales; sin imagen maestra, recursos finales, audio, APIs externas ni gastos. No se modificó `main`.
 - Pendiente: comprobar Actions/Pages y validación visual del usuario en navegador, incluyendo distribución de elementos, viento, agua, velocidad y pausa.
+
+
+## Actualización — 2026-11-01: Nivel 05, Ecosistema reactivo
+- A petición del usuario se creó `prototype/level-05/index.html` como una nueva escena SVG provisional 16:9.
+- La prueba incorpora viento escalonado en copas, ramas y pastos; semillas transportadas por el viento; rayos de luz y sombra móvil de nubes; cascada, dos patrones de corriente del río, reflejos y ondas; aves, mariposas, luciérnagas y peces; planos de profundidad y bruma.
+- Se conservan pausa/reanudación y control global de velocidad de 0.5× a 1.8×. El control modifica las duraciones de los ciclos, no las posiciones de los elementos.
+- Se añadieron `prototype/level-05/README.md` y publicación de GitHub Pages en `/level-05/`, manteniendo niveles 01–04.
+- Se codificó continuidad de los patrones del río desplazando cada dash pattern por su periodo completo (106 y 142 unidades), corriente siempre en el mismo sentido; las aves y semillas se atenúan antes de reiniciar, y las ondas se desvanecen con desfases. Es una intención técnica que todavía requiere revisión visual del usuario.
+- Se corrigieron las duraciones CSS de las animaciones de agua a unidades de tiempo (segundos) antes de publicar.
+- Los recursos siguen siendo SVG vectoriales provisionales. No se usa imagen maestra, arte final, audio, servicios externos ni gasto. No se modificó `main`.
+- **Validación pendiente:** comprobar ejecución de Actions y publicación; después revisar en Firefox y Safari del iPad composición, continuidad de loops, movimiento, velocidad, pausa y rendimiento. No declarar aprobado hasta recibir la comprobación visual del usuario.
