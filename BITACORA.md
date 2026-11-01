@@ -370,3 +370,12 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se mantiene compatibilidad con proyectos v1/v2, incluyendo poses antiguas sin campo de forma facial; los archivos locales inválidos no sustituyen el preset inicial.
 - Se añadió una prueba de migración v1. La suite alcanza 26 pruebas automatizadas y GitHub Actions completó todos los pasos de validación.
 - Sigue pendiente la comprobación real del flujo guardar/cerrar/abrir/importar/exportar en Safari del iPad.
+
+
+
+## 2026-11-01 — Núcleo matemático inicial de deformación 2D
+
+- Se añadió `prototype/character-editor-v01/mesh-skinning.js`, con operaciones de matrices afines 2D y deformación de vértices mediante Linear Blend Skinning.
+- Admite hasta cuatro influencias normalizadas por vértice y calcula matrices entre pose de referencia y pose actual. Incluye límites defensivos para cantidad de vértices/huesos y rechaza matrices singulares, pesos inválidos y referencias inexistentes.
+- Se añadieron diez pruebas unitarias. La suite total del editor queda en 36 pruebas: IK, importación/migración, geometría jerárquica y skinning.
+- El módulo aún no está conectado a la interfaz. Próxima fase: definir la representación editable de malla y pesos, y después integrar controles táctiles en el editor.
