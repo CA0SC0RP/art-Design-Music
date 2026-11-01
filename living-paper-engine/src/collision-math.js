@@ -71,7 +71,7 @@ export function pointInPolygon(x, y, polygon) {
   return inside;
 }
 
-/** Build transformed triangles; cells outside the source silhouette are discarded. */
+/** Build transformed triangles; cells with no overlap with the source silhouette are discarded. */
 export function buildMeshTriangles(mesh, matrix = composeWorldTransform(mesh.container)) {
   const { vertices, columns, rows } = mesh, triangles = [];
   const shape = mesh.shape;
@@ -80,12 +80,12 @@ export function buildMeshTriangles(mesh, matrix = composeWorldTransform(mesh.con
   for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++) {
     const a = y * (columns + 1) + x, b = a + 1, d = (y + 1) * (columns + 1) + x, e = d + 1;
     for (const ids of [[a, b, d], [b, e, d]]) {
+      const local = ids.map(id => ({
+        x: vertices[id * 2] / mesh.width,
+        y: vertices[id * 2 + 1] / mesh.height
+      }));
+      if (shape && !triangleOverlapsPolygon(local[0], local[1], local[2], shape)) continue;
       const p0 = point(ids[0]), p1 = point(ids[1]), p2 = point(ids[2]);
-      const localCentroid = {
-        x: (vertices[ids[0] * 2] + vertices[ids[1] * 2] + vertices[ids[2] * 2]) / 3,
-        y: (vertices[ids[0] * 2 + 1] + vertices[ids[1] * 2 + 1] + vertices[ids[2] * 2 + 1]) / 3
-      };
-      if (!inside(localCentroid)) continue;
       triangles.push({ a: p0, b: p1, c: p2, minX: Math.min(p0.x,p1.x,p2.x), maxX: Math.max(p0.x,p1.x,p2.x), minY: Math.min(p0.y,p1.y,p2.y), maxY: Math.max(p0.y,p1.y,p2.y) });
     }
   }
