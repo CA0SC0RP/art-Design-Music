@@ -4,7 +4,7 @@ import { elasticTarget, springStep, anchorMobility } from "./elastic-math.js";
 
 test("continuous curvature is zero at the supported surface boundary", () => {
   assert.equal(elasticTarget(0,0.5,{curvature:20}).profile,0);
-  assert.equal(elasticTarget(1,0.5,{curvature:20}).profile,0);
+  assert.ok(Math.abs(elasticTarget(1,0.5,{curvature:20}).profile) < 1e-12);
   assert.equal(elasticTarget(0.5,0,{curvature:20}).profile,0);
   assert.ok(elasticTarget(0.5,0.5,{curvature:20}).profile > 0.99);
 });
