@@ -18,6 +18,7 @@ export function buildLayerGroupLinks(groups = []) {
         edgeRadius: overrides.edgeRadius ?? group.edgeRadius ?? 0.18,
         shadowReach: overrides.shadowReach ?? group.shadowReach ?? 10,
         contactGap: overrides.contactGap ?? group.contactGap ?? 2,
+        contactRange: overrides.contactRange ?? group.contactRange ?? 32,
         contactStiffness: overrides.contactStiffness ?? group.contactStiffness ?? 0.65,
         contactNormalX: overrides.contactNormalX ?? group.contactNormalX ?? 0,
         contactNormalY: overrides.contactNormalY ?? group.contactNormalY ?? 1,
