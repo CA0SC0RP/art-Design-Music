@@ -37,3 +37,10 @@ test("rechaza identificadores de pose repetidos",()=>{
  const p=project();p.poses=[{id:"same",name:"A",nodes:[]},{id:"same",name:"B",nodes:[]}];
  assert.equal(normalizeProject(p).ok,false);
 });
+
+test("conserva las formas faciales de una expresión dentro de una pose",()=>{
+ const p=project();p.nodes[1].shape="mouthNeutral";p.poses=[{id:"smile",name:"Alegre",nodes:[{id:"arm",x:0,y:40,rotation:0,scale:1,shape:"mouthSmile"}]}];
+ const r=normalizeProject(p);assert.equal(r.ok,true);assert.equal(r.project.poses[0].nodes[0].shape,"mouthSmile");
+ const bad=project();bad.nodes[1].shape="mouthNeutral";bad.poses=[{id:"bad",nodes:[{id:"arm",x:0,y:40,rotation:0,scale:1,shape:"not-a-face"}]}];
+ assert.equal(normalizeProject(bad).ok,false);
+});
