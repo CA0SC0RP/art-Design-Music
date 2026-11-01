@@ -77,19 +77,15 @@ function applyLink(link) {
 
       const localPoint = { x: target.vertices[i], y: target.vertices[i + 1] };
       const worldPoint = transformPoint(targetTransform, localPoint);
-      const closest = closestPointOnMesh(worldPoint, sourceTriangles);
+      const closest = closestPointOnMesh(worldPoint, sourceTriangles, link.contactRange);
       testedVertices++;
       let contact = { x: 0, y: 0, penetration: 0, touching: false };
       if (closest) {
-        const dx = worldPoint.x - closest.x, dy = worldPoint.y - closest.y;
-        const distance = Math.hypot(dx, dy);
-        const normalX = distance > 1e-7 ? dx / distance : link.contactNormalX;
-        const normalY = distance > 1e-7 ? dy / distance : link.contactNormalY;
         contact = resolveContactConstraint(
           { x: closest.x, y: closest.y },
           worldPoint,
           {
-            normalX, normalY, minGap: link.contactGap,
+            normalX: link.contactNormalX, normalY: link.contactNormalY, minGap: link.contactGap,
             stiffness: link.contactStiffness, maxCorrection: link.maxCorrection,
             tangentRestGap: link.tangentRestGap, friction: link.friction,
             maxTangentialCorrection: link.maxTangentialCorrection
@@ -133,6 +129,7 @@ function normalizeLink(link = {}) {
     edgeRadius: clamp(Number(link.edgeRadius ?? 0.18), 0.05, 0.8),
     shadowReach: clamp(Number(link.shadowReach ?? 10), 0, 24),
     contactGap: clamp(Number(link.contactGap ?? 2), 0, 20),
+    contactRange: clamp(Number(link.contactRange ?? 32), 1, 160),
     contactStiffness: clamp(Number(link.contactStiffness ?? 0.65), 0, 1),
     contactNormalX: clamp(Number(link.contactNormalX ?? 0), -1, 1),
     contactNormalY: clamp(Number(link.contactNormalY ?? 1), -1, 1),
@@ -154,7 +151,7 @@ function clamp(value, min, max) { return Math.max(min, Math.min(max, Number.isFi
 const LIMITS = {
   coupling: [0, 1], clearance: [0, 24], contact: [0, 1],
   maxDisplacement: [0, 40], edgeRadius: [0.05, 0.8], shadowReach: [0, 24],
-  contactGap: [0, 20], contactStiffness: [0, 1],
+  contactGap: [0, 20], contactRange: [1, 160], contactStiffness: [0, 1],
   contactNormalX: [-1, 1], contactNormalY: [-1, 1], maxCorrection: [0, 20],
   tangentRestGap: [-100, 100], friction: [0, 1], maxTangentialCorrection: [0, 12]
 };
