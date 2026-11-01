@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { layerFalloff, resolveLayerResponse, sampleDisplacement, contactShadowOffset } from "./layer-math.js";
 import { enableLayerInteraction } from "./layers.js";
+import { buildLayerGroupLinks } from "./layer-groups.js";
 
 test("la influencia cae suavemente hacia el borde", () => {
   assert.equal(layerFalloff(0.5, 0.5, 0.2), 1);
@@ -90,4 +91,21 @@ test("la sombra de contacto responde a la dirección del desplazamiento y al esp
   assert.ok(Math.abs(pressed.y) < 1e-12);
   assert.ok(Math.abs(pressed.x) > Math.abs(lifted.x));
   assert.deepEqual(contactShadowOffset(12, 0, { contact: 0 }), { x: 0, y: 0 });
+});
+
+test("un grupo propaga en cadena de la capa frontal a la posterior", () => {
+  const front = makeMesh("front"), middle = makeMesh("middle"), back = makeMesh("back");
+  const links = buildLayerGroupLinks([{ id: "stack", layers: [front, middle, back], coupling: 0.3, links: [{ clearance: 4 }, { coupling: 0.15, clearance: 7 }] }]);
+  assert.equal(links.length, 2);
+  assert.equal(links[0].source, front);
+  assert.equal(links[0].target, middle);
+  assert.equal(links[1].source, middle);
+  assert.equal(links[1].target, back);
+  assert.equal(links[0].clearance, 4);
+  assert.equal(links[1].coupling, 0.15);
+  assert.equal(links[1].clearance, 7);
+});
+
+test("un grupo rechaza una pila con menos de dos capas", () => {
+  assert.throws(() => buildLayerGroupLinks([{ layers: [makeMesh("solo")] }]), /al menos dos capas/);
 });
