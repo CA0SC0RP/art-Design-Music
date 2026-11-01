@@ -44,3 +44,8 @@ test("conserva las formas faciales de una expresión dentro de una pose",()=>{
  const bad=project();bad.nodes[1].shape="mouthNeutral";bad.poses=[{id:"bad",nodes:[{id:"arm",x:0,y:40,rotation:0,scale:1,shape:"not-a-face"}]}];
  assert.equal(normalizeProject(bad).ok,false);
 });
+
+test("migrates version-one projects with legacy transform fields",()=>{
+ const p=project({version:1});delete p.nodes[1].pivotX;delete p.nodes[1].pivotY;delete p.nodes[1].rotationMin;delete p.nodes[1].rotationMax;
+ const r=normalizeProject(p);assert.equal(r.ok,true);assert.equal(r.project.version,2);assert.equal(r.project.nodes[1].pivotX,0);assert.equal(r.project.nodes[1].rotationMin,-180);
+});
