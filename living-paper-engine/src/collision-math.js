@@ -141,3 +141,36 @@ function scale(a,s){return{x:a.x*s,y:a.y*s};}
 function dot(a,b){return a.x*b.x+a.y*b.y;}
 function mix(a,b,t){return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t};}
 function clamp(value,min,max){return Math.max(min,Math.min(max,Number.isFinite(Number(value))?Number(value):min));}
+
+/** Return robust segment/triangle boundary crossings in world coordinates. */
+export function segmentTriangleContacts(start, end, triangles, epsilon = 1e-7) {
+  const contacts = [];
+  const minX = Math.min(start.x, end.x), maxX = Math.max(start.x, end.x);
+  const minY = Math.min(start.y, end.y), maxY = Math.max(start.y, end.y);
+  for (const triangle of triangles) {
+    if (maxX < triangle.minX - epsilon || minX > triangle.maxX + epsilon ||
+        maxY < triangle.minY - epsilon || minY > triangle.maxY + epsilon) continue;
+    const edges = [[triangle.a, triangle.b], [triangle.b, triangle.c], [triangle.c, triangle.a]];
+    for (const [a, b] of edges) {
+      const hit = segmentSegmentIntersection(start, end, a, b, epsilon);
+      if (!hit) continue;
+      if (!contacts.some(item => Math.abs(item.t - hit.t) < 1e-5 &&
+          Math.hypot(item.point.x - hit.point.x, item.point.y - hit.point.y) < 1e-4)) {
+        contacts.push({ ...hit, triangle });
+      }
+    }
+  }
+  return contacts.sort((a, b) => a.t - b.t);
+}
+
+export function segmentSegmentIntersection(a, b, c, d, epsilon = 1e-7) {
+  const r = sub(b, a), s = sub(d, c);
+  const denominator = cross(r, s), q = sub(c, a);
+  if (Math.abs(denominator) <= epsilon) return null;
+  const t = cross(q, s) / denominator, u = cross(q, r) / denominator;
+  if (t < -epsilon || t > 1 + epsilon || u < -epsilon || u > 1 + epsilon) return null;
+  const boundedT = clamp(t, 0, 1);
+  return { t: boundedT, edgeT: clamp(u, 0, 1), point: { x: a.x + r.x * boundedT, y: a.y + r.y * boundedT } };
+}
+
+function cross(a, b) { return a.x * b.y - a.y * b.x; }
