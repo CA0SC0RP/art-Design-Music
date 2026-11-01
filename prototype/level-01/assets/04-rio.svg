@@ -1,1 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"><path d="M710 520c-60 90-150 120-220 180-80 70-60 120 20 200h690c-120-100-220-180-170-250 45-65 115-95 145-160-140 45-280 40-465 30z" fill="#7eafb5" opacity=".9"/><path d="M790 550c-55 80-140 125-200 185-45 48-35 85 25 145" fill="none" stroke="#d5e6dc" stroke-width="18" stroke-linecap="round" opacity=".85"/><path d="M1060 560c-80 60-110 100-100 145 10 45 70 95 130 150" fill="none" stroke="#d5e6dc" stroke-width="11" stroke-linecap="round" opacity=".7"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<style>
+@keyframes riverShimmer { from { stroke-dashoffset:0; } to { stroke-dashoffset:-180; } }
+@keyframes ripplePulse { 0%,100% { opacity:.18; } 50% { opacity:.72; } }
+.flow-line { fill:none; stroke-linecap:round; stroke-dasharray:34 28; animation:riverShimmer 4.2s linear infinite; }
+.flow-line.slow { animation-duration:6.5s; }
+.ripple { animation:ripplePulse 3.6s ease-in-out infinite; }
+.ripple.delay { animation-delay:1.8s; }
+</style>
+<path d="M710 520c-60 90-150 120-220 180-80 70-60 120 20 200h690c-120-100-220-180-170-250 45-65 115-95 145-160-140 45-280 40-465 30z" fill="#7eafb5" opacity=".9"/>
+<path d="M790 550c-55 80-140 125-200 185-45 48-35 85 25 145" fill="none" stroke="#d5e6dc" stroke-width="18" stroke-linecap="round" opacity=".52"/>
+<path d="M1060 560c-80 60-110 100-100 145 10 45 70 95 130 150" fill="none" stroke="#d5e6dc" stroke-width="11" stroke-linecap="round" opacity=".45"/>
+<path class="flow-line" d="M735 595c-60 70-135 112-185 166 95-35 170-76 230-132" stroke="#f0f4e8" stroke-width="9" opacity=".8"/>
+<path class="flow-line slow" d="M940 635c-45 44-70 76-66 105 5 30 42 66 83 102" stroke="#e6f1e9" stroke-width="7" opacity=".8"/>
+<path class="flow-line" d="M1120 590c-35 30-59 57-67 81" stroke="#ffffff" stroke-width="5" opacity=".65"/>
+<path class="ripple" d="M500 790q65-24 130-5t125-8" fill="none" stroke="#f4f5e8" stroke-width="7" stroke-linecap="round"/>
+<path class="ripple delay" d="M870 825q72-22 140-4t120-7" fill="none" stroke="#f4f5e8" stroke-width="6" stroke-linecap="round"/>
+</svg>
