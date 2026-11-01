@@ -1,0 +1,43 @@
+"use strict";
+const test=require("node:test");
+const assert=require("node:assert/strict");
+const skin=require("../prototype/character-editor-v01/mesh-skinning.js");
+const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,a+" != "+b);
+test("la matriz identidad conserva los vértices",()=>{
+ const r=skin.deformVertices([{x:4,y:-7,weights:[{boneId:"root",weight:1}]}],{root:[1,0,0,1,0,0]});
+ assert.equal(r.ok,true);close(r.vertices[0].x,4);close(r.vertices[0].y,-7);
+});
+test("una matriz de rotación gira los puntos alrededor del origen",()=>{
+ const r=skin.deformVertices([{x:10,y:0,weights:[{boneId:"arm",weight:1}]}],{arm:[0,1,-1,0,0,0]});
+ assert.equal(r.ok,true);close(r.vertices[0].x,0);close(r.vertices[0].y,10);
+});
+test("mezcla dos huesos con pesos normalizados",()=>{
+ const r=skin.deformVertices([{x:0,y:0,weights:[{boneId:"a",weight:2},{boneId:"b",weight:2}]}],{a:[1,0,0,1,10,0],b:[1,0,0,1,0,10]});
+ assert.equal(r.ok,true);close(r.vertices[0].x,5);close(r.vertices[0].y,5);
+});
+test("construye matrices de deformación entre pose de referencia y pose actual",()=>{
+ const r=skin.buildSkinMatrices({arm:[1,0,0,1,0,0]},{arm:[1,0,0,1,12,-3]});
+ assert.equal(r.ok,true);const p=skin.transformPoint(r.matrices.arm,{x:2,y:5});close(p.x,14);close(p.y,2);
+});
+test("la matriz de deformación identidad se obtiene con poses iguales",()=>{
+ const bind={arm:[0,1,-1,0,20,4]},r=skin.buildSkinMatrices(bind,bind);
+ assert.equal(r.ok,true);const p=skin.transformPoint(r.matrices.arm,{x:9,y:2});close(p.x,9);close(p.y,2);
+});
+test("rechaza matrices singulares",()=>{
+ const r=skin.buildSkinMatrices({arm:[0,0,0,0,0,0]},{arm:[1,0,0,1,0,0]});assert.equal(r.ok,false);
+});
+test("rechaza referencias a huesos inexistentes",()=>{
+ const r=skin.deformVertices([{x:1,y:2,weights:[{boneId:"missing",weight:1}]}],{root:[1,0,0,1,0,0]});assert.equal(r.ok,false);
+});
+test("rechaza pesos negativos o suma cero",()=>{
+ assert.equal(skin.deformVertices([{x:0,y:0,weights:[{boneId:"a",weight:-1}]}],{a:[1,0,0,1,0,0]}).ok,false);
+ assert.equal(skin.deformVertices([{x:0,y:0,weights:[{boneId:"a",weight:0}]}],{a:[1,0,0,1,0,0]}).ok,false);
+});
+test("rechaza vértices e influencias con datos no válidos",()=>{
+ assert.equal(skin.deformVertices([{x:NaN,y:0,weights:[{boneId:"a",weight:1}]}],{a:[1,0,0,1,0,0]}).ok,false);
+ assert.equal(skin.deformVertices([{x:0,y:0,weights:[1,2,3,4,5]}],{a:[1,0,0,1,0,0]}).ok,false);
+});
+test("no modifica la malla de entrada",()=>{
+ const v=[{x:3,y:4,weights:[{boneId:"a",weight:1}]}],copy=JSON.stringify(v);
+ skin.deformVertices(v,{a:[1,0,0,1,8,9]});assert.equal(JSON.stringify(v),copy);
+});
