@@ -122,6 +122,16 @@
         <div class="control-heading"><label for="paperEdgeIntensityControl">Sombra y luz del canto</label><output id="paperEdgeIntensityValue">72%</output></div>
         <input id="paperEdgeIntensityControl" type="range" min="0" max="100" value="72">
         <p class="control-hint">El borde se desplaza según el lado y el ángulo del pliegue. Su espesor aparente cambia gradualmente, con una sombra propia y un reflejo fino.</p>
+        <strong class="control-section-title">CURVATURA CONTINUA Y MEMORIA ELÁSTICA</strong>
+        <div class="control-heading"><label for="elasticCurvatureControl">Curvatura de superficie</label><output id="elasticCurvatureValue">0 px</output></div>
+        <input id="elasticCurvatureControl" type="range" min="-30" max="30" value="0">
+        <div class="control-heading"><label for="elasticAxisControl">Dirección de curvatura</label><output id="elasticAxisValue">90°</output></div>
+        <input id="elasticAxisControl" type="range" min="0" max="180" value="90">
+        <div class="control-heading"><label for="elasticStiffnessControl">Rigidez del papel</label><output id="elasticStiffnessValue">18</output></div>
+        <input id="elasticStiffnessControl" type="range" min="1" max="60" value="18">
+        <div class="control-heading"><label for="elasticDampingControl">Amortiguación y recuperación</label><output id="elasticDampingValue">7</output></div>
+        <input id="elasticDampingControl" type="range" min="0" max="24" value="7">
+        <p class="control-hint">La superficie responde como una lámina flexible: conserva inercia al cambiar la curvatura y vuelve gradualmente a reposo. Los anclajes limitan el movimiento en sus zonas fijadas.</p>
       </div>
       <div class="control-group">
         <div class="control-heading"><label for="speedControl">Velocidad global</label><output id="speedValue">1.0×</output></div>
