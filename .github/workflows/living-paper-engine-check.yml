@@ -31,6 +31,8 @@ jobs:
           node --check living-paper-engine/src/demo.js
           node --check living-paper-engine/src/deformation.js
           node --check living-paper-engine/src/rigging.js
+          grep -q "bindJointToFold" living-paper-engine/src/rigging.js
+          grep -q "onUpdate" living-paper-engine/src/engine.js
           node --check living-paper-engine/src/rigging.test.mjs
           node --experimental-default-type=module --test living-paper-engine/src/rigging.test.mjs
 
