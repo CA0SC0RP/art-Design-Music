@@ -142,3 +142,5 @@ Un CI exitoso no sustituye la inspección visual ni demuestra compatibilidad en 
 - La detección de aristas contempla cruces ordinarios, contactos en extremos y solapamientos colineales entre bordes coincidentes.
 - La máscara de silueta conserva triángulos que cruzan parcialmente su contorno; el recorte sigue siendo una aproximación por celdas y no un clipping poligonal exacto.
 - Los triángulos degenerados se consultan mediante sus segmentos, y las correcciones de arista no cuentan extremos que reciben contribución nula.
+
+- La implementación de malla está fijada explícitamente a `MeshSimple.autoUpdate = true` para la superficie, la sombra y el overlay de volumen. Se verificó contra el código fuente oficial de PixiJS v8.10.1: el setter `vertices` actualiza el buffer de posiciones y el modo automático ejecuta su actualización durante el render.
