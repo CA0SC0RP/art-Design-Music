@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - prototipo/prueba-cinco-capas-01
+      - feature/living-paper-engine-foundation
   workflow_dispatch:
 
 permissions:
@@ -32,12 +33,13 @@ jobs:
 
       - name: Preparar sitio estático
         run: |
-          mkdir -p _site/level-02 _site/level-03 _site/level-04 _site/level-05
+          mkdir -p _site/level-02 _site/level-03 _site/level-04 _site/level-05 _site/living-paper-engine
           cp -R prototype/level-01/. _site/
           cp -R prototype/level-02/. _site/level-02/
           cp -R prototype/level-03/. _site/level-03/
           cp -R prototype/level-04/. _site/level-04/
           cp -R prototype/level-05/. _site/level-05/
+          cp -R living-paper-engine/. _site/living-paper-engine/
       - name: Cargar sitio estático
         uses: actions/upload-pages-artifact@v3
         with:
