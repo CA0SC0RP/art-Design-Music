@@ -1,7 +1,7 @@
-# Editor articulado de personajes — prototipo v0.5
+# Editor articulado de personajes — prototipo v0.6
 
 **Ruta:** `prototype/character-editor-v01/index.html`  
-**Estado:** prototipo incremental de estructura jerárquica, pivotes editables, límites de articulación y biblioteca de poses; no es el editor completo ni está validado en iPad.
+**Estado:** prototipo incremental de estructura jerárquica, pivotes editables, límites de articulación, biblioteca de poses e IK 2D con objetivos arrastrables; no es el editor completo ni está validado en iPad.
 
 ## Objetivo de esta iteración
 
@@ -29,7 +29,10 @@ Comprobar que el proyecto puede representar un objeto complejo como un árbol de
 - Las acciones coordinadas solo están preparadas para el preset de personaje y requieren que existan las piezas con los identificadores esperados.
 - Primera implementación de cinemática inversa 2D (IK) de dos segmentos: selector de brazo/pierna izquierdo/derecho, objetivo X/Y relativo al torso y elección del lado de flexión. Resuelve geométricamente los ángulos del segmento proximal y distal y los aplica con transición suave.
 - El solver comprueba el alcance geométrico, los límites angulares y los requisitos de esta primera versión: escala 1, pivotes neutros y segmentos alineados en X. Si el objetivo está fuera del alcance o la solución supera los límites, informa al usuario en vez de aplicar una solución inválida.
-- Esta IK es una primera solución rígida de dos huesos; todavía no hay arrastre directo del objetivo, detección de colisiones, restricciones anatómicas avanzadas, blending de múltiples cadenas ni deformación de malla.
+- Manipulación directa del objetivo IK en el lienzo: marcador táctil/arrastrable para la mano o el pie de la cadena seleccionada. El solver recalcula las dos articulaciones durante el arrastre y conserva la última solución válida si el puntero lleva el objetivo fuera del alcance o de los límites.
+- Controles para fijar y liberar el objetivo. Al fijarlo, el marcador queda bloqueado frente al arrastre; al liberarlo, vuelve a ser manipulable. Cada cadena conserva su propio objetivo durante la sesión al cambiar de brazo/pierna.
+- Los objetivos IK se mantienen en memoria durante la sesión y se expresan en coordenadas locales del torso; todavía no se guardan en el proyecto ni en el JSON. Fijar el objetivo no equivale aún a una restricción de contacto mundial independiente del torso.
+- Esta IK sigue siendo una primera solución rígida de dos huesos; no hay detección de colisiones, restricciones anatómicas avanzadas, blending de múltiples cadenas ni deformación de malla.
 - Guardado en localStorage del navegador y exportación del proyecto como JSON.
 - Restauración automática del último proyecto guardado en ese navegador.
 
@@ -37,12 +40,13 @@ Comprobar que el proyecto puede representar un objeto complejo como un árbol de
 
 Cada elemento tiene identificador, nombre, tipo, posición local, pivote local X/Y, rotación actual, límites mínimo/máximo de rotación, escala, forma, material/color y referencia al padre. El render recorre recursivamente el árbol y anida cada pieza en el sistema de coordenadas de su padre. Por eso, al rotar una rama, sus hojas y ramitas hijas acompañan el movimiento; al mover el tronco, toda la copa se desplaza.
 
-Esta es una primera estructura de articulación por piezas rígidas. Los límites son rangos angulares simples por pieza; todavía no hay cinemática inversa (IK), restricciones anatómicas entre varias articulaciones, huesos con curvas, skinning, pesos de vértices, mallas deformables, biblioteca de recursos ni sistema de materiales/texturas de producción.
+Esta es una primera estructura de articulación por piezas rígidas con IK geométrica de dos segmentos. Los límites son rangos angulares simples por pieza; todavía no hay restricciones anatómicas coordinadas entre varias articulaciones, huesos con curvas, skinning, pesos de vértices, mallas deformables, biblioteca de recursos ni sistema de materiales/texturas de producción.
 
 ## Limitaciones conocidas
 
 - Los dibujos son formas vectoriales provisionales, no arte final ni texturas fotográficas de papel.
-- El pivote puede moverse y limitar la rotación, pero todavía faltan zoom/pan, selección múltiple, guías, ajuste fino y controles visuales de límites articulares.
+- El pivote puede moverse y limitar la rotación; faltan zoom/pan, selección múltiple, guías, ajuste fino y controles visuales de límites articulares.
+- La manipulación directa IK depende de la geometría y precondiciones del solver inicial: dos segmentos rígidos, pivotes neutros, escala unitaria y alineación esperada. No resuelve colisiones ni garantiza contacto anatómico en todas las poses.
 - El selector de padre permite cambiar jerarquías simples; falta una experiencia de reparentado visual con validaciones y feedback más completos.
 - El guardado local depende del navegador y del almacenamiento disponible. La exportación JSON es la vía portátil de respaldo.
 - No se ha probado aún en Safari, Chrome, Firefox u Opera en iPad.
@@ -50,8 +54,8 @@ Esta es una primera estructura de articulación por piezas rígidas. Los límite
 
 ## Siguiente trabajo
 
-1. Validar en Safari del iPad los controles de IK, las soluciones de alcance, ambos lados de flexión y los límites articulares.
-2. Añadir manipulación directa del objetivo en el lienzo y controles para fijar/soltar la cadena, después de validar el solver numérico.
+1. Validar en Safari del iPad el arrastre táctil de los cuatro objetivos, el bloqueo/liberación, el cambio de cadena, los límites y los objetivos fuera de alcance.
+2. Corregir cualquier problema de coordenadas o respuesta del solver y añadir pruebas numéricas repetibles.
 3. Mejorar restricciones anatómicas y coordinación de cadenas sin introducir deformación todavía.
 4. Incorporar recursos de imagen/textura de papel y recorte con bordes y sombras de calidad.
 5. Después abordar deformación de malla y skinning, cuando la base jerárquica e IK estén estables.
