@@ -58,3 +58,5 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Los recursos de esta prueba son vectores originales y desechables. No se usan imágenes externas, la imagen maestra, sprites finales ni audio.
 - **Estado de validación:** archivos creados en GitHub; todavía no se ha ejecutado en un navegador ni probado en el iPad. No declarar la prueba funcional hasta completar esa comprobación.
 - Siguiente paso técnico: habilitar una forma verificable de abrir el prototipo desde Safari (sitio estático o alternativa equivalente), revisar la carga y los movimientos, y registrar resultados antes de pasar al Nivel 02.
+
+- Se añadió `.github/workflows/prototipo-cinco-capas.yml` para publicar la carpeta del prototipo con GitHub Pages al recibir cambios en esta rama. La API de Actions consultada aún no muestra ejecuciones; la publicación no está confirmada y la URL pública no se considera disponible hasta verificar una ejecución exitosa.
