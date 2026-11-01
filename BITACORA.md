@@ -341,3 +341,14 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - El cambio rechaza ciclos y soluciones fuera de los límites articulares sin mutar el rig. Los descendientes conservan su transformación mundial al cambiar el padre de un ancestro.
 - Se añadieron cuatro pruebas automatizadas de geometría jerárquica y se incorporaron al workflow de GitHub Actions, que completó correctamente las verificaciones.
 - Pendiente: validación visual y táctil real en Safari del iPad.
+
+
+
+## 2026-11-01 — Expresiones faciales iniciales del personaje
+
+- Se añadieron cejas y boca al personaje base y cinco expresiones seleccionables: neutral, alegre, triste, sorprendida y enojada.
+- Cada expresión modifica la inclinación de las cejas, la forma de la boca y la escala de los ojos. Las expresiones pueden guardarse en la biblioteca de poses.
+- Se amplió el formato de pose para conservar las formas de las piezas; el importador valida las formas admitidas y mantiene compatibilidad con poses antiguas sin ese campo.
+- Los proyectos de personaje anteriores reciben los rasgos faciales faltantes al abrirse; el preset nuevo ya los incorpora.
+- Se añadió una prueba automatizada para la persistencia de formas faciales. La ejecución completa de GitHub Actions terminó correctamente.
+- Se trata de una primera biblioteca de expresiones, no de un sistema avanzado de deformación facial ni sincronización labial.
