@@ -26,6 +26,8 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Sombra propia del canto y reflejo fino para separar visualmente la cara superior y el borde expuesto.
 - Perfil de espesor dependiente del ángulo, el lado del pliegue y la intensidad configurada.
 - Grupos de capas coordinadas con propagación en cascada de deformación desde la hoja frontal a las posteriores; cada tramo admite acoplamiento y separación independientes.
+- Restricción de contacto 2.5D por vértice: detección de penetración proyectada sobre un eje normal configurable, distancia mínima, rigidez y corrección máxima acotada.
+- La respuesta de contacto se recalcula desde la geometría base en cada cuadro, actualiza las sombras y evita acumular correcciones.
 - Interacción entre superficies superpuestas: transferencia de deformación, separación ajustable y respuesta de sombra por contacto suave, con control independiente de presión y desplazamiento local de sombra según la separación y el movimiento relativo.
 - Curvatura continua de superficie con campo suave de desplazamiento y dirección configurable.
 - Memoria elástica por vértice con velocidad persistente, rigidez y amortiguación configurables.
@@ -40,7 +42,7 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Línea de luz sutil en el borde superior.
 - Intensidad de sombra y grosor ajustables por pieza desde el inspector.
 
-La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final. Las zonas de influencia se expresan en coordenadas normalizadas de la superficie y usan una caída suave para evitar límites abruptos. Los anclajes conservan regiones de la malla cerca de su posición de reposo. Los pliegues aplican una aproximación geométrica 2D a un lado de una línea de pliegue; la capa de volumen añade iluminación y sombra mapeadas para sugerir relieve; los cantos levantados añaden una banda visible de espesor variable. La curvatura elástica es una aproximación 2D amortiguada, no un solver físico ni geometría 3D.
+La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final. Las zonas de influencia se expresan en coordenadas normalizadas de la superficie y usan una caída suave para evitar límites abruptos. Los anclajes conservan regiones de la malla cerca de su posición de reposo. Los pliegues aplican una aproximación geométrica 2D a un lado de una línea de pliegue; la capa de volumen añade iluminación y sombra mapeadas para sugerir relieve; los cantos levantados añaden una banda visible de espesor variable. La curvatura elástica es una aproximación 2D amortiguada. El contacto entre capas usa restricciones 2.5D sobre una dirección normal configurable; evita parte de la penetración proyectada, pero no es un solver volumétrico, FEM ni geometría 3D.
 
 Los materiales son aproximaciones 2D deliberadas. Aún no representan simulación física ni una malla 3D de papel.
 
@@ -65,11 +67,12 @@ Los materiales son aproximaciones 2D deliberadas. Aún no representan simulació
 - `src/edges.js`: cantos levantados y espesor aparente.
 - `src/edge-math.js`: perfiles de espesor.
 - `src/edge.test.mjs`: pruebas de cantos.
-- `src/layers.js`: acoplamiento de movimiento y contacto visual entre capas.
+- `src/layers.js`: acoplamiento de movimiento, restricciones de contacto y respuesta visual entre capas.
+- `src/collision-math.js`: cálculo de penetración, separación y corrección acotada entre vértices.
 - `src/layer-groups.js`: creación de pilas multicapa y propagación en cascada.
 - `src/layer.test.mjs`: pruebas de interacción y topología de grupos multicapa.
 - `src/layer-math.js`: funciones puras para transferencia de desplazamiento, caída de influencia y desplazamiento de sombra de contacto.
-- `src/layer.test.mjs`: pruebas de interacción matemática entre capas.
+- `src/layer.test.mjs`: pruebas de interacción, grupos multicapa y contacto.
 - `src/elastic.js`: curvatura continua y memoria elástica.
 - `src/elastic-math.js`: funciones puras de curvatura y resorte.
 - `src/elastic.test.mjs`: pruebas de recuperación y anclajes.
