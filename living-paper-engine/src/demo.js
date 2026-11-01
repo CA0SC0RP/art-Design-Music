@@ -113,6 +113,14 @@ shadow.addEventListener("input",()=>{selected.setShadowStrength(Number(shadow.va
 speed.addEventListener("input",()=>{engine.setSpeed(Number(speed.value)/100);syncLabels();});
 document.querySelector("#pauseButton").addEventListener("click",event=>{engine.setPaused(!engine.paused);event.currentTarget.textContent=engine.paused?"Reanudar":"Pausar";});
 document.querySelector("#resetButton").addEventListener("click",()=>{mountain.setScale(1);mountain.setRotation(0);mountain.setDepth(5);mountain.setPosition(640,360);hill.setScale(1);hill.setRotation(0);hill.setDepth(4);hill.setPosition(640,470);tree.setScale(1);tree.setRotation(0);tree.setDepth(2);tree.setPosition(330,450);bird.setScale(1);bird.setRotation(0);bird.setDepth(3);bird.motion.time=0;flexibleStem.setSway({amplitude:13,period:4.4,phase:.8});flexBend.value=0;meshWaveControl.value=5;meshFoldControl.value=3;meshLeaf.setDeformation({wave:5,fold:3,frequency:1.35});influenceX.value=78;influenceY.value=28;influenceStrength.value=90;influenceBend.value=15;updateInfluence();anchorX.value=18;anchorY.value=50;anchorStrength.value=100;foldAngle.value=24;updateRig();volumeIntensity.value=72;volumeWidth.value=34;updateVolume();edgeThickness.value=5;edgeIntensity.value=72;updateEdges();elasticCurvature.value=0;elasticAxis.value=90;elasticStiffness.value=18;elasticDamping.value=7;meshLeaf.resetElasticMemory();updateElastic();layerCoupling.value=24;layerClearance.value=5;layerContact.value=42;layerPropagation.value=18;contactGap.value=2;contactStiffness.value=65;contactFriction.value=22;updateLayers();branchJoint.setSway({amplitude:7,period:5,phase:.4});leafJoint.setSway({amplitude:17,period:2.8,phase:1.1});jointSelect.value="branch";selectedJoint=branchJoint;jointAngle.value=-7;for(const p of [mountain,hill,tree,bird]){p.setMaterial("matte");p.setThickness(4);p.setShadowStrength(.22);}speed.value=100;engine.setSpeed(1);choose("mountain");});
+engine.app.ticker.add(()=>{
+  const links=engine.getLayerInteractions?.()||[];
+  const contacts=links.map(link=>link.lastContact).filter(Boolean);
+  const active=contacts.reduce((sum,item)=>sum+item.activeVertices,0);
+  const penetration=contacts.length?contacts.reduce((sum,item)=>sum+item.averagePenetration,0)/contacts.length:0;
+  const telemetry=document.querySelector("#contactTelemetry");
+  if(telemetry)telemetry.textContent=`Contacto activo: ${active} vértices · penetración media: ${penetration.toFixed(2)} px`;
+});
 choose("mountain");
 status.textContent="PixiJS 8 · curvatura elástica · memoria del papel · volumen y articulación";
 window.addEventListener("beforeunload",()=>engine.destroy());
