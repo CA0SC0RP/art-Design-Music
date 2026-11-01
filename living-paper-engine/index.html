@@ -100,6 +100,16 @@
         <div class="control-heading"><label for="influenceBendControl">Curvatura localizada</label><output id="influenceBendValue">15°</output></div>
         <input id="influenceBendControl" type="range" min="-30" max="30" value="15">
         <p class="control-hint">Mueve el centro de influencia y concentra el pliegue en una zona. El efecto disminuye suavemente hacia los bordes.</p>
+        <strong class="control-section-title">ANCLAJES Y PLIEGUES</strong>
+        <div class="control-heading"><label for="anchorXControl">Anclaje horizontal</label><output id="anchorXValue">18%</output></div>
+        <input id="anchorXControl" type="range" min="0" max="100" value="18">
+        <div class="control-heading"><label for="anchorYControl">Anclaje vertical</label><output id="anchorYValue">50%</output></div>
+        <input id="anchorYControl" type="range" min="0" max="100" value="50">
+        <div class="control-heading"><label for="anchorStrengthControl">Fijación del anclaje</label><output id="anchorStrengthValue">100%</output></div>
+        <input id="anchorStrengthControl" type="range" min="0" max="100" value="100">
+        <div class="control-heading"><label for="controlledFoldAngleControl">Ángulo del pliegue</label><output id="controlledFoldAngleValue">24°</output></div>
+        <input id="controlledFoldAngleControl" type="range" min="-70" max="70" value="24">
+        <p class="control-hint">El anclaje conserva una zona fija. La línea de pliegue concentra la flexión en un lado y suaviza sus extremos.</p>
       </div>
       <div class="control-group">
         <div class="control-heading"><label for="speedControl">Velocidad global</label><output id="speedValue">1.0×</output></div>
