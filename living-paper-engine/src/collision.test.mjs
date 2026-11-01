@@ -266,3 +266,20 @@ test("el índice espacial reutiliza el buffer de salida sin retener resultados a
   assert.equal(second, output);
   assert.ok(firstCount > 0 && output.length > 0);
 });
+
+
+test("segmentTriangleContacts reutiliza el buffer de salida sin conservar impactos anteriores", async () => {
+  const { segmentTriangleContacts } = await import("./collision-math.js");
+  const triangle = {
+    a: { x: 0, y: 0 }, b: { x: 10, y: 0 }, c: { x: 5, y: 10 },
+    points: [{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 5, y: 10 }],
+    minX: 0, maxX: 10, minY: 0, maxY: 10
+  };
+  const scratch = { contacts: [] };
+  const first = segmentTriangleContacts({ x: -1, y: 5 }, { x: 11, y: 5 }, [triangle], 1e-7, scratch);
+  assert.equal(first, scratch.contacts);
+  assert.equal(first.length, 2);
+  const second = segmentTriangleContacts({ x: -1, y: 20 }, { x: 11, y: 20 }, [triangle], 1e-7, scratch);
+  assert.equal(second, first);
+  assert.equal(second.length, 0);
+});
