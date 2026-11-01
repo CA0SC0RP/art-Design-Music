@@ -69,7 +69,10 @@ function applyLink(link) {
   const targetTransform = composeWorldTransform(target.container);
   const sourceTriangles = buildMeshTriangles(source, sourceTransform);
   const spatialIndex = buildTriangleSpatialIndex(sourceTriangles, Math.max(24, link.contactRange));
-  let totalPressure = 0, totalPenetration = 0, contactCount = 0, testedVertices = 0, candidateTriangles = 0;\n  const vertexCandidates = [];\n  const edgeCandidates = [];
+  let totalPressure = 0, totalPenetration = 0, contactCount = 0, testedVertices = 0, candidateTriangles = 0;
+  const vertexTouching = new Uint8Array(target.vertices.length / 2);
+  const vertexCandidates = [];
+  const edgeCandidates = [];
 
   for (let row = 0; row <= target.rows; row++) {
     for (let col = 0; col <= target.columns; col++) {
