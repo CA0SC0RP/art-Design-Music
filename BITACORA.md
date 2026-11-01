@@ -233,6 +233,6 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se añadieron límites de rotación mínimo/máximo por pieza; el control de articulación se restringe al rango configurado.
 - Se mantiene compatibilidad de carga con proyectos locales v1: al abrirlos se inicializan pivote (0,0) y límites −180°/180°. Las exportaciones nuevas usan esquema v2.
 - Se actualizó `docs/prototipo-editor-articulado-personajes-v0-1.md` con las capacidades y limitaciones reales.
-- Commits de código: `fef4099bf08271a15d221a7ba14dbdea1dfb4e6a` y corrección de arrastre de pivote `73d72e46f0f73f26028fc6496ec2405be30b2e26`. Documento actualizado en el commit `5928e4f65c668519d3d61fad6c3c784510b63045`.
-- **Pruebas pendientes:** no se ha ejecutado navegador ni validado el manejo táctil en Safari/iPad. Tampoco se ha certificado IK, skinning ni deformación de malla; no forman parte de esta iteración.
+- Commits de código: `fef4099bf08271a15d221a7ba14dbdea1dfb4e6a`, `73d72e46f0f73f26028fc6496ec2405be30b2e26`, `af757c5794018ffa93bccb26f2146913168cb567`, `0bdb1ff7246c897c9df12186cebe18eeb2651323`, `639859fc7031c70823591d8cdfa2db957a762c2d` y `63efde1d29fbaf7734b2ec77eb92c4d4ff9b2311`. Documento actualizado en el commit `5928e4f65c668519d3d61fad6c3c784510b63045`.
+- **Verificación estática:** sintaxis JavaScript validada; no hay IDs DOM duplicados ni referencias a IDs inexistentes. No se ha ejecutado navegador ni validado el manejo táctil en Safari/iPad. Tampoco se ha certificado IK, skinning ni deformación de malla; no forman parte de esta iteración.
 - No se modificó `main`, no hubo merge, PR, despliegue, instalación de dependencias ni gastos.
