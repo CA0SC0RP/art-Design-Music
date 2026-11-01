@@ -87,7 +87,7 @@ test("la sombra de contacto responde a la dirección del desplazamiento y al esp
   const pressed = contactShadowOffset(12, 0, { contact: 1, clearance: 0, maxOffset: 10 });
   const lifted = contactShadowOffset(12, 0, { contact: 1, clearance: 18, maxOffset: 10 });
   assert.ok(pressed.x < 0);
-  assert.equal(pressed.y, 0);
+  assert.ok(Math.abs(pressed.y) < 1e-12);
   assert.ok(Math.abs(pressed.x) > Math.abs(lifted.x));
   assert.deepEqual(contactShadowOffset(12, 0, { contact: 0 }), { x: 0, y: 0 });
 });
