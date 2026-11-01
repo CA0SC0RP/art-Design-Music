@@ -336,3 +336,19 @@ test("destruir el motor ejecuta la limpieza de contactos antes de destruir recur
   assert.equal(engine.layerInteractions, undefined);
   assert.deepEqual([...target.vertices], [...target.baseVertices]);
 });
+
+
+test("omite intersecciones de arista cuando ambos extremos ya resolvieron el contacto", () => {
+  const source = makeMesh("front");
+  const target = makeMesh("back");
+  const engine = { paused: false, update(dt) { source.update(dt); target.update(dt); } };
+  enableLayerInteraction(engine, [{
+    source, target, coupling: 0, clearance: 0, contactGap: 2,
+    contactRange: 4, contactStiffness: 0.5
+  }]);
+  engine.update(1 / 60);
+  const stats = engine.layerInteractions[0].lastContact;
+  assert.equal(stats.testedEdges, 0);
+  assert.ok(stats.skippedResolvedEdges > 0);
+  assert.equal(stats.activeVertices, stats.testedVertices);
+});
