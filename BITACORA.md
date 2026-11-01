@@ -140,7 +140,7 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - **Límite documentado:** inicialmente ChatGPT modificará el código en GitHub y el usuario actualizará la vista previa en iPad. No existe aún conexión directa/continua entre ChatGPT y el lienzo de Safari; un puente específico queda como posibilidad futura.
 - **Audio:** música y sonido serán propios de cada microhistoria; la propuesta ambient/lo-fi/chillout de 72 BPM deja de ser requisito.
 - **Archivos nuevos:** docs/direccion-motor-caricaturas-ipad.md.
-- **Archivos actualizados:** INSTRUCCIONES_PARA_IA.md, ARQUITECTURA.md, ESTADO_PROYECTO.md, docs/auditoria-tecnica-2026-10-29.md y docs/partitura-audiovisual-mountains-that-breathe-propuesta-v0-1.md.
+- **Archivos actualizados:** README.md, INSTRUCCIONES_PARA_IA.md, ARQUITECTURA.md, ESTADO_PROYECTO.md, docs/auditoria-tecnica-2026-10-29.md, docs/contrato-de-capas-y-work-json.md, docs/plan-de-validacion-automatica.md, docs/direccion-artistica-y-partitura-audiovisual.md y docs/partitura-audiovisual-mountains-that-breathe-propuesta-v0-1.md.
 - **Cierre de auditoría:** D1–D9 se cerraron por cambio de alcance. No se implementarán el validador, CI ni ampliaciones del contrato v2 para capas. La auditoría queda como registro histórico; el contrato v2 no está aprobado para el nuevo motor.
 - **Protecciones:** no se eliminó ningún archivo ni prototipo; no se tocó la imagen maestra; no se modificó main; no se fusionó ni desplegó; no se activaron servicios ni gastos.
 - **Pruebas:** se verificó la lectura y actualización de los archivos en GitHub mediante el conector. No se ha implementado ni probado todavía el editor nuevo en Safari/iPad.
