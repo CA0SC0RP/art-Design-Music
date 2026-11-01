@@ -46,5 +46,6 @@ export class LivingPaperEngine {
   destroy(){this.resizeObserver?.disconnect();this.app?.destroy(true,{children:true});this.pieces.clear();}
 }
 
-export function polygon(graphics,points,color,alpha=1){graphics.poly(points).fill({color,alpha});}
-export function paperShadow(graphics,points){for(let i=3;i>=1;i--)graphics.poly(points.map(([x,y])=>[x+i*1.2,y+i*1.8])).fill({color:0x26332f,alpha:.035*i});}
+function flattenPoints(points){return points.flatMap(([x,y])=>[x,y]);}
+export function polygon(graphics,points,color,alpha=1){graphics.poly(flattenPoints(points)).fill({color,alpha});}
+export function paperShadow(graphics,points){for(let i=3;i>=1;i--)graphics.poly(flattenPoints(points.map(([x,y])=>[x+i*1.2,y+i*1.8]))).fill({color:0x26332f,alpha:.035*i});}
