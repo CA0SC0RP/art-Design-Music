@@ -1,5 +1,5 @@
 import { layerFalloff, resolveLayerResponse, sampleDisplacement, contactShadowOffset } from "./layer-math.js";
-import { resolveContactConstraint } from "./collision-math.js";
+import { resolveContactConstraint, sampleMeshPoint } from "./collision-math.js";
 
 /**
  * Couples overlapping PaperMesh surfaces with a bounded 2.5D contact response.
@@ -69,16 +69,17 @@ function applyLink(link) {
       target.vertices[i] += response.x;
       target.vertices[i + 1] += response.y;
 
+      const sourcePoint = sampleMeshPoint(source.vertices, source.columns, source.rows, u, v);
       const contact = resolveContactConstraint(
         {
-          x: source.vertices[i] + (source.container.position.x || 0),
-          y: source.vertices[i + 1] + (source.container.position.y || 0)
+          x: sourcePoint.x + (source.container.position.x || 0),
+          y: sourcePoint.y + (source.container.position.y || 0)
         },
         {
           x: target.vertices[i] + (target.container.position.x || 0),
           y: target.vertices[i + 1] + (target.container.position.y || 0)
         },
-        link
+        { normalX: link.contactNormalX, normalY: link.contactNormalY, minGap: link.contactGap, stiffness: link.contactStiffness, maxCorrection: link.maxCorrection }
       );
       target.vertices[i] += contact.x;
       target.vertices[i + 1] += contact.y;
