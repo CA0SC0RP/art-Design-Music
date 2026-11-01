@@ -12,7 +12,7 @@ function mockMesh() {
     width:2,height:2,columns:2,rows:2,
     baseVertices:base,
     vertices:new Float32Array(base),
-    shadowVertices:new Float32Array(base.length)
+    shadowVertices:new Float32Array(base.length),mesh:{},shadowMesh:{}
   };
 }
 
