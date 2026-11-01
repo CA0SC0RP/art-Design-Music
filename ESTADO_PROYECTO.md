@@ -207,3 +207,12 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Las soluciones inválidas se rechazan antes de cambiar el rig; el estado de la última pose válida se conserva.
 - Se añadió `tests/ik-solver.test.js` con pruebas de alcance, flexión en ambos sentidos, límites y parámetros inválidos. La suite está incorporada al repositorio; su ejecución en Codespaces queda pendiente de confirmación.
 - La interfaz no se ha probado en Safari/iPad. La validación táctil sigue pendiente y tiene prioridad antes de ampliar la deformación.
+
+
+
+## Actualización — 2026-11-01: robustez del solver IK v0.9.2
+- El solver admite ahora objetivos cercanos al origen cuando están dentro del alcance geométrico real y rechaza el caso singular de distancia cero.
+- Se validan límites articulares invertidos y valores no finitos antes de devolver una solución.
+- La suite cubre reconstrucción del extremo en ocho cuadrantes para ambos sentidos de flexión, longitudes desiguales y límites inválidos.
+- GitHub Actions completó con éxito la suite ampliada. Esto no equivale a una prueba del editor en navegador ni a validación táctil en Safari/iPad.
+- La interfaz continúa etiquetada v0.8 hasta completar su validación funcional en el dispositivo.
