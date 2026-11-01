@@ -77,14 +77,19 @@ function applyLink(link) {
       const i = (row * (target.columns + 1) + col) * 2;
       const u = col / target.columns, v = row / target.rows;
       if (target.shape && !pointInPolygon(u, v, target.shape)) continue;
-      const sourceDelta = sampleDisplacement(source.vertices, source.baseVertices, source.columns, source.rows, u, v);
-      // Propagate deformation through world space so rotated/scaled layer rigs remain aligned.
-      const worldDelta = transformVector(sourceTransform, sourceDelta);
-      const delta = inverseTransformVector(targetTransform, worldDelta);
-      const weight = layerFalloff(u, v, link.edgeRadius);
-      const response = resolveLayerResponse(delta.x, delta.y, { ...link, weight });
-      target.vertices[i] += response.x;
-      target.vertices[i + 1] += response.y;
+      let deltaX = 0, deltaY = 0, responsePressure = 0;
+      if (link.coupling > 0) {
+        const sourceDelta = sampleDisplacement(source.vertices, source.baseVertices, source.columns, source.rows, u, v);
+        // Propagate deformation through world space so rotated/scaled layer rigs remain aligned.
+        const worldDelta = transformVector(sourceTransform, sourceDelta);
+        const delta = inverseTransformVector(targetTransform, worldDelta);
+        const response = resolveLayerResponse(delta.x, delta.y, { ...link, weight: layerFalloff(u, v, link.edgeRadius) });
+        target.vertices[i] += response.x;
+        target.vertices[i + 1] += response.y;
+        deltaX = delta.x;
+        deltaY = delta.y;
+        responsePressure = response.pressure;
+      }
 
       const localPoint = { x: target.vertices[i], y: target.vertices[i + 1] };
       const worldPoint = transformPoint(targetTransform, localPoint);
@@ -112,12 +117,12 @@ function applyLink(link) {
         totalPenetration += contact.penetration;
         if (contact.touching) { contactCount++; vertexTouching[i / 2] = 1; }
       }
-      const shadowOffset = contactShadowOffset(delta.x, delta.y, {
+      const shadowOffset = contactShadowOffset(deltaX, deltaY, {
         contact: link.contact, clearance: link.clearance, maxOffset: link.shadowReach
       });
       target.shadowVertices[i] = target.vertices[i] + 4 + shadowOffset.x;
       target.shadowVertices[i + 1] = target.vertices[i + 1] + 5 + shadowOffset.y;
-      totalPressure += response.pressure + contact.penetration / Math.max(1, link.contactGap) * link.contactStiffness * 0.15;
+      totalPressure += responsePressure + contact.penetration / Math.max(1, link.contactGap) * link.contactStiffness * 0.15;
     }
   }
 
