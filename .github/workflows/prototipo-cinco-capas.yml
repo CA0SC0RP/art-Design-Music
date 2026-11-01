@@ -1,0 +1,38 @@
+name: Publicar prototipo de cinco capas
+
+on:
+  push:
+    branches:
+      - prototipo/prueba-cinco-capas-01
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-prototipo-nivel-01
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Preparar sitio estático
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: prototype/level-01
+
+      - name: Publicar prototipo
+        id: deployment
+        uses: actions/deploy-pages@v4
