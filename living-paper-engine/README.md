@@ -151,5 +151,5 @@ Un CI exitoso no sustituye la inspección visual ni demuestra compatibilidad en 
 - La regresión de contacto ejecuta 2,400 frames consecutivos (20 ciclos de movimiento a 120 Hz) y comprueba que no aparezcan valores no finitos ni deriva al cerrar el ciclo.
 - El benchmark de contacto ejecuta el solver completo con mallas cuadradas de 32×32, 64×64 y 128×128 celdas, incluyendo construcción de triángulos, índice espacial, consultas de vértices, pruebas de aristas y aplicación de correcciones.
 - GitHub Actions registra el tiempo medio por frame, número de vértices/aristas/triángulos, celdas del índice, candidatos promedio y desplazamiento máximo.
-- Las pruebas exigen que el broadphase reduzca las consultas a menos del 10% de la búsqueda cartesiana vértice×triángulo y arista×triángulo, y que las correcciones permanezcan acotadas.
+- Las pruebas exigen que el broadphase reduzca las consultas a menos del 10% de la búsqueda cartesiana vértice×triángulo y arista×triángulo, y que las correcciones permanezcan acotadas. Las aristas cuyos dos extremos ya resolvieron la separación normal se omiten del segundo pase; las aristas con uno o ambos extremos sin resolver conservan la detección de cruces.
 - Los tiempos de CI son mediciones de referencia en un runner de GitHub, no una garantía de FPS en móviles o tabletas. Falta medir en navegador y dispositivo real.
