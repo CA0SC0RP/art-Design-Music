@@ -11,6 +11,7 @@ El usuario dirige la creación. ChatGPT es el único asistente de IA que partici
 ## Documentos vigentes
 
 - [Dirección del motor de caricaturas para iPad](docs/direccion-motor-caricaturas-ipad.md)
+- [Visión del estudio web y exportación de caricaturas](docs/vision-estudio-web-y-exportacion-de-caricaturas-2026-11-01.md)
 - [Estado del proyecto](ESTADO_PROYECTO.md)
 - [Arquitectura inicial](ARQUITECTURA.md)
 - [Instrucciones de trabajo](INSTRUCCIONES_PARA_IA.md)
