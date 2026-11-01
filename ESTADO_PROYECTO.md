@@ -1,14 +1,15 @@
 # Estado vigente — cambio de objetivo 2026-11-01
 
-**Objetivo actual:** Living Paper Engine se reorienta a un motor y estudio visual para crear caricaturas animadas y microhistorias desde una interfaz prioritaria para iPad. El usuario dirige la creación desde el editor; ChatGPT es el único asistente de IA que modifica y revisa el código. Claude y otros asistentes quedan fuera del flujo.
+**Objetivo actual:** construir un estudio web para crear caricaturas animadas e historias audiovisuales, accesible desde Safari, Chrome y Firefox. El producto principal será el editor ejecutado en el navegador; la salida final será un vídeo exportado, no un APK. Cada cuadro/obra podrá ser una historia independiente. La interfaz se prioriza para iPad. ChatGPT es el único asistente de IA que modifica y revisa el código; no se delega a otros asistentes.
 
 **Primera meta funcional:** abrir desde Safari en iPad un escenario editable; seleccionar un personaje u objeto; modificar posición y tamaño con controles visuales; reproducir una animación sencilla y revisar el resultado.
 
 **Colaboración:** inicialmente el usuario describe cambios en el chat, ChatGPT modifica código en la rama autorizada y el usuario actualiza la vista previa en iPad. No existe todavía una conexión directa y continua entre ChatGPT y el lienzo activo. Un puente de edición en tiempo real es una posibilidad futura, no una función existente.
 
-**Audio:** diálogo, efectos y música original se diseñarán para cada microhistoria cuando se defina su narrativa. No se mantiene el planteamiento ambient/lo-fi/chillout ni el tempo de 72 BPM como requisito.
+**Renderizado y audio:** el motor seguirá siendo necesario para calcular los fotogramas de cada historia y combinarlos con diálogo, música y efectos antes de codificar el vídeo. Se investigará primero la exportación local desde el navegador; no se activarán servicios remotos ni pagos sin autorización.
 
 **Documentos vigentes:**
+- Visión del estudio web y exportación de vídeo: docs/vision-estudio-web-y-exportacion-de-caricaturas-2026-11-01.md
 - Investigación de Umamo y decisión de arquitectura: docs/investigacion-umamo-y-decision-arquitectura-2026-11-01.md
 - Dirección de producto: docs/direccion-motor-caricaturas-ipad.md
 - Arquitectura inicial: ARQUITECTURA.md
