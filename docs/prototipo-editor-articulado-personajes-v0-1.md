@@ -154,3 +154,11 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - Se establecieron límites defensivos iniciales: 50.000 vértices, 100 huesos y cuatro influencias por vértice. Se rechazan matrices singulares, huesos inexistentes, pesos negativos/cero, coordenadas no finitas y entradas fuera de formato; la malla de entrada no se modifica.
 - Se añadieron diez pruebas automatizadas para identidad, rotación, mezcla de pesos, construcción de matrices, matrices singulares, referencias inválidas y preservación de datos.
 - El módulo es todavía un núcleo de cálculo independiente: no está conectado a la interfaz ni a un editor de malla/pesos. La integración visual se hará después de diseñar el flujo de edición de vértices y probarlo en Safari/iPad.
+
+
+
+### Complemento de v0.9.8 — matrices mundiales del rig
+
+- `rig-geometry.js` ahora expone matrices afines mundiales para cada pieza, acumulando traslación, rotación, escala y pivotes de toda la jerarquía.
+- Estas matrices conectan la estructura articulada del personaje con el módulo de skinning: permiten calcular matrices de deformación entre una pose de referencia y una pose actual sin reconstruir transformaciones de forma independiente.
+- Se añadieron dos pruebas para verificar que cada matriz transforma el pivote al origen mundial correcto y que se rechazan jerarquías rotas. GitHub Actions pasó con las nuevas pruebas.
