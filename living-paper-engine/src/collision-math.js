@@ -75,18 +75,32 @@ export function pointInPolygon(x, y, polygon) {
 export function buildMeshTriangles(mesh, matrix = composeWorldTransform(mesh.container)) {
   const { vertices, columns, rows } = mesh, triangles = [];
   const shape = mesh.shape;
+  const fullRectangle = !shape || (
+    shape.length === 4 &&
+    shape.some(([x, y]) => x === 0 && y === 0) &&
+    shape.some(([x, y]) => x === 1 && y === 0) &&
+    shape.some(([x, y]) => x === 1 && y === 1) &&
+    shape.some(([x, y]) => x === 0 && y === 1)
+  );
   const point = index => transformPoint(matrix, { x: vertices[index * 2], y: vertices[index * 2 + 1] });
+  const addTriangle = (i0, i1, i2) => {
+    if (shape && !fullRectangle) {
+      const a = { x: vertices[i0 * 2] / mesh.width, y: vertices[i0 * 2 + 1] / mesh.height };
+      const b = { x: vertices[i1 * 2] / mesh.width, y: vertices[i1 * 2 + 1] / mesh.height };
+      const c = { x: vertices[i2 * 2] / mesh.width, y: vertices[i2 * 2 + 1] / mesh.height };
+      if (!triangleOverlapsPolygon(a, b, c, shape)) return;
+    }
+    const a = point(i0), b = point(i1), c = point(i2);
+    triangles.push({
+      a, b, c,
+      minX: Math.min(a.x, b.x, c.x), maxX: Math.max(a.x, b.x, c.x),
+      minY: Math.min(a.y, b.y, c.y), maxY: Math.max(a.y, b.y, c.y)
+    });
+  };
   for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++) {
     const a = y * (columns + 1) + x, b = a + 1, d = (y + 1) * (columns + 1) + x, e = d + 1;
-    for (const ids of [[a, b, d], [b, e, d]]) {
-      const local = ids.map(id => ({
-        x: vertices[id * 2] / mesh.width,
-        y: vertices[id * 2 + 1] / mesh.height
-      }));
-      if (shape && !triangleOverlapsPolygon(local[0], local[1], local[2], shape)) continue;
-      const p0 = point(ids[0]), p1 = point(ids[1]), p2 = point(ids[2]);
-      triangles.push({ a: p0, b: p1, c: p2, minX: Math.min(p0.x,p1.x,p2.x), maxX: Math.max(p0.x,p1.x,p2.x), minY: Math.min(p0.y,p1.y,p2.y), maxY: Math.max(p0.y,p1.y,p2.y) });
-    }
+    addTriangle(a, b, d);
+    addTriangle(b, e, d);
   }
   return triangles;
 }
