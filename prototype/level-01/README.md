@@ -20,3 +20,10 @@ No usa la imagen maestra, imágenes externas, sprites de personajes, audio ni re
 2. Abrir en Safari del iPad.
 3. Confirmar carga de las cinco capas, composición, pausa/reanudación y ausencia de saltos.
 4. Solo después aumentar la complejidad.
+
+## Animaciones internas añadidas
+- El cielo anima por separado las dos masas de nubes con desplazamientos lentos y alternados.
+- Las cuatro estrellas tienen ciclos de brillo escalonados.
+- El río incorpora reflejos y trazos de superficie con desplazamiento continuo y pulsos suaves.
+- Estas animaciones se implementan dentro de los SVG, no mediante el desplazamiento completo de la capa.
+- La validación visual en Safari del iPad sigue pendiente; no se declara aprobada hasta que el usuario la compruebe.
