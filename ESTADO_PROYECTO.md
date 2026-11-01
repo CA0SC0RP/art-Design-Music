@@ -351,3 +351,8 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - `paintInfluence()` ahora prepara las modificaciones en copias temporales, valida pesos, huesos, duplicados y límite de cuatro influencias y solo confirma los cambios cuando todos los vértices afectados son válidos.
 - Se evita que una malla parcialmente corrupta deje algunos vértices pintados y otros sin modificar tras un rechazo. También se rechazan identificadores de hueso vacíos y se trata fuerza cero como operación sin cambios.
 - Se añadieron pruebas de regresión para corrupción detectada en un vértice posterior y para identificador vacío. Pendiente confirmar la ejecución de CI que incluye estas pruebas.
+
+
+## Validación automatizada — v0.9.17
+- GitHub Actions, ejecución #74: completada con éxito. Suite completa: 67 pruebas superadas, 0 fallidas. Incluye los casos nuevos de topología degenerada y pincel transaccional.
+- La validación no sustituye la inspección visual ni las pruebas táctiles en Safari/iPad, que siguen pendientes.
