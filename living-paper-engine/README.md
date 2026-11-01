@@ -25,6 +25,7 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Cantos levantados dibujados sobre la línea del pliegue con espesor aparente variable.
 - Sombra propia del canto y reflejo fino para separar visualmente la cara superior y el borde expuesto.
 - Perfil de espesor dependiente del ángulo, el lado del pliegue y la intensidad configurada.
+- Grupos de capas coordinadas con propagación en cascada de deformación desde la hoja frontal a las posteriores; cada tramo admite acoplamiento y separación independientes.
 - Interacción entre superficies superpuestas: transferencia de deformación, separación ajustable y respuesta de sombra por contacto suave, con control independiente de presión y desplazamiento local de sombra según la separación y el movimiento relativo.
 - Curvatura continua de superficie con campo suave de desplazamiento y dirección configurable.
 - Memoria elástica por vértice con velocidad persistente, rigidez y amortiguación configurables.
@@ -65,6 +66,8 @@ Los materiales son aproximaciones 2D deliberadas. Aún no representan simulació
 - `src/edge-math.js`: perfiles de espesor.
 - `src/edge.test.mjs`: pruebas de cantos.
 - `src/layers.js`: acoplamiento de movimiento y contacto visual entre capas.
+- `src/layer-groups.js`: creación de pilas multicapa y propagación en cascada.
+- `src/layer.test.mjs`: pruebas de interacción y topología de grupos multicapa.
 - `src/layer-math.js`: funciones puras para transferencia de desplazamiento, caída de influencia y desplazamiento de sombra de contacto.
 - `src/layer.test.mjs`: pruebas de interacción matemática entre capas.
 - `src/elastic.js`: curvatura continua y memoria elástica.
@@ -74,7 +77,7 @@ Los materiales son aproximaciones 2D deliberadas. Aún no representan simulació
 
 ## Prueba manual
 
-Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor y sombra. Probar las articulaciones, la flexión del tallo, la ondulación, la influencia localizada, el anclaje, los pliegues, el volumen, el espesor del canto y la curvatura elástica de la hoja, además de pausa y velocidad global.
+Seleccionar una pieza y cambiar escala, rotación, profundidad, material, grosor y sombra. Probar las articulaciones, la flexión del tallo, la ondulación, la influencia localizada, el anclaje, los pliegues, el volumen, el espesor del canto, la curvatura elástica y la propagación entre tres hojas, además de pausa y velocidad global.
 
 ## Pendiente
 
