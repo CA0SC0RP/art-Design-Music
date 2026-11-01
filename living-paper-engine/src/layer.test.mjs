@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { layerFalloff, resolveLayerResponse, sampleDisplacement } from "./layer-math.js";
+import { layerFalloff, resolveLayerResponse, sampleDisplacement, contactShadowOffset } from "./layer-math.js";
 import { enableLayerInteraction } from "./layers.js";
 
 test("la influencia cae suavemente hacia el borde", () => {
@@ -81,4 +81,13 @@ test("pausar el motor evita recalcular la interacción y destruirla restaura la 
   engine.destroyLayerInteractions();
   assert.equal(target.container.position.y, 20);
   assert.equal(target.shadowMesh.alpha, 0.2);
+});
+
+test("la sombra de contacto responde a la dirección del desplazamiento y al espacio", () => {
+  const pressed = contactShadowOffset(12, 0, { contact: 1, clearance: 0, maxOffset: 10 });
+  const lifted = contactShadowOffset(12, 0, { contact: 1, clearance: 18, maxOffset: 10 });
+  assert.ok(pressed.x < 0);
+  assert.equal(pressed.y, 0);
+  assert.ok(Math.abs(pressed.x) > Math.abs(lifted.x));
+  assert.deepEqual(contactShadowOffset(12, 0, { contact: 0 }), { x: 0, y: 0 });
 });
