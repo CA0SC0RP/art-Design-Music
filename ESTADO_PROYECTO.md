@@ -1,3 +1,24 @@
+# Estado vigente — cambio de objetivo 2026-11-01
+
+**Objetivo actual:** Living Paper Engine se reorienta a un motor y estudio visual para crear caricaturas animadas y microhistorias desde una interfaz prioritaria para iPad. El usuario dirige la creación desde el editor; ChatGPT es el único asistente de IA que modifica y revisa el código. Claude y otros asistentes quedan fuera del flujo.
+
+**Primera meta funcional:** abrir desde Safari en iPad un escenario editable; seleccionar un personaje u objeto; modificar posición y tamaño con controles visuales; reproducir una animación sencilla y revisar el resultado.
+
+**Colaboración:** inicialmente el usuario describe cambios en el chat, ChatGPT modifica código en la rama autorizada y el usuario actualiza la vista previa en iPad. No existe todavía una conexión directa y continua entre ChatGPT y el lienzo activo. Un puente de edición en tiempo real es una posibilidad futura, no una función existente.
+
+**Audio:** diálogo, efectos y música original se diseñarán para cada microhistoria cuando se defina su narrativa. No se mantiene el planteamiento ambient/lo-fi/chillout ni el tempo de 72 BPM como requisito.
+
+**Documentos vigentes:**
+- Dirección de producto: docs/direccion-motor-caricaturas-ipad.md
+- Arquitectura inicial: ARQUITECTURA.md
+- Instrucciones de trabajo: INSTRUCCIONES_PARA_IA.md
+
+**Estado de transición:** la auditoría técnica del 2026-10-29 queda cerrada como registro histórico del diseño anterior. El contrato v2 no está aprobado para el motor de caricaturas. La partitura audiovisual de Mountains That Breathe queda obsoleta para la planificación activa. Los documentos, prototipos y recursos antiguos se conservan como antecedentes hasta clasificarlos; no se borran.
+
+**Trabajo de desarrollo nuevo:** todavía no se ha implementado ni validado el editor de caricaturas en iPad. Siguiente paso: auditar en modo de solo lectura living-paper-engine/ y prototype/ para identificar componentes reutilizables. Después definir la primera prueba aislada de escenario editable.
+
+---
+
 # Cuadro Vivo — estado del proyecto
 
 **Estado:** preparación. El contrato de capas v2, el esquema de datos y el plan de validación siguen siendo propuestas pendientes de revisión del usuario. No hay motor, visor, validador, capas finales, sprites finales ni audio final. No declarar nada de eso como implementado.
