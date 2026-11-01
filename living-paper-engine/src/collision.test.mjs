@@ -252,3 +252,17 @@ test("las consultas sucesivas reutilizan marcas sin filtrar candidatos de búsqu
   assert.ok(left.every(triangle => leftAgain.includes(triangle)));
   assert.equal(index.queryId, 3);
 });
+
+
+test("el índice espacial reutiliza el buffer de salida sin retener resultados anteriores", async () => {
+  const { buildTriangleSpatialIndex, queryTriangleSpatialIndex } = await import("./collision-math.js");
+  const triangles = buildMeshTriangles(quadMesh({ columns: 8, rows: 8 }));
+  const index = buildTriangleSpatialIndex(triangles, 24);
+  const output = [];
+  const first = queryTriangleSpatialIndex(index, { minX: 0, maxX: 20, minY: 0, maxY: 20 }, 1e-7, output);
+  assert.equal(first, output);
+  const firstCount = output.length;
+  const second = queryTriangleSpatialIndex(index, { minX: 60, maxX: 80, minY: 60, maxY: 80 }, 1e-7, output);
+  assert.equal(second, output);
+  assert.ok(firstCount > 0 && output.length > 0);
+});
