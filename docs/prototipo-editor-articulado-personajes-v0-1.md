@@ -66,3 +66,13 @@ Esta es una primera estructura de articulación por piezas rígidas con IK geom�
 7. Después abordar deformación de malla y skinning, cuando la base jerárquica e IK estén estables.
 
 No adelantar escenas narrativas, timeline ni exportador en esta etapa.
+
+
+## Iteración v0.9 — restricciones anatómicas iniciales del IK
+
+- Se separó el cálculo geométrico de dos huesos en `prototype/character-editor-v01/ik-solver.js`, una función pura reutilizable y comprobable.
+- El solver valida parámetros finitos, longitudes positivas, sentido de flexión y alcance geométrico antes de devolver ángulos. Los objetivos fuera de alcance o las soluciones que exceden los límites se rechazan sin modificar las articulaciones.
+- Se introdujeron límites anatómicos iniciales conservadores: hombro/cadera dentro de ±165° y codo/rodilla con flexión direccional seleccionada, limitada a 150°. Los límites configurados individualmente en cada articulación siguen siendo respetados si son más restrictivos.
+- Se añadió una suite sin dependencias externas en `tests/ik-solver.test.js` para objetivos alcanzables, ambos sentidos de flexión, alcance máximo, objetivo fuera de alcance, exceso de flexión, límites configurados y parámetros inválidos.
+- Esta etapa mejora el solver rígido, pero no constituye un modelo anatómico universal ni incorpora colisiones, anatomía por personaje o deformación de malla. Los rangos deberán poder ajustarse por rig y tipo de personaje en una etapa posterior.
+- La interfaz continúa en v0.8 mientras se valida esta mejora del motor; no se declara todavía una versión visual nueva ni una prueba en Safari/iPad.
