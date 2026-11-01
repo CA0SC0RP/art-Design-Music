@@ -35,7 +35,8 @@ jobs:
           mkdir -p _site/level-02 _site/level-03 _site/level-04
           cp -R prototype/level-01/. _site/
           cp -R prototype/level-02/. _site/level-02/
-          cp -R prototype/level-03/. _site/level-03/\n          cp -R prototype/level-04/. _site/level-04/
+          cp -R prototype/level-03/. _site/level-03/
+          cp -R prototype/level-04/. _site/level-04/
       - name: Cargar sitio estático
         uses: actions/upload-pages-artifact@v3
         with:
