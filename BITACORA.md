@@ -246,3 +246,12 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Commits de esta etapa: implementación `22c269a5f075113d6c7450a818c703c500c0b2a6`, ajuste de cancelación y controles `f89d60a5b2495340359bfe0b5e6cfb0f91ea68ac`; documentación `e2a33c4431aa1c77121fad34fc9445632cb8a973`; estado `99bd45e41cf0dfc456956563179384a62f7d2ff6`.
 - **Verificación:** sintaxis JavaScript comprobada; falta ejecutar el editor en navegador, probar guardar/aplicar/eliminar y confirmar transiciones en Safari/iPad.
 - No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
+
+
+## 2026-11-01 — Editor de personajes v0.4: acciones coordinadas
+- Se añadieron cuatro acciones de prueba al editor: saludo, dos fases de caminata y reposo. Las acciones coordinan transformaciones de brazo/antebrazo/mano y muslo/pierna inferior/pie usando la jerarquía existente.
+- Las acciones se aplican mediante la transición de poses; el resultado puede guardarse como una pose reutilizable. Si faltan las piezas esperadas, se informa que la acción requiere el preset Personaje.
+- Se documentó expresamente que estas acciones no implementan IK ni posicionamiento automático de extremos.
+- Código: `prototype/character-editor-v01/index.html`; documentación: `docs/prototipo-editor-articulado-personajes-v0-1.md`.
+- Commit de código: `d94c8c9e91a9fb570d09493d33571c7fb29fcaae`.
+- No se ha ejecutado la interfaz en navegador ni validado en Safari/iPad; no se declara prueba funcional visual. No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
