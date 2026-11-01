@@ -79,3 +79,13 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - **Siguiente paso:** habilitar acceso de prueba desde Safari, verificar carga de los cinco SVG y comportamiento de pausa/movimiento, corregir cualquier problema y solo entonces avanzar.
 
 - **Publicación de prueba:** se añadió `.github/workflows/prototipo-cinco-capas.yml` para GitHub Pages (runner estándar `ubuntu-latest`). La consulta de ejecuciones de Actions devolvió cero ejecuciones; por tanto, no se confirma que Pages esté habilitado ni que exista una URL pública funcional. Pendiente comprobar el flujo y no compartir una URL como operativa hasta que termine correctamente.
+
+
+## 2026-10-31 — Corrección de animaciones internas tras prueba visual fallida
+- El usuario informó que el prototipo publicado seguía completamente estático.
+- Inspección directa de `index.html` y de los cinco SVG de la rama: se encontró que cielo, nubes y estrellas eran estáticos; el río tenía solo una forma y dos trazos estáticos. El CSS movía únicamente el SVG completo de algunas capas, lo cual no implementaba los comportamientos solicitados.
+- Se actualizó `prototype/level-01/assets/01-cielo.svg`: dos ciclos lentos e independientes para las nubes y parpadeo escalonado de cuatro estrellas.
+- Se actualizó `prototype/level-01/assets/04-rio.svg`: reflejos y trazos de agua con desplazamiento continuo, además de dos pulsos de ondas.
+- Se actualizó `prototype/level-01/README.md` y `ESTADO_PROYECTO.md` para registrar el cambio y distinguirlo de una prueba aprobada.
+- No se modificó `main`, no se tocó la imagen maestra y no se incurrió en gastos.
+- Pendiente: confirmar que GitHub Pages publicó el último commit y validar en Safari del iPad. No se afirma todavía que el movimiento haya sido comprobado en dispositivo real.
