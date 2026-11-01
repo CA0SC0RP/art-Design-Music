@@ -1,7 +1,7 @@
-# Editor articulado de personajes — prototipo v0.2
+# Editor articulado de personajes — prototipo v0.3
 
 **Ruta:** `prototype/character-editor-v01/index.html`  
-**Estado:** prototipo incremental de estructura jerárquica, pivotes editables y límites de articulación; no es el editor completo ni está validado en iPad.
+**Estado:** prototipo incremental de estructura jerárquica, pivotes editables, límites de articulación y biblioteca de poses; no es el editor completo ni está validado en iPad.
 
 ## Objetivo de esta iteración
 
@@ -21,6 +21,10 @@ Comprobar que el proyecto puede representar un objeto complejo como un árbol de
 - Límites mínimo y máximo de rotación por pieza; el control de giro queda restringido al rango configurado.
 - Los proyectos locales antiguos de versión 1 se migran al cargar, asignando pivote (0,0) y límites predeterminados de −180° a 180°.
 - Añadir partes de brazo, pierna, rama, hojas y articulación; duplicar, eliminar y cambiar orden.
+- Biblioteca de poses: guardar la configuración actual de todas las piezas con un nombre, seleccionar una pose, aplicarla con transición suave o eliminarla.
+- Las poses almacenan posición X/Y, rotación y escala por pieza; no alteran la configuración estructural del rig ni los pivotes/límites.
+- Las transiciones interpolan las transformaciones durante aproximadamente medio segundo y se cancelan al comenzar una edición manual.
+- Las poses forman parte del proyecto, se conservan en el guardado local y se incluyen en el JSON exportado.
 - Guardado en localStorage del navegador y exportación del proyecto como JSON.
 - Restauración automática del último proyecto guardado en ese navegador.
 
@@ -43,7 +47,7 @@ Esta es una primera estructura de articulación por piezas rígidas. Los límite
 
 1. Validar en Safari del iPad el arrastre del pivote, la conservación de la posición visual y los límites de giro.
 2. Corregir cualquier problema táctil o de transformación detectado.
-3. Crear poses y controles de pose reutilizables.
+3. Probar en el navegador guardar, aplicar, eliminar y exportar poses, incluida la transición y la interrupción por edición manual.
 4. Incorporar recursos de imagen/textura de papel y recorte con bordes y sombras de calidad.
 5. Después abordar deformación de malla y skinning, solo cuando la base jerárquica esté estable.
 
