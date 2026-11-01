@@ -7,7 +7,8 @@ La arquitectura debe responder al nuevo producto: un estudio visual para crear c
 ## Prioridad de plataforma
 
 - Primera interfaz: aplicación web adaptable a iPad.
-- Primer entorno de revisión: Safari en iPad.
+- Navegador de referencia inicial: Safari en iPad.
+- Compatibilidad adicional buscada: Chrome, Firefox y Opera en iPad, sujeta a pruebas reales.
 - Entorno de desarrollo: GitHub Codespaces y repositorio actual.
 - No iniciar una aplicación Android nativa ni Android TV en esta etapa.
 - No elegir un framework o motor definitivo antes de comparar prototipos pequeños y comprobarlos en Safari.
@@ -29,12 +30,7 @@ Estos componentes son una separación lógica inicial. No implican que ya exista
 
 El escenario debe ocupar la mayor parte de la pantalla. Los controles y paneles deben adaptarse al espacio disponible y ser utilizables con los dedos o Apple Pencil. El usuario debe poder seleccionar un personaje u objeto, cambiar propiedades visibles y reproducir el movimiento sin editar código.
 
-La primera prueba funcional se limita a:
-- escenario visible;
-- al menos un elemento seleccionable;
-- controles visuales de posición y tamaño;
-- animación sencilla con reproducir/pausar;
-- vista previa comprobable en Safari de iPad.
+La prueba actual de escenario y personaje geométrico es solo un punto de partida. La primera prioridad de producto es un editor de personajes con partes, jerarquía, rig/huesos, deformación, texturas, poses y expresiones. La interfaz debe validarse inicialmente en Safari de iPad y, posteriormente, en Chrome, Firefox y Opera. El editor y el exportador deben probarse como capacidades distintas.
 
 ## Modelo de contenido a definir
 
@@ -52,7 +48,7 @@ No fijar todavía un esquema JSON definitivo ni reutilizar el contrato v2 de cap
 
 ## Tecnología por evaluar
 
-Se evaluarán HTML/CSS/JavaScript y las opciones de renderizado Canvas 2D, SVG y DOM mediante pruebas pequeñas. Los criterios serán:
+Se evaluarán HTML/CSS/JavaScript y las opciones de renderizado Canvas 2D, SVG y DOM mediante pruebas pequeñas. La compatibilidad del editor y la capacidad de codificar/exportar vídeo se medirán por separado. Los criterios serán:
 - fluidez en Safari del iPad;
 - facilidad para seleccionar y manipular objetos;
 - calidad visual;
