@@ -154,14 +154,14 @@ Un CI exitoso no sustituye la inspección visual ni demuestra compatibilidad en 
 - Las pruebas exigen que el broadphase reduzca las consultas a menos del 10% de la búsqueda cartesiana vértice×triángulo y arista×triángulo, y que las correcciones permanezcan acotadas.
 - Los tiempos de CI son mediciones de referencia en un runner de GitHub, no una garantía de FPS en móviles o tabletas. Falta medir en navegador y dispositivo real.
 
-### Referencia de rendimiento (CI #217)
+### Referencia de rendimiento (CI #217–218)
 
-En la ejecución de referencia del 1 de noviembre de 2026, con el solver completo y la detección de aristas activada:
+En dos ejecuciones de referencia del 1 de noviembre de 2026, con el solver completo y la detección de aristas activada, se observaron estos rangos:
 
 | Malla | Vértices examinados | Aristas examinadas | Triángulos fuente | Tiempo medio por frame |
 |---|---:|---:|---:|---:|
-| 32×32 | 1,024 | 3,072 | 2,048 | 6.78 ms |
-| 64×64 | 4,096 | 12,288 | 8,192 | 21.59 ms |
-| 128×128 | 16,384 | 49,152 | 32,768 | 100.60 ms |
+| 32×32 | 1,024 | 3,072 | 2,048 | 6.78–11.41 ms |
+| 64×64 | 4,096 | 12,288 | 8,192 | 21.59–32.52 ms |
+| 128×128 | 16,384 | 49,152 | 32,768 | 100.60–166.52 ms |
 
-Estos valores pertenecen al runner de GitHub y varían con el hardware y la carga. No son mediciones de Safari ni de iPad. La tendencia confirma un coste creciente con la resolución: 32×32 es la referencia más adecuada para interacción fluida; 64×64 requiere validación en el dispositivo objetivo; 128×128 no debe asumirse como tiempo real todavía. Se mantiene la detección completa de aristas para no sacrificar contactos finos por velocidad.
+Los tiempos pertenecen al runner de GitHub y varían considerablemente con el hardware y la carga; no son mediciones de Safari ni de iPad. La tendencia confirma un coste creciente con la resolución: 32×32 es la referencia más adecuada para interacción fluida; 64×64 requiere validación y posiblemente reducción de frecuencia en el dispositivo objetivo; 128×128 no debe asumirse como tiempo real todavía. Se mantiene la detección completa de aristas para no sacrificar contactos finos por velocidad.
