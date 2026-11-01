@@ -26,7 +26,7 @@ export class PaperPiece{
 }
 
 export class LivingPaperEngine{
-  constructor(host){this.host=host;this.app=null;this.world=null;this.pieces=new Map();this.articulations=new Set();this.flexes=new Set();this.speed=1;this.paused=false;this.elapsed=0;}
+  constructor(host){this.host=host;this.app=null;this.world=null;this.pieces=new Map();this.articulations=new Set();this.flexes=new Set();this.meshes=new Set();this.speed=1;this.paused=false;this.elapsed=0;}
   async init(){
     this.app=new Application();
     await this.app.init({background:0xdce5df,antialias:true,autoDensity:true,resolution:Math.min(window.devicePixelRatio||1,2),resizeTo:this.host});
@@ -39,11 +39,12 @@ export class LivingPaperEngine{
   sortDepth(){const items=[...this.pieces.values()].sort((a,b)=>b.depth-a.depth);items.forEach((p,i)=>this.world.setChildIndex(p.container,i));}
   addArticulation(joint,parent){(parent||this.world).addChild(joint.container);this.articulations.add(joint);return joint;}
   addFlex(flex,parent){(parent||this.world).addChild(flex.container);this.flexes.add(flex);return flex;}
+  addPaperMesh(mesh,parent){(parent||this.world).addChild(mesh.container);this.meshes.add(mesh);return mesh;}
   setSpeed(v){this.speed=Math.max(.1,Math.min(3,v));}
   setPaused(v){this.paused=Boolean(v);}
-  update(dt){if(this.paused)return;const step=dt*this.speed;this.elapsed+=step;for(const p of this.pieces.values())p.motion?.update(step,this.elapsed,p);for(const joint of this.articulations)joint.update(this.elapsed);for(const flex of this.flexes)flex.update(this.elapsed);}
+  update(dt){if(this.paused)return;const step=dt*this.speed;this.elapsed+=step;for(const p of this.pieces.values())p.motion?.update(step,this.elapsed,p);for(const joint of this.articulations)joint.update(this.elapsed);for(const flex of this.flexes)flex.update(this.elapsed);for(const mesh of this.meshes)mesh.update(this.elapsed);}
   layout(){if(!this.app||!this.world)return;const w=this.host.clientWidth||960,h=this.host.clientHeight||540;this.app.renderer.resize(w,h);const s=Math.min(w/1280,h/720);this.world.scale.set(s);this.world.position.set((w-1280*s)/2,(h-720*s)/2);}
-  destroy(){this.resizeObserver?.disconnect();this.app?.destroy(true,{children:true});this.pieces.clear();this.articulations.clear();this.flexes.clear();}
+  destroy(){this.resizeObserver?.disconnect();this.app?.destroy(true,{children:true});this.pieces.clear();this.articulations.clear();this.flexes.clear();for(const mesh of this.meshes)mesh.destroy();this.meshes.clear();}
 }
 
 
