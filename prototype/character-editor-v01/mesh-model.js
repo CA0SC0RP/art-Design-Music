@@ -53,21 +53,26 @@ function setInfluence(mesh,index,boneId,weight){
  vertex.weights=weights.filter(w=>w.weight>0).map(w=>({...w,weight:w.weight/total}));return {ok:true};
 }
 function paintInfluence(mesh,x,y,boneId,strength,radius){
- if(!mesh||!Array.isArray(mesh.vertices)||!Number.isFinite(x)||!Number.isFinite(y)||typeof boneId!=="string"||!Number.isFinite(strength)||strength<0||strength>1||!Number.isFinite(radius)||radius<=0)return {ok:false,message:"Parámetros del pincel no válidos."};
+ if(!mesh||!Array.isArray(mesh.vertices)||!Number.isFinite(x)||!Number.isFinite(y)||typeof boneId!=="string"||!boneId||!Number.isFinite(strength)||strength<0||strength>1||!Number.isFinite(radius)||radius<=0)return {ok:false,message:"Parámetros del pincel no válidos."};
  const targets=mesh.vertices.map(v=>({v,d:Math.hypot(v.x-x,v.y-y)})).filter(o=>o.d<=radius);
- if(!targets.length)return {ok:true,changed:0};
- for(const {v} of targets){if(!Array.isArray(v.weights)||!v.weights.some(w=>w.boneId===boneId)&&v.weights.length>=MAX_INFLUENCES)return {ok:false,message:"El pincel encontró un vértice con cuatro huesos. Reduce o elimina una influencia antes de pintar."};}
- let changed=0;
+ if(!targets.length||strength===0)return {ok:true,changed:0};
+ const updates=[];
  for(const {v,d} of targets){
-  const falloff=Math.pow(1-d/radius,2),amount=strength*falloff;if(amount<=0)continue;
-  let entry=v.weights.find(w=>w.boneId===boneId);
-  if(!entry){entry={boneId,weight:0};v.weights.push(entry);}
+  if(!Array.isArray(v.weights)||v.weights.length<1||v.weights.length>MAX_INFLUENCES)return {ok:false,message:"El pincel encontró un vértice con influencias no válidas."};
+  const weights=v.weights.map(w=>({...w})),seen=new Set();
+  for(const w of weights){if(!w||typeof w.boneId!=="string"||!w.boneId||seen.has(w.boneId)||!Number.isFinite(w.weight)||w.weight<0)return {ok:false,message:"El pincel encontró pesos o huesos no válidos."};seen.add(w.boneId);}
+  const totalBefore=weights.reduce((sum,w)=>sum+w.weight,0);
+  if(!Number.isFinite(totalBefore)||totalBefore<=1e-10)return {ok:false,message:"El pincel encontró un vértice sin pesos positivos."};
+  let entry=weights.find(w=>w.boneId===boneId);
+  if(!entry){if(weights.length>=MAX_INFLUENCES)return {ok:false,message:"El pincel encontró un vértice con cuatro huesos. Reduce o elimina una influencia antes de pintar."};entry={boneId,weight:0};weights.push(entry);}
+  const amount=strength*Math.pow(1-d/radius,2);if(amount<=0)continue;
   entry.weight=entry.weight+(1-entry.weight)*amount;
-  const total=v.weights.reduce((sum,w)=>sum+w.weight,0);
-  if(total>1e-10)v.weights=v.weights.filter(w=>w.weight>0).map(w=>({...w,weight:w.weight/total}));
-  changed++;
+  const total=weights.reduce((sum,w)=>sum+w.weight,0);
+  if(!Number.isFinite(total)||total<=1e-10)return {ok:false,message:"El pincel no pudo normalizar los pesos del vértice."};
+  updates.push({vertex:v,weights:weights.filter(w=>w.weight>0).map(w=>({...w,weight:w.weight/total}))});
  }
- return {ok:true,changed};
+ for(const update of updates)update.vertex.weights=update.weights;
+ return {ok:true,changed:updates.length};
 }
 return {createGrid,normalizeMesh,moveVertex,setInfluence,paintInfluence,limits:{maxVertices:MAX_VERTICES,maxFaces:MAX_FACES,maxInfluences:MAX_INFLUENCES,maxBones:MAX_BONES}};
 });
