@@ -32,7 +32,7 @@ Comprobar que el proyecto puede representar un objeto complejo como un árbol de
 
 Cada elemento tiene identificador, nombre, tipo, posición local, pivote local X/Y, rotación actual, límites mínimo/máximo de rotación, escala, forma, material/color y referencia al padre. El render recorre recursivamente el árbol y anida cada pieza en el sistema de coordenadas de su padre. Por eso, al rotar una rama, sus hojas y ramitas hijas acompañan el movimiento; al mover el tronco, toda la copa se desplaza.
 
-Esta es una primera estructura de articulación por piezas rígidas. Los límites son rangos angulares simples por pieza; todavía no hay cinemática inversa (IK), restricciones anatómicas entre varias articulaciones, huesos con curvas, skinning, pesos de vértices, mallas deformables, poses guardadas, biblioteca de recursos ni sistema de materiales/texturas de producción.
+Esta es una primera estructura de articulación por piezas rígidas. Los límites son rangos angulares simples por pieza; todavía no hay cinemática inversa (IK), restricciones anatómicas entre varias articulaciones, huesos con curvas, skinning, pesos de vértices, mallas deformables, biblioteca de recursos ni sistema de materiales/texturas de producción.
 
 ## Limitaciones conocidas
 
