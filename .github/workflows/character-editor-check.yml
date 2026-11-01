@@ -10,6 +10,7 @@ on:
       - "tests/project-io.test.js"
       - "tests/rig-geometry.test.js"
       - "tests/mesh-skinning.test.js"
+      - "tests/mesh-model.test.js"
       - ".github/workflows/character-editor-check.yml"
   workflow_dispatch:
 
@@ -36,9 +37,10 @@ jobs:
           node --check prototype/character-editor-v01/project-io.js
           node --check prototype/character-editor-v01/rig-geometry.js
           node --check prototype/character-editor-v01/mesh-skinning.js
+          node --check prototype/character-editor-v01/mesh-model.js
 
       - name: Ejecutar pruebas automatizadas
-        run: node --test tests/ik-solver.test.js tests/project-io.test.js tests/rig-geometry.test.js tests/mesh-skinning.test.js
+        run: node --test tests/ik-solver.test.js tests/project-io.test.js tests/rig-geometry.test.js tests/mesh-skinning.test.js tests/mesh-model.test.js
 
       - name: Validar sintaxis del JavaScript integrado en el editor
         run: |
