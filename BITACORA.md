@@ -387,3 +387,12 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se amplió `rig-geometry.js` para calcular matrices afines mundiales de todas las piezas, acumulando transformaciones y pivotes de la jerarquía.
 - Esto permite alimentar el sistema de skinning con matrices de referencia/actuales coherentes con el rig articulado.
 - Se añadieron dos pruebas de matrices mundiales y jerarquías rotas. La suite alcanza 38 pruebas y GitHub Actions completó la ejecución correctamente.
+
+
+
+## 2026-11-01 — Editor visual inicial de mallas
+
+- Se incorporó al inspector la creación y eliminación de cuadrículas trianguladas, selección y arrastre de vértices, y asignación de pesos a huesos desde controles visuales.
+- Las mallas se guardan como parte de cada pieza y el importador JSON ahora valida topología, vértices, caras, pesos y referencias a huesos. Se preservan en el proyecto local y en la exportación/importación.
+- El wireframe permite editar puntos y pesos, pero aún no deforma la silueta vectorial que se ve en el lienzo. El siguiente paso es conectar matrices de rig + pesos + skinning con la geometría renderizada, y después mejorar el pincel de pesos y la topología de contorno.
+- No se ha validado en Safari/iPad físico. La suite automatizada pasa por GitHub Actions; la prueba táctil sigue pendiente.
