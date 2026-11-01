@@ -162,3 +162,13 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - `rig-geometry.js` ahora expone matrices afines mundiales para cada pieza, acumulando traslación, rotación, escala y pivotes de toda la jerarquía.
 - Estas matrices conectan la estructura articulada del personaje con el módulo de skinning: permiten calcular matrices de deformación entre una pose de referencia y una pose actual sin reconstruir transformaciones de forma independiente.
 - Se añadieron dos pruebas para verificar que cada matriz transforma el pivote al origen mundial correcto y que se rechazan jerarquías rotas. GitHub Actions pasó con las nuevas pruebas.
+
+
+
+## Iteración v0.9.9 — edición visual inicial de mallas y pesos
+
+- El inspector incorpora una sección de malla editable: crear/eliminar una cuadrícula triangulada sobre la pieza seleccionada, seleccionar y arrastrar vértices con Pointer Events y asignar una influencia a un hueso con un control de peso.
+- Las mallas quedan almacenadas dentro de la pieza y se conservan al guardar en localStorage, exportar JSON e importar proyectos. El importador valida vértices, caras, huesos referenciados, pesos y normaliza las influencias.
+- La cuadrícula inicial es una herramienta de edición de topología básica; no representa todavía el contorno definitivo de la silueta ni sustituye la forma vectorial original. El motor matemático de skinning está disponible, pero su resultado aún no deforma la silueta visible del personaje. Falta conectar el flujo completo de matrices de referencia, pesos y deformación por triángulo a la geometría renderizada.
+- Los controles están preparados para interacción táctil y mouse mediante Pointer Events, pero no se ha hecho todavía una prueba física en Safari/iPad. No marcar compatibilidad táctil como validada hasta esa prueba.
+- La suite automatizada incluye ahora 50 pruebas. GitHub Actions comprueba sintaxis, módulos, importación y pruebas; no sustituye una validación visual en navegador.
