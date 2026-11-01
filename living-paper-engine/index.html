@@ -55,6 +55,23 @@
         <input id="depthControl" type="range" min="1" max="5" value="3">
       </div>
       <div class="control-group">
+        <label for="materialControl">Material de papel</label>
+        <select id="materialControl">
+          <option value="matte">Papel mate</option>
+          <option value="cardstock">Cartulina</option>
+          <option value="handmade">Papel artesanal</option>
+          <option value="translucent">Papel translúcido</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <div class="control-heading"><label for="thicknessControl">Grosor aparente</label><output id="thicknessValue">4</output></div>
+        <input id="thicknessControl" type="range" min="0" max="10" value="4">
+      </div>
+      <div class="control-group">
+        <div class="control-heading"><label for="shadowControl">Intensidad de sombra</label><output id="shadowValue">22%</output></div>
+        <input id="shadowControl" type="range" min="0" max="60" value="22">
+      </div>
+      <div class="control-group">
         <div class="control-heading"><label for="speedControl">Velocidad global</label><output id="speedValue">1.0×</output></div>
         <input id="speedControl" type="range" min="50" max="180" value="100">
       </div>
