@@ -41,3 +41,11 @@ test("no modifica la malla de entrada",()=>{
  const v=[{x:3,y:4,weights:[{boneId:"a",weight:1}]}],copy=JSON.stringify(v);
  skin.deformVertices(v,{a:[1,0,0,1,8,9]});assert.equal(JSON.stringify(v),copy);
 });
+
+test("calcula la transformación afín que lleva un triángulo a su versión deformada",()=>{
+ const source=[{x:0,y:0},{x:10,y:0},{x:0,y:10}],target=[{x:5,y:-2},{x:25,y:3},{x:0,y:28}],r=skin.triangleTransform(source,target);
+ assert.equal(r.ok,true);source.forEach((p,i)=>{const q=skin.transformPoint(r.matrix,p);close(q.x,target[i].x);close(q.y,target[i].y);});
+});
+test("rechaza triángulos degenerados al construir el mapeo",()=>{
+ const r=skin.triangleTransform([{x:0,y:0},{x:1,y:1},{x:2,y:2}],[{x:0,y:0},{x:1,y:0},{x:0,y:1}]);assert.equal(r.ok,false);
+});
