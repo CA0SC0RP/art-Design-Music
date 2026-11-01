@@ -25,7 +25,7 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Cantos levantados dibujados sobre la línea del pliegue con espesor aparente variable.
 - Sombra propia del canto y reflejo fino para separar visualmente la cara superior y el borde expuesto.
 - Perfil de espesor dependiente del ángulo, el lado del pliegue y la intensidad configurada.
-- Interacción entre superficies superpuestas: transferencia de deformación, separación ajustable y respuesta de sombra por contacto suave.
+- Interacción entre superficies superpuestas: transferencia de deformación, separación ajustable y respuesta de sombra por contacto suave, con control independiente de presión.
 - Curvatura continua de superficie con campo suave de desplazamiento y dirección configurable.
 - Memoria elástica por vértice con velocidad persistente, rigidez y amortiguación configurables.
 - Recuperación progresiva al retirar la curvatura, sin acumular desplazamiento entre cuadros.
