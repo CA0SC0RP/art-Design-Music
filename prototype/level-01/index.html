@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080d18">
+<title>Art Design Music — Prueba de cinco capas</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#080d18;color:#eef2f8;display:grid;place-items:center;padding:18px}
+main{width:min(100%,1100px)}
+header{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+h1{font-size:clamp(1.1rem,3vw,1.55rem);margin:0 0 5px}
+p{margin:0;color:#aeb9ca;font-size:.9rem}
+.controls{display:flex;gap:8px;align-items:center}
+button{border:1px solid #53647d;background:#172338;color:#fff;border-radius:999px;padding:9px 15px;font:inherit}
+button:focus-visible{outline:3px solid #b7d8ff;outline-offset:3px}
+.stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#101a2a;border:1px solid #43516a;border-radius:12px;isolation:isolate}
+.layer{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;will-change:transform}
+.sky{z-index:1}
+.mountains{z-index:2;animation:mountainDrift 24s ease-in-out infinite alternate}
+.forest{z-index:3;animation:forestDrift 17s ease-in-out infinite alternate}
+.river{z-index:4;animation:riverDrift 8s ease-in-out infinite alternate}
+.foreground{z-index:5;animation:foregroundDrift 11s ease-in-out infinite alternate}
+@keyframes mountainDrift{from{transform:translateX(-.35%) scale(1.005)}to{transform:translateX(.35%) scale(1.005)}}
+@keyframes forestDrift{from{transform:translateX(.45%) scale(1.01)}to{transform:translateX(-.45%) scale(1.01)}}
+@keyframes riverDrift{from{transform:translateX(-.3%) translateY(.12%)}to{transform:translateX(.3%) translateY(-.12%)}}
+@keyframes foregroundDrift{from{transform:translateX(-.55%) translateY(.12%)}to{transform:translateX(.55%) translateY(-.12%)}}
+.stage.paused .layer{animation-play-state:paused}
+.legend{display:flex;gap:8px 16px;flex-wrap:wrap;margin-top:12px;color:#c5cede;font-size:.82rem}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#8ca8d3}
+.note{margin-top:12px;font-size:.8rem;color:#91a0b6}
+@media(prefers-reduced-motion:reduce){.layer{animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div><h1>Prueba técnica · cinco capas</h1><p>Prototipo provisional de profundidad y movimiento independiente</p></div>
+<div class="controls"><button id="toggle" type="button" aria-pressed="false">Pausar movimiento</button></div>
+</header>
+<section class="stage" id="stage" aria-label="Paisaje provisional compuesto por cinco imágenes transparentes independientes">
+<img class="layer sky" src="assets/01-cielo.svg" alt="">
+<img class="layer mountains" src="assets/02-montanas.svg" alt="">
+<img class="layer forest" src="assets/03-bosque.svg" alt="">
+<img class="layer river" src="assets/04-rio.svg" alt="">
+<img class="layer foreground" src="assets/05-primer-plano.svg" alt="">
+</section>
+<div class="legend" aria-label="Capas">
+<span><i class="dot"></i>1. Cielo</span><span><i class="dot"></i>2. Montañas</span><span><i class="dot"></i>3. Bosque</span><span><i class="dot"></i>4. Río</span><span><i class="dot"></i>5. Primer plano</span>
+</div>
+<p class="note">Arte vectorial provisional creado para esta prueba. Cada capa es un archivo SVG separado; no se utiliza una hoja de sprites ni la imagen maestra.</p>
+</main>
+<script>
+const stage=document.getElementById('stage');
+const toggle=document.getElementById('toggle');
+toggle.addEventListener('click',()=>{
+ const paused=stage.classList.toggle('paused');
+ toggle.textContent=paused?'Reanudar movimiento':'Pausar movimiento';
+ toggle.setAttribute('aria-pressed',String(paused));
+});
+</script>
+</body>
+</html>
