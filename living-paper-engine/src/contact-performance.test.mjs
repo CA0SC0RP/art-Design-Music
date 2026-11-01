@@ -54,7 +54,8 @@ for (const resolution of [32, 64, 128]) {
       contactRange: 1, contactStiffness: 0.35, maxCorrection: 1.5
     }]);
 
-    const frameCount = 3;
+    for (let frame = 0; frame < 2; frame++) engine.update(1 / 60); // warm-up JIT and allocations
+    const frameCount = 5;
     const start = performance.now();
     for (let frame = 0; frame < frameCount; frame++) engine.update(1 / 60);
     const elapsedMs = (performance.now() - start) / frameCount;
