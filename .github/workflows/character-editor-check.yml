@@ -1,0 +1,38 @@
+name: Validar editor de personajes
+
+on:
+  push:
+    branches:
+      - feature/living-paper-engine-foundation
+    paths:
+      - "prototype/character-editor-v01/**"
+      - "tests/ik-solver.test.js"
+      - ".github/workflows/character-editor-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-character-editor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validar sintaxis del solver IK
+        run: node --check prototype/character-editor-v01/ik-solver.js
+
+      - name: Ejecutar pruebas del solver IK
+        run: node --test tests/ik-solver.test.js
+
+      - name: Comprobar que el editor carga el solver externo
+        run: |
+          grep -q 'ik-solver.js' prototype/character-editor-v01/index.html
+          grep -q 'ADM_IK.solveTwoBone' prototype/character-editor-v01/index.html
+          echo "Editor de personajes: comprobaciones estructurales correctas."
