@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101b2b"><title>Art Design Music — Escena viva 03</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#101923;color:#edf3ed;--speed:1}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:16px;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 0%,#293b4b,#101923 72%)}
+main{width:min(100%,1120px)}header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+h1{font-size:clamp(18px,3vw,25px);font-weight:650;margin:0}p{margin:4px 0 0;color:#b8c8c7;font-size:13px}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}button{border:1px solid #8ca39b;background:#293e43;color:#fff;border-radius:99px;padding:9px 15px;font:inherit}
+.speed{display:flex;align-items:center;gap:8px;font-size:13px;color:#c5d5d0}.speed input{width:105px;accent-color:#a5d6c2}
+.scene{overflow:hidden;border:1px solid #617d7d;border-radius:16px;box-shadow:0 18px 55px #0009;background:#14283b}
+svg{display:block;width:100%;height:auto}.paused *{animation-play-state:paused!important}
+.cloud{animation:cloud-drift calc(42s / var(--speed)) linear infinite}.cloud.slow{animation-duration:calc(68s / var(--speed))}
+.star{transform-box:fill-box;transform-origin:center;animation:twinkle calc(var(--t) / var(--speed)) ease-in-out infinite;animation-delay:var(--d)}
+.moon{transform-box:fill-box;transform-origin:center;animation:moon-glow calc(8s / var(--speed)) ease-in-out infinite alternate}
+.bird{animation:bird-path calc(var(--t) / var(--speed)) ease-in-out infinite alternate;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
+.wing{animation:wing-flap calc(.55s / var(--speed)) ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 90%}
+.firefly{animation:firefly-drift calc(var(--t) / var(--speed)) ease-in-out infinite alternate;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
+.firefly circle{animation:firefly-glow calc(2.4s / var(--speed)) ease-in-out infinite alternate}
+.leaf{animation:leaf-fall calc(var(--t) / var(--speed)) linear infinite;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
+.butterfly{animation:butterfly-path calc(var(--t) / var(--speed)) ease-in-out infinite;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
+.bflywing{animation:butterfly-flap calc(.24s / var(--speed)) ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 50%}
+.tree{animation:tree-sway calc(7s / var(--speed)) ease-in-out infinite alternate;transform-box:fill-box;transform-origin:bottom center}
+.waterfall{animation:waterfall-flow calc(1.8s / var(--speed)) linear infinite}
+.current{animation:water-current calc(5s / var(--speed)) linear infinite}
+.ripple{animation:ripple calc(3.6s / var(--speed)) ease-out infinite;transform-box:fill-box;transform-origin:center}
+.fish{animation:fish-swim calc(var(--t) / var(--speed)) ease-in-out infinite alternate;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
+@keyframes cloud-drift{from{transform:translateX(-190px)}to{transform:translateX(390px)}}
+@keyframes twinkle{0%,100%{opacity:.28;transform:scale(.72)}50%{opacity:1;transform:scale(1.28)}}
+@keyframes moon-glow{from{filter:drop-shadow(0 0 5px #f4e7b0)}to{filter:drop-shadow(0 0 24px #f4e7b0)}}
+@keyframes bird-path{0%{transform:translate(0,0)}45%{transform:translate(65px,-24px)}100%{transform:translate(135px,8px)}}
+@keyframes wing-flap{from{transform:scaleY(.35)}to{transform:scaleY(1.1)}}
+@keyframes firefly-drift{from{transform:translate(-9px,9px)}to{transform:translate(18px,-24px)}}
+@keyframes firefly-glow{from{opacity:.25;filter:drop-shadow(0 0 2px #d7ef9d)}to{opacity:1;filter:drop-shadow(0 0 12px #e5ffad)}}
+@keyframes leaf-fall{0%{transform:translate(0,-30px) rotate(0);opacity:0}12%{opacity:1}55%{transform:translate(28px,110px) rotate(170deg)}100%{transform:translate(-12px,245px) rotate(340deg);opacity:0}}
+@keyframes butterfly-path{0%,100%{transform:translate(0,0) rotate(-7deg)}30%{transform:translate(25px,-22px) rotate(8deg)}65%{transform:translate(48px,8px) rotate(-8deg)}}
+@keyframes butterfly-flap{from{transform:scaleX(.15)}to{transform:scaleX(1)}}
+@keyframes tree-sway{from{transform:rotate(-1.1deg)}to{transform:rotate(1.1deg)}}
+@keyframes waterfall-flow{to{stroke-dashoffset:-72}}
+@keyframes water-current{to{stroke-dashoffset:-150}}
+@keyframes ripple{0%{transform:scale(.3);opacity:.7}100%{transform:scale(2.2);opacity:0}}
+@keyframes fish-swim{0%{transform:translateX(-26px)}48%{transform:translateX(42px)}50%{transform:translateX(42px) scaleX(-1)}100%{transform:translateX(-26px) scaleX(-1)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head>
+<body><main>
+<header><div><h1>Prueba 03 · Escena viva</h1><p>Varios sistemas de animación funcionando en paralelo</p></div>
+<div class="controls"><label class="speed">Velocidad <input id="speed" type="range" min=".5" max="1.8" step=".1" value="1"><output id="speedValue">1×</output></label><button id="toggle">Pausar escena</button></div></header>
+<div class="scene" id="scene">
+<svg viewBox="0 0 1280 720" role="img" aria-label="Paisaje nocturno animado con estrellas, luna, nubes, aves, luciérnagas, mariposas, hojas, árboles, cascada, río y peces">
+<defs>
+<linearGradient id="night" x2="0" y2="1"><stop stop-color="#172b48"/><stop offset=".58" stop-color="#38566b"/><stop offset="1" stop-color="#829b91"/></linearGradient>
+<linearGradient id="mountain" x2="0" y2="1"><stop stop-color="#647f88"/><stop offset="1" stop-color="#304c52"/></linearGradient>
+<linearGradient id="river" x2="0" y2="1"><stop stop-color="#7ab6b2"/><stop offset="1" stop-color="#235b68"/></linearGradient>
+<radialGradient id="glow"><stop stop-color="#f1e8b6" stop-opacity=".45"/><stop offset="1" stop-color="#f1e8b6" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1280" height="720" fill="url(#night)"/>
+<circle cx="1035" cy="126" r="105" fill="url(#glow)"/>
+<g class="moon"><circle cx="1035" cy="126" r="39" fill="#f1e8bb"/><circle cx="1052" cy="111" r="36" fill="#263e55"/></g>
+<!-- estrellas con ritmos diferentes -->
+<g fill="#fff4ce">
+<circle class="star" style="--t:2.1s;--d:-.3s" cx="85" cy="85" r="2.8"/><circle class="star" style="--t:3.2s;--d:-1.8s" cx="190" cy="155" r="2.1"/>
+<circle class="star" style="--t:2.6s;--d:-.9s" cx="305" cy="65" r="3"/><circle class="star" style="--t:4s;--d:-2.2s" cx="440" cy="125" r="2.2"/>
+<circle class="star" style="--t:2.3s;--d:-1.2s" cx="565" cy="58" r="2.5"/><circle class="star" style="--t:3.5s;--d:-.5s" cx="690" cy="145" r="2"/>
+<circle class="star" style="--t:2.8s;--d:-2s" cx="815" cy="73" r="2.6"/><circle class="star" style="--t:3.7s;--d:-1.4s" cx="920" cy="205" r="2"/>
+<circle class="star" style="--t:2.2s;--d:-.7s" cx="1145" cy="75" r="2.7"/><circle class="star" style="--t:4.1s;--d:-2.7s" cx="1210" cy="190" r="2"/>
+<circle class="star" style="--t:2.9s;--d:-1.1s" cx="370" cy="205" r="1.8"/><circle class="star" style="--t:3.3s;--d:-2.3s" cx="760" cy="220" r="2.3"/>
+</g>
+<!-- nubes separadas -->
+<g class="cloud slow" fill="#a6b8b4" opacity=".34"><ellipse cx="170" cy="215" rx="82" ry="22"/><ellipse cx="220" cy="202" rx="57" ry="27"/><ellipse cx="260" cy="218" rx="70" ry="19"/></g>
+<g class="cloud" fill="#c0c9bd" opacity=".3"><ellipse cx="660" cy="175" rx="70" ry="17"/><ellipse cx="700" cy="163" rx="47" ry="23"/><ellipse cx="738" cy="177" rx="64" ry="16"/></g>
+<!-- montañas -->
+<path d="M0 410 180 210 315 370 500 175 700 405 865 245 1040 405 1165 265 1280 390V720H0Z" fill="url(#mountain)"/>
+<path d="m180 210 50 78-51-22-43 39zm320-35 75 112-78-36-62 44zm365 70 56 83-58-29-42 38zm300 20 45 66-48-25-35 33z" fill="#c0cbc0" opacity=".82"/>
+<!-- cascada y riscos -->
+<path d="M760 365 835 350 875 455 830 520 785 450Z" fill="#405f60"/>
+<path d="M812 374Q824 424 814 476T831 552" fill="none" stroke="#b4d9d1" stroke-width="18" opacity=".8"/>
+<path class="waterfall" d="M812 374Q824 424 814 476T831 552" fill="none" stroke="#e0f0d9" stroke-width="5" stroke-dasharray="18 16"/>
+<!-- lomas y río -->
+<path d="M0 435Q240 355 450 445T850 420T1280 420V720H0Z" fill="#4d765d"/>
+<path d="M0 535Q260 450 480 530T900 500T1280 530V720H0Z" fill="#315d4e"/>
+<path d="M0 610Q210 560 405 605T790 590T1280 610V720H0Z" fill="url(#river)"/>
+<path class="current" d="M0 635Q220 585 430 630T840 615T1280 630" fill="none" stroke="#c0e5d7" stroke-width="5" stroke-dasharray="42 28" opacity=".75"/>
+<path class="current" d="M20 678Q230 642 420 674T850 660T1260 675" fill="none" stroke="#8bd0c4" stroke-width="3" stroke-dasharray="28 35" opacity=".65"/>
+<!-- árboles con balanceo -->
+<g class="tree" fill="#203f3c"><path d="M90 550V330l-75 120h48L10 520h160l-53-70h48L90 330v220Z"/><path d="M1160 555V305l-85 140h55l-62 100h184l-62-100h55l-85-140v250Z"/></g>
+<g class="tree" fill="#315a4a" style="animation-delay:-3s"><path d="M210 560V405l-55 90h35l-45 65h130l-45-65h35l-55-90v155Z"/><path d="M1035 560V390l-60 100h40l-48 70h136l-48-70h40l-60-100v170Z"/></g>
+<!-- aves con trayectorias y alas -->
+<g class="bird" style="--t:10s;--d:-4s" transform="translate(300 260)" fill="#182d32"><g class="wing"><path d="M0 0Q-20 -28 -48 -16Q-25 0 0 8Q25 -24 52 -13Q28 7 0 10Z"/></g></g>
+<g class="bird" style="--t:13s;--d:-8s" transform="translate(570 290) scale(.72)" fill="#1b3337"><g class="wing"><path d="M0 0Q-20 -28 -48 -16Q-25 0 0 8Q25 -24 52 -13Q28 7 0 10Z"/></g></g>
+<g class="bird" style="--t:11s;--d:-2s" transform="translate(870 255) scale(.86)" fill="#1b3337"><g class="wing"><path d="M0 0Q-20 -28 -48 -16Q-25 0 0 8Q25 -24 52 -13Q28 7 0 10Z"/></g></g>
+<!-- luciérnagas -->
+<g class="firefly" style="--t:4.5s;--d:-1s" transform="translate(260 500)"><circle r="5" fill="#e7f6a2"/></g>
+<g class="firefly" style="--t:5.8s;--d:-3s" transform="translate(340 460)"><circle r="4" fill="#e7f6a2"/></g>
+<g class="firefly" style="--t:4.9s;--d:-2s" transform="translate(930 490)"><circle r="5" fill="#e7f6a2"/></g>
+<g class="firefly" style="--t:6s;--d:-4s" transform="translate(1000 440)"><circle r="3.5" fill="#e7f6a2"/></g>
+<g class="firefly" style="--t:5.2s;--d:-.5s" transform="translate(700 515)"><circle r="4" fill="#e7f6a2"/></g>
+<!-- mariposas -->
+<g class="butterfly" style="--t:8s;--d:-2s" transform="translate(420 475)"><g fill="#e7bd80"><ellipse class="bflywing" cx="-7" cy="-4" rx="8" ry="12"/><ellipse class="bflywing" cx="7" cy="-4" rx="8" ry="12"/></g><path d="M0 -10V12" stroke="#493d32" stroke-width="2"/></g>
+<g class="butterfly" style="--t:10s;--d:-6s" transform="translate(880 470) scale(.8)"><g fill="#c6a9c8"><ellipse class="bflywing" cx="-7" cy="-4" rx="8" ry="12"/><ellipse class="bflywing" cx="7" cy="-4" rx="8" ry="12"/></g><path d="M0 -10V12" stroke="#493d32" stroke-width="2"/></g>
+<!-- hojas en caída -->
+<g class="leaf" style="--t:9s;--d:-2s" transform="translate(120 340)"><path d="M0 0Q28 -22 24 4Q15 23 -3 14Q-12 7 0 0Z" fill="#d2a35e"/></g>
+<g class="leaf" style="--t:11s;--d:-7s" transform="translate(1090 330)"><path d="M0 0Q28 -22 24 4Q15 23 -3 14Q-12 7 0 0Z" fill="#c77c56"/></g>
+<g class="leaf" style="--t:10s;--d:-4s" transform="translate(990 350)"><path d="M0 0Q28 -22 24 4Q15 23 -3 14Q-12 7 0 0Z" fill="#d7bd69"/></g>
+<!-- peces -->
+<g class="fish" style="--t:7s;--d:-2s" transform="translate(310 650)" fill="#e6c68e"><path d="M-20 0Q0 -17 22 0Q0 17 -20 0Z"/><path d="m20 0 15-12v24z" fill="#c99565"/><circle cx="-10" cy="-2" r="2" fill="#263d3b"/></g>
+<g class="fish" style="--t:9s;--d:-5s" transform="translate(750 690) scale(.8)" fill="#b8d1bd"><path d="M-20 0Q0 -17 22 0Q0 17 -20 0Z"/><path d="m20 0 15-12v24z" fill="#83aaa0"/><circle cx="-10" cy="-2" r="2" fill="#263d3b"/></g>
+<!-- ondas circulares -->
+<g fill="none" stroke="#d3eee0" stroke-width="2" opacity=".8"><ellipse class="ripple" cx="560" cy="620" rx="22" ry="5"/><ellipse class="ripple" style="animation-delay:-1.8s" cx="560" cy="620" rx="22" ry="5"/><ellipse class="ripple" style="animation-delay:-.9s" cx="930" cy="645" rx="18" ry="4"/></g>
+</svg></div>
+<p>Escena de demostración: animaciones vectoriales y temporizadores coordinados. Los elementos no son arte final.</p>
+</main>
+<script>
+const scene=document.getElementById('scene'),toggle=document.getElementById('toggle'),slider=document.getElementById('speed'),value=document.getElementById('speedValue');
+toggle.addEventListener('click',()=>{const paused=scene.classList.toggle('paused');toggle.textContent=paused?'Reanudar escena':'Pausar escena';});
+slider.addEventListener('input',()=>{const speed=Number(slider.value);document.documentElement.style.setProperty('--speed',speed);value.value=speed.toFixed(1)+'×';value.textContent=speed.toFixed(1)+'×';});
+</script></body></html>
