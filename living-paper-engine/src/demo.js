@@ -14,18 +14,18 @@ const mountain=engine.addPiece(new PaperPiece({id:"mountain",name:"Montaña leja
   cut(g,s,[[-700,140],[-450,-110],[-380,-15],[-320,40],[-200,140]],0xb8c8bd,style);
   cut(g,s,[[0,-55],[50,0],[100,45],[260,140]],0xb2c2b8,style);
 }}));
-const hill=engine.addPiece(new PaperPiece({id:"hill",name:"Colina intermedia",depth:4,x:640,y:470,draw:(g,s)=>{
+const hill=engine.addPiece(new PaperPiece({id:"hill",name:"Colina intermedia",depth:4,x:640,y:470,draw:(g,s,style)=>{
   const p=[[-700,120],[-520,15],[-260,-5],[-100,55],[120,-15],[360,45],[700,120]];
   cut(g,s,p,0x6f967b,style);
 }}));
-const tree=engine.addPiece(new PaperPiece({id:"tree",name:"Árbol de papel",depth:2,x:330,y:450,draw:(g,s)=>{
+const tree=engine.addPiece(new PaperPiece({id:"tree",name:"Árbol de papel",depth:2,x:330,y:450,draw:(g,s,style)=>{
   cut(g,s,[[-18,70],[-12,-120],[12,-120],[20,70]],0x8d674b,style);
   for(const [x,y,r,c] of [[-35,-125,65,0x47745e],[30,-170,72,0x56866a],[5,-85,62,0x628e6c],[-65,-65,43,0x739d78]]){
     const pts=Array.from({length:12},(_,i)=>[x+Math.cos(i*Math.PI/6)*r,y+Math.sin(i*Math.PI/6)*r*.82]);
     cut(g,s,pts,c,style);
   }
 }}));
-const bird=engine.addPiece(new PaperPiece({id:"bird",name:"Ave de prueba",depth:3,x:170,y:230,draw:(g,s)=>{
+const bird=engine.addPiece(new PaperPiece({id:"bird",name:"Ave de prueba",depth:3,x:170,y:230,draw:(g,s,style)=>{
   const body=[[-30,0],[-10,-9],[10,-5],[30,5],[12,13],[-12,10]];
   cut(g,s,body,0x3c5960,style);
   cut(g,s,[[-5,0],[-30,-32],[-5,-18],[12,-2]],0x526f74,style);
