@@ -120,8 +120,10 @@ engine.app.ticker.add(()=>{
   const active=contacts.reduce((sum,item)=>sum+item.activeVertices,0);
   const penetration=contacts.length?contacts.reduce((sum,item)=>sum+item.averagePenetration,0)/contacts.length:0;
   const triangles=contacts.reduce((sum,item)=>sum+(item.sourceTriangles||0),0);
+  const testedEdges=contacts.reduce((sum,item)=>sum+(item.testedEdges||0),0);
+  const edgeHits=contacts.reduce((sum,item)=>sum+(item.edgeIntersections||0),0);
   const telemetry=document.querySelector("#contactTelemetry");
-  if(telemetry)telemetry.textContent=`Contacto geométrico: ${active} vértices · ${triangles} triángulos · penetración media: ${penetration.toFixed(2)} px`;
+  if(telemetry)telemetry.textContent=`Contacto: ${active} vértices · ${triangles} triángulos · ${edgeHits}/${testedEdges} cruces de arista · penetración media: ${penetration.toFixed(2)} px`;
 });
 choose("mountain");
 status.textContent="PixiJS 8 · curvatura elástica · memoria del papel · volumen y articulación";
