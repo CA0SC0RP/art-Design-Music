@@ -278,3 +278,14 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - **Verificación:** se revisó el código fuente y se confirmó que los controles y eventos están presentes. No se ha ejecutado el editor en navegador ni probado el arrastre táctil, el solver visual o el bloqueo en Safari/iPad; no se declara validación funcional.
 - No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
 - Siguiente paso: validación manual en Safari del iPad con las cuatro cadenas, objetivos dentro/fuera del alcance, ambos lados de flexión y fijar/liberar.
+
+
+## 2026-11-01 — Editor de personajes v0.7: interacción táctil prioritaria y mouse
+- Se formaliza como requisito permanente que la interfaz priorice el uso táctil en iPad y admita también mouse/puntero conectado. Las mismas herramientas principales deben funcionar con ambas entradas.
+- El prototipo ya utiliza Pointer Events para unificar mouse, toque y lápiz/puntero. Se ampliaron áreas de controles, campos, sliders y filas de jerarquía en dispositivos con puntero grueso; se conserva feedback hover y precisión para mouse.
+- Se actualizó la indicación del lienzo para explicar que las piezas se pueden tocar y arrastrar o manipular con mouse.
+- Limitación explícita: zoom/pan multitáctil y gestos de navegación aún no están implementados. No se declara compatibilidad real validada en Safari/iPad ni con mouse físico; falta prueba manual en el dispositivo.
+- Código: `prototype/character-editor-v01/index.html`. Commit: `e1b3081015703bd05f338b23c5f2d89f7c78d9f5`.
+- Documento técnico: `docs/prototipo-editor-articulado-personajes-v0-1.md`. Commit: `3c3c7a30c1089822b8a0ccc952bb8603ffb9be2e`.
+- Estado actualizado en `ESTADO_PROYECTO.md`. No se modificó `main`, no hubo merge, PR ni despliegue; no se añadieron dependencias ni gastos.
+- Siguiente paso: probar en Safari del iPad con dedo y mouse conectado; revisar selección, arrastre, pivotes, objetivos IK, sliders y precisión de controles.
