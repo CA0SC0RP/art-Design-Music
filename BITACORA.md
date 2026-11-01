@@ -89,3 +89,12 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se actualizó `prototype/level-01/README.md` y `ESTADO_PROYECTO.md` para registrar el cambio y distinguirlo de una prueba aprobada.
 - No se modificó `main`, no se tocó la imagen maestra y no se incurrió en gastos.
 - Pendiente: confirmar que GitHub Pages publicó el último commit y validar en Safari del iPad. No se afirma todavía que el movimiento haya sido comprobado en dispositivo real.
+
+
+## 2026-11-01 — Validación en Firefox y prueba de 14 sprites
+- El usuario confirmó que el prototipo de cinco capas se ve animado en Firefox. Se registra como validación visual reportada por el usuario en ese navegador. Chrome continúa sin mostrar correctamente el movimiento; la causa no está diagnosticada. Safari de iPad sigue pendiente.
+- Se creó `prototype/level-02/index.html` en la rama `prototipo/prueba-cinco-capas-01`: 14 sprites vectoriales de prueba, con ciclos independientes para vuelo/aleteo de aves, vuelo/batido de mariposas, caída/rotación de hojas y nado/cambio de dirección de peces. Incluye botón de pausa y soporte de movimiento reducido.
+- Se modificó `.github/workflows/prototipo-cinco-capas.yml` para publicar el Nivel 01 en la raíz de Pages y el Nivel 02 bajo `/level-02/`, sin cambiar el punto de entrada anterior.
+- Commits de esta etapa: creación del Nivel 02 `e2c0321`; publicación conjunta `51c906d`.
+- No se modificó `main`, la imagen maestra ni se usaron recursos finales, audio, APIs externas o generación de imágenes. No hay gasto asociado.
+- Pendiente: comprobar ejecución exitosa de GitHub Actions y abrir el Nivel 02 en Firefox; verificar los 14 sprites, pausa/reanudación y fluidez. Luego probar Safari en iPad y revisar Chrome por separado.
