@@ -9,6 +9,7 @@
 **Audio:** diálogo, efectos y música original se diseñarán para cada microhistoria cuando se defina su narrativa. No se mantiene el planteamiento ambient/lo-fi/chillout ni el tempo de 72 BPM como requisito.
 
 **Documentos vigentes:**
+- Investigación de Umamo y decisión de arquitectura: docs/investigacion-umamo-y-decision-arquitectura-2026-11-01.md
 - Dirección de producto: docs/direccion-motor-caricaturas-ipad.md
 - Arquitectura inicial: ARQUITECTURA.md
 - Instrucciones de trabajo: INSTRUCCIONES_PARA_IA.md
@@ -20,7 +21,7 @@
 
 **Auditoría de reutilización completada:** docs/auditoria-reutilizacion-motor-caricaturas-ipad-2026-11-01.md. Se confirma que el laboratorio PixiJS, el escenario 2D, las transformaciones, la pausa/velocidad, algunas trayectorias y la jerarquía experimental pueden servir como base parcial. Las funciones de pliegues, papel, contacto entre hojas, cantos y volumen son específicas del proyecto anterior. Los prototipos 01–05 son demostraciones ambientales, no editores de caricaturas.
 
-**Trabajo de desarrollo nuevo:** todavía no se ha implementado ni validado el editor de caricaturas en iPad. Próximo paso: diseñar una prueba aislada de estudio visual con selección táctil directa, arrastre, escala, rotación y animación simple. No modificar el laboratorio anterior; crear la prueba de manera reversible y probarla en Safari del iPad.
+**Trabajo de desarrollo nuevo:** existe una primera prueba aislada en `prototype/caricature-studio-v01/index.html`. Incluye escenario SVG adaptable, personaje geométrico provisional, selección y arrastre por toque, controles de escala/rotación y movimiento sencillo con reproducción/pausa. Es un prototipo técnico, no el editor completo; todavía no se ha probado en navegador ni en Safari del iPad. Siguiente paso: abrirlo desde Codespaces y validar la interacción táctil en el dispositivo.
 
 ---
 
