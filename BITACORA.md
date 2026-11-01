@@ -396,3 +396,11 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Las mallas se guardan como parte de cada pieza y el importador JSON ahora valida topología, vértices, caras, pesos y referencias a huesos. Se preservan en el proyecto local y en la exportación/importación.
 - El wireframe permite editar puntos y pesos, pero aún no deforma la silueta vectorial que se ve en el lienzo. El siguiente paso es conectar matrices de rig + pesos + skinning con la geometría renderizada, y después mejorar el pincel de pesos y la topología de contorno.
 - No se ha validado en Safari/iPad físico. La suite automatizada pasa por GitHub Actions; la prueba táctil sigue pendiente.
+
+
+
+## 2026-11-01 — Previsualización de skinning ligada al rig
+
+- Las mallas guardan matrices de referencia relativas al hueso dueño. Durante el render, se calculan matrices actuales del rig y se deforma el wireframe con los pesos asignados.
+- Se preservan y validan matrices de referencia al importar/exportar proyectos. Si se añade una influencia de un hueso posterior, se captura su referencia relativa antes de asignar el peso.
+- La malla ya responde visualmente a la articulación en el wireframe. La forma vectorial original aún no se deforma: falta la deformación por triángulos y recorte de la silueta.
