@@ -47,3 +47,14 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 5. Claude puede avanzar con auditoría técnica, modelo de datos para sprites/ciclos/eventos musicales y pruebas de concepto sin alterar la maestra ni afirmar que los recursos finales existen.
 6. Mantener cambios en ramas; no fusionar ni desplegar sin aprobación.
 7. Auditoría entregada el 29-10-2026 (`docs/auditoria-tecnica-2026-10-29.md`). Falta tu respuesta a las decisiones D1 a D9 antes de iniciar la siguiente fase.
+
+
+## Actualización — 2026-11-01: inicio del prototipo de cinco capas
+- Rama de trabajo: `prototipo/prueba-cinco-capas-01`, creada desde `auditoria/estado-2026-10-29`. `main` no se modificó.
+- Se inició el Nivel 01 con cinco recursos SVG provisionales e independientes: cielo, montañas, bosque, río y primer plano. Cada archivo se carga por separado; la composición usa cinco planos con orden de profundidad y movimientos suaves con duraciones distintas.
+- Se añadió un control para pausar/reanudar el movimiento y soporte para `prefers-reduced-motion`.
+- Se añadió `prototype/level-01/README.md` con el alcance y el protocolo de validación.
+- Se añadió `docs/politica-de-recursos-visuales.md`, que define cómo incorporar recursos propios, aportados por el usuario, externos con licencia verificada y generados con IA; también define el tratamiento de capas, sprites, hojas de sprites y secuencias de poses.
+- Los recursos de esta prueba son vectores originales y desechables. No se usan imágenes externas, la imagen maestra, sprites finales ni audio.
+- **Estado de validación:** archivos creados en GitHub; todavía no se ha ejecutado en un navegador ni probado en el iPad. No declarar la prueba funcional hasta completar esa comprobación.
+- Siguiente paso técnico: habilitar una forma verificable de abrir el prototipo desde Safari (sitio estático o alternativa equivalente), revisar la carga y los movimientos, y registrar resultados antes de pasar al Nivel 02.
