@@ -304,3 +304,11 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Pendiente: revisión visual en navegador de bordes y costuras, evaluación de rendimiento con personajes complejos y prueba táctil en Safari/iPad físico. No se afirma que esas validaciones se hayan realizado.
 
 - Se corrigió la persistencia de mensajes del pincel/edición: el render ya no sobrescribe inmediatamente la confirmación de pesos aplicados. El mensaje se limpia al cambiar de pieza, vértice o eliminar la malla.
+
+
+## Actualización — 2026-11-01: v0.9.12, mitigación de juntas en deformación de malla
+- Se añadió `expandTriangle()` al módulo de skinning para expandir de forma controlada los triángulos de recorte en coordenadas locales, rechazando datos inválidos y triángulos degenerados.
+- `meshDeformedShape()` aplica una expansión conservadora de 0.35 unidades al clip de cada cara. La transformación afín sigue calculándose sobre los vértices originales; la expansión solo busca cubrir posibles líneas finas causadas por antialiasing entre fragmentos vecinos.
+- Se añadieron dos pruebas automatizadas para expansión válida, preservación de la malla original y rechazo de entradas inválidas.
+- **Pendiente de evaluación visual:** comprobar si disminuyen las juntas sin generar halos, solapamientos visibles o pérdida de detalle en bordes. No se considera validado en Safari/iPad.
+- Se mantiene la rama `feature/living-paper-engine-foundation`; no se modifica `main`.
