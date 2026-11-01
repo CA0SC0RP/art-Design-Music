@@ -197,5 +197,5 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 
 - Al pintar pesos sobre un hueso que todavía no tenía matriz de referencia en la malla, el editor ahora captura la matriz relativa en la pose actual antes de modificar influencias. Esto evita que el nuevo peso use una referencia inexistente o incorrecta.
 - La previsualización comparte las matrices mundiales del rig y los vértices deformados durante cada render, en vez de recalcular el rig por cada pieza. El caché se renueva en cada render para reflejar movimientos y ediciones.
-- Se añadieron pruebas de continuidad matemática en vértices compartidos entre triángulos y de traslación afín pura. Suite: 57 pruebas.
+- Se añadieron pruebas de continuidad matemática en vértices compartidos entre triángulos y de traslación afín pura. Suite: 58 pruebas. Se verificó también la persistencia de matrices de referencia para varios huesos influyentes al importar el proyecto.
 - GitHub Actions comprueba también que la captura de matrices para el pincel y el caché de render permanezcan conectados. Esto reduce regresiones estructurales, pero no sustituye la inspección de artefactos SVG en navegador.
