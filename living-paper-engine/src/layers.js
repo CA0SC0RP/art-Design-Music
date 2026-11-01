@@ -146,7 +146,8 @@ function applyLink(link) {
       edgeCorrections[ia * 2 + 1] += localCorrection.y * wa;
       edgeCorrections[ib * 2] += localCorrection.x * wb;
       edgeCorrections[ib * 2 + 1] += localCorrection.y * wb;
-      if (wa > 1e-8) edgeWeights[ia]++;\n      if (wb > 1e-8) edgeWeights[ib]++;
+      if (wa > 1e-8) edgeWeights[ia]++;
+      if (wb > 1e-8) edgeWeights[ib]++;
       edgeIntersections++;
     }
   };
