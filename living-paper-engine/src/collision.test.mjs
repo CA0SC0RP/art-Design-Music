@@ -223,3 +223,18 @@ test("el índice espacial coincide con la búsqueda lineal en múltiples regione
     assert.ok(linear.every(triangle => indexed.includes(triangle)));
   }
 });
+
+
+test("el broadphase reduce candidatos en una malla grande sin perder contactos", async () => {
+  const { buildTriangleSpatialIndex, queryTriangleSpatialIndex } = await import("./collision-math.js");
+  const triangles = buildMeshTriangles(quadMesh({ columns: 40, rows: 30 }));
+  const index = buildTriangleSpatialIndex(triangles, 20);
+  const bounds = { minX: 190, maxX: 210, minY: 140, maxY: 160 };
+  const candidates = queryTriangleSpatialIndex(index, bounds);
+  const exact = triangles.filter(triangle =>
+    !(triangle.maxX < bounds.minX || triangle.minX > bounds.maxX ||
+      triangle.maxY < bounds.minY || triangle.minY > bounds.maxY)
+  );
+  assert.equal(candidates.length, exact.length);
+  assert.ok(candidates.length < triangles.length / 10);
+});
