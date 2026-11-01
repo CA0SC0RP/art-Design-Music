@@ -379,3 +379,11 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Admite hasta cuatro influencias normalizadas por vértice y calcula matrices entre pose de referencia y pose actual. Incluye límites defensivos para cantidad de vértices/huesos y rechaza matrices singulares, pesos inválidos y referencias inexistentes.
 - Se añadieron diez pruebas unitarias. La suite total del editor queda en 36 pruebas: IK, importación/migración, geometría jerárquica y skinning.
 - El módulo aún no está conectado a la interfaz. Próxima fase: definir la representación editable de malla y pesos, y después integrar controles táctiles en el editor.
+
+
+
+## 2026-11-01 — Puente matemático entre rig y skinning
+
+- Se amplió `rig-geometry.js` para calcular matrices afines mundiales de todas las piezas, acumulando transformaciones y pivotes de la jerarquía.
+- Esto permite alimentar el sistema de skinning con matrices de referencia/actuales coherentes con el rig articulado.
+- Se añadieron dos pruebas de matrices mundiales y jerarquías rotas. La suite alcanza 38 pruebas y GitHub Actions completó la ejecución correctamente.
