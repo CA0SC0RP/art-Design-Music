@@ -225,3 +225,14 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Próximo paso: validar el prototipo en iPad y después mejorar edición de pivotes/articulaciones y poses antes de añadir deformación avanzada.
 
 - Mejora posterior del prototipo: el arrastre convierte el puntero al espacio local del elemento padre, para evitar tratar las coordenadas de una pieza hija como si fueran coordenadas globales. Cambio guardado en `prototype/character-editor-v01/index.html`.
+
+
+## 2026-11-01 — Editor articulado v0.2: pivotes y límites de giro
+- Se amplió `prototype/character-editor-v01/index.html` con un pivote visible y arrastrable en la pieza seleccionada, además de controles numéricos X/Y.
+- Al cambiar el pivote, el editor compensa la transformación de la pieza para mantener su geometría en la misma posición visual.
+- Se añadieron límites de rotación mínimo/máximo por pieza; el control de articulación se restringe al rango configurado.
+- Se mantiene compatibilidad de carga con proyectos locales v1: al abrirlos se inicializan pivote (0,0) y límites −180°/180°. Las exportaciones nuevas usan esquema v2.
+- Se actualizó `docs/prototipo-editor-articulado-personajes-v0-1.md` con las capacidades y limitaciones reales.
+- Commits de código: `fef4099bf08271a15d221a7ba14dbdea1dfb4e6a` y corrección de arrastre de pivote `73d72e46f0f73f26028fc6496ec2405be30b2e26`. Documento actualizado en el commit `5928e4f65c668519d3d61fad6c3c784510b63045`.
+- **Pruebas pendientes:** no se ha ejecutado navegador ni validado el manejo táctil en Safari/iPad. Tampoco se ha certificado IK, skinning ni deformación de malla; no forman parte de esta iteración.
+- No se modificó `main`, no hubo merge, PR, despliegue, instalación de dependencias ni gastos.
