@@ -161,3 +161,14 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - **Protecciones:** no se modificó código ejecutable, no se eliminaron recursos, no se tocó main, no se fusionó ni desplegó, no se activaron servicios externos ni gastos.
 - **Siguiente paso:** diseñar e implementar una prueba aislada del estudio visual para iPad, con selección táctil directa, arrastre, escala, rotación y animación básica.
 
+
+
+## 2026-11-01 — Investigación de Umamo y primera prueba del estudio de caricaturas
+- Rama de trabajo: `feature/living-paper-engine-foundation`. No se modificó `main`, no se fusionó ni se abrió PR.
+- Se investigó Umamo: modelado de marionetas 2D, importación de arte por capas, jerarquía, mallas, UV, parámetros e historial. Se confirmó que todavía no implementa animación; iPadOS carece de renderizador funcional y el proyecto está en alfa. Licencia GPL-3.0: se decide no copiar ni integrar su código en el producto.
+- Documento nuevo: `docs/investigacion-umamo-y-decision-arquitectura-2026-11-01.md`. Commit: `df8eafe5f62da08761b3e22adf9bc755f503339a`.
+- Prototipo aislado nuevo: `prototype/caricature-studio-v01/index.html`. Incluye escenario SVG adaptable, personaje geométrico provisional, selección y arrastre mediante Pointer Events, controles de escala y rotación, y reproducción/pausa de un movimiento sencillo. HTML, CSS y JavaScript están contenidos en un solo archivo; no carga bibliotecas, APIs ni recursos externos.
+- Commit del prototipo: `83bea924d207a7b5eae15d219d2f23b1321e0e4d`.
+- Verificación realizada: ambos archivos existen y se recuperaron desde la rama. No se ejecutó un navegador, no se probó Safari/iPad y no se declara compatibilidad todavía.
+- No se instalaron dependencias, no se usaron servicios pagos y no se copió código de los repositorios investigados.
+- Próximo paso: abrir el prototipo mediante la vista previa de Codespaces y probar toque, arrastre, escala, rotación, reproducción y pausa en Safari del iPad; corregir según el resultado.
