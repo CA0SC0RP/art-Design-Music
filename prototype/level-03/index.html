@@ -15,12 +15,12 @@ svg{display:block;width:100%;height:auto}.paused *{animation-play-state:paused!i
 .cloud{animation:cloud-drift calc(42s / var(--speed)) linear infinite}.cloud.slow{animation-duration:calc(68s / var(--speed))}
 .star{transform-box:fill-box;transform-origin:center;animation:twinkle calc(var(--t) / var(--speed)) ease-in-out infinite;animation-delay:var(--d)}
 .moon{transform-box:fill-box;transform-origin:center;animation:moon-glow calc(8s / var(--speed)) ease-in-out infinite alternate}
-.bird{animation:bird-path calc(var(--t) / var(--speed)) ease-in-out infinite alternate;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
+.bird{transform-box:fill-box;animation:bird-path calc(var(--t) / var(--speed)) ease-in-out infinite alternate;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
 .wing{animation:wing-flap calc(.55s / var(--speed)) ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 90%}
-.firefly{animation:firefly-drift calc(var(--t) / var(--speed)) ease-in-out infinite alternate;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
+.firefly{transform-box:fill-box;animation:firefly-drift calc(var(--t) / var(--speed)) ease-in-out infinite alternate;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
 .firefly circle{animation:firefly-glow calc(2.4s / var(--speed)) ease-in-out infinite alternate}
-.leaf{animation:leaf-fall calc(var(--t) / var(--speed)) linear infinite;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
-.butterfly{animation:butterfly-path calc(var(--t) / var(--speed)) ease-in-out infinite;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
+.leaf{transform-box:fill-box;animation:leaf-fall calc(var(--t) / var(--speed)) linear infinite;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
+.butterfly{transform-box:fill-box;animation:butterfly-path calc(var(--t) / var(--speed)) ease-in-out infinite;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
 .bflywing{animation:butterfly-flap calc(.24s / var(--speed)) ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 50%}
 .tree{animation:tree-sway calc(7s / var(--speed)) ease-in-out infinite alternate;transform-box:fill-box;transform-origin:bottom center}
 .waterfall{animation:waterfall-flow calc(1.8s / var(--speed)) linear infinite}
@@ -28,20 +28,20 @@ svg{display:block;width:100%;height:auto}.paused *{animation-play-state:paused!i
 .ripple{animation:ripple calc(3.6s / var(--speed)) ease-out infinite;transform-box:fill-box;transform-origin:center}
 .fish{animation:fish-swim calc(var(--t) / var(--speed)) ease-in-out infinite alternate;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
 @keyframes cloud-drift{from{transform:translateX(-190px)}to{transform:translateX(390px)}}
-@keyframes twinkle{0%,100%{opacity:.28;transform:scale(.72)}50%{opacity:1;transform:scale(1.28)}}
+@keyframes twinkle{0%,100%{opacity:.28;scale:.72}50%{opacity:1;scale:1.28}}
 @keyframes moon-glow{from{filter:drop-shadow(0 0 5px #f4e7b0)}to{filter:drop-shadow(0 0 24px #f4e7b0)}}
-@keyframes bird-path{0%{transform:translate(0,0)}45%{transform:translate(65px,-24px)}100%{transform:translate(135px,8px)}}
-@keyframes wing-flap{from{transform:scaleY(.35)}to{transform:scaleY(1.1)}}
-@keyframes firefly-drift{from{transform:translate(-9px,9px)}to{transform:translate(18px,-24px)}}
+@keyframes bird-path{0%{translate:0 0}45%{translate:65px -24px}100%{translate:135px 8px}}
+@keyframes wing-flap{from{scale:1 .35}to{scale:1 1.1}}
+@keyframes firefly-drift{from{translate:-9px 9px}to{translate:18px -24px}}
 @keyframes firefly-glow{from{opacity:.25;filter:drop-shadow(0 0 2px #d7ef9d)}to{opacity:1;filter:drop-shadow(0 0 12px #e5ffad)}}
-@keyframes leaf-fall{0%{transform:translate(0,-30px) rotate(0);opacity:0}12%{opacity:1}55%{transform:translate(28px,110px) rotate(170deg)}100%{transform:translate(-12px,245px) rotate(340deg);opacity:0}}
-@keyframes butterfly-path{0%,100%{transform:translate(0,0) rotate(-7deg)}30%{transform:translate(25px,-22px) rotate(8deg)}65%{transform:translate(48px,8px) rotate(-8deg)}}
-@keyframes butterfly-flap{from{transform:scaleX(.15)}to{transform:scaleX(1)}}
-@keyframes tree-sway{from{transform:rotate(-1.1deg)}to{transform:rotate(1.1deg)}}
+@keyframes leaf-fall{0%{translate:0 -30px;rotate:0deg;opacity:0}12%{opacity:1}55%{translate:28px 110px;rotate:170deg}100%{translate:-12px 245px;rotate:340deg;opacity:0}}
+@keyframes butterfly-path{0%,100%{translate:0 0;rotate:-7deg}30%{translate:25px -22px;rotate:8deg}65%{translate:48px 8px;rotate:-8deg}}
+@keyframes butterfly-flap{from{scale:.15 1}to{scale:1 1}}
+@keyframes tree-sway{from{rotate:-1.1deg}to{rotate:1.1deg}}
 @keyframes waterfall-flow{to{stroke-dashoffset:-72}}
 @keyframes water-current{to{stroke-dashoffset:-150}}
-@keyframes ripple{0%{transform:scale(.3);opacity:.7}100%{transform:scale(2.2);opacity:0}}
-@keyframes fish-swim{0%{transform:translateX(-26px)}48%{transform:translateX(42px)}50%{transform:translateX(42px) scaleX(-1)}100%{transform:translateX(-26px) scaleX(-1)}}
+@keyframes ripple{0%{scale:.3;opacity:.7}100%{scale:2.2;opacity:0}}
+@keyframes fish-swim{0%{translate:-26px 0;scale:1 1}48%{translate:42px 0;scale:1 1}50%{translate:42px 0;scale:-1 1}100%{translate:-26px 0;scale:-1 1}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style></head>
 <body><main>
