@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - prototipo/prueba-cinco-capas-01
-      - feature/living-paper-engine-foundation
   workflow_dispatch:
 
 permissions:
