@@ -54,5 +54,8 @@ jobs:
           grep -q 'ADM_ProjectIO.normalizeProject' prototype/character-editor-v01/index.html
           grep -q 'normalizeProject(parsed)' prototype/character-editor-v01/index.html
           grep -q 'rig-geometry.js' prototype/character-editor-v01/index.html
+          grep -q 'mesh-model.js' prototype/character-editor-v01/index.html
+          grep -q 'ADM_MeshModel.createGrid' prototype/character-editor-v01/index.html
+          grep -q 'ADM_MeshModel.setInfluence' prototype/character-editor-v01/index.html
           grep -q 'ADM_RigGeometry.reparentPreserving' prototype/character-editor-v01/index.html
           echo "Editor de personajes: comprobaciones estructurales correctas."
