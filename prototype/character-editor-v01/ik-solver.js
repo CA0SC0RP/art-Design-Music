@@ -8,7 +8,8 @@ function solveTwoBone(input){
  const safeD=Math.max(minReach,Math.min(maxReach,d));
  const cosA=Math.max(-1,Math.min(1,(L1*L1+safeD*safeD-L2*L2)/(2*L1*safeD)));
  const cosB=Math.max(-1,Math.min(1,(L1*L1+L2*L2-safeD*safeD)/(2*L1*L2)));
- const targetAngle=Math.atan2(x,y),a=Math.acos(cosA),inner=Math.acos(cosB),radToDeg=180/Math.PI;
+ // En SVG, una rotación positiva desplaza un segmento vertical hacia X negativo.
+ const targetAngle=Math.atan2(-x,y),a=Math.acos(cosA),inner=Math.acos(cosB),radToDeg=180/Math.PI;
  const upperDeg=(targetAngle-bend*a)*radToDeg,lowerDeg=bend*(Math.PI-inner)*radToDeg;
  const upperMin=Number.isFinite(p.upperMin)?p.upperMin:-165,upperMax=Number.isFinite(p.upperMax)?p.upperMax:165;
  const lowerMin=Number.isFinite(p.lowerMin)?p.lowerMin:-150,lowerMax=Number.isFinite(p.lowerMax)?p.lowerMax:150;
