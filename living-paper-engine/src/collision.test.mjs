@@ -250,5 +250,5 @@ test("las consultas sucesivas reutilizan marcas sin filtrar candidatos de búsqu
   assert.ok(left.length > 0 && right.length > 0);
   assert.equal(leftAgain.length, left.length);
   assert.ok(left.every(triangle => leftAgain.includes(triangle)));
-  assert.ok(right.every(triangle => !leftAgain.includes(triangle)) || right.some(triangle => leftAgain.includes(triangle)));
+  assert.equal(index.queryId, 3);
 });
