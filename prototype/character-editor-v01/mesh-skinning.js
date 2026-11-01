@@ -16,6 +16,13 @@ function transformPoint(m,p){
  if(!validMatrix(m)||!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))throw new Error("Punto o matriz no válidos.");
  return {x:m[0]*p.x+m[2]*p.y+m[4],y:m[1]*p.x+m[3]*p.y+m[5]};
 }
+function triangleTransform(source,target){
+ if(!Array.isArray(source)||!Array.isArray(target)||source.length!==3||target.length!==3||![...source,...target].every(p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y)))return {ok:false,message:"Los triángulos no son válidos."};
+ const [p0,p1,p2]=source,[q0,q1,q2]=target,dx1=p1.x-p0.x,dy1=p1.y-p0.y,dx2=p2.x-p0.x,dy2=p2.y-p0.y,det=dx1*dy2-dx2*dy1;
+ if(!Number.isFinite(det)||Math.abs(det)<1e-9)return {ok:false,message:"El triángulo de referencia está degenerado."};
+ const X1=q1.x-q0.x,X2=q2.x-q0.x,Y1=q1.y-q0.y,Y2=q2.y-q0.y,a=(X1*dy2-X2*dy1)/det,c=(dx1*X2-dx2*X1)/det,b=(Y1*dy2-Y2*dy1)/det,d=(dx1*Y2-dx2*Y1)/det,e=q0.x-a*p0.x-c*p0.y,f=q0.y-b*p0.x-d*p0.y,matrix=[a,b,c,d,e,f];
+ return matrix.every(Number.isFinite)?{ok:true,matrix}:{ok:false,message:"La transformación del triángulo no es finita."};
+}
 function buildSkinMatrices(bindWorld,currentWorld){
  if(!bindWorld||!currentWorld||typeof bindWorld!=="object"||typeof currentWorld!=="object")return {ok:false,message:"Faltan matrices de referencia o actuales."};
  const ids=Object.keys(bindWorld);
@@ -45,5 +52,5 @@ function deformVertices(vertices,skinMatrices){
  }
  return {ok:true,vertices:output};
 }
-return {multiply,invert,transformPoint,buildSkinMatrices,deformVertices,limits:{maxVertices:MAX_VERTICES,maxBones:MAX_BONES,maxInfluences:MAX_INFLUENCES}};
+return {multiply,invert,transformPoint,triangleTransform,buildSkinMatrices,deformVertices,limits:{maxVertices:MAX_VERTICES,maxBones:MAX_BONES,maxInfluences:MAX_INFLUENCES}};
 });
