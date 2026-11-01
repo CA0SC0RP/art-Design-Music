@@ -72,3 +72,15 @@ test("rechaza expansión negativa y triángulos degenerados",()=>{
  assert.equal(skin.expandTriangle([{x:0,y:0},{x:1,y:0},{x:2,y:0}],.3).ok,false);
  assert.equal(skin.expandTriangle([{x:0,y:0},{x:1,y:0},{x:0,y:1}],-.1).ok,false);
 });
+
+test("expande cada lado a una distancia uniforme y conserva ambos sentidos",()=>{
+ const distance=(p,a,b)=>Math.abs((b.x-a.x)*(a.y-p.y)-(a.x-p.x)*(b.y-a.y))/Math.hypot(b.x-a.x,b.y-a.y);
+ for(const tri of [[{x:0,y:0},{x:10,y:0},{x:0,y:10}],[{x:0,y:10},{x:10,y:0},{x:0,y:0}]]){
+  const r=skin.expandTriangle(tri,.35);assert.equal(r.ok,true);
+  for(let i=0;i<3;i++)close(distance(r.triangle[i],tri[i],tri[(i+1)%3]),.35);
+ }
+});
+test("la expansión cero devuelve una copia exacta sin mutar el original",()=>{
+ const tri=[{x:1,y:2},{x:8,y:2},{x:3,y:9}],r=skin.expandTriangle(tri,0);
+ assert.deepEqual(r.triangle,tri);assert.notEqual(r.triangle,tri);assert.notEqual(r.triangle[0],tri[0]);
+});
