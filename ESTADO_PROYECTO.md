@@ -139,3 +139,11 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - **Validación pendiente:** comprobar ejecución de Actions y publicación; después revisar en Firefox y Safari del iPad composición, continuidad de loops, movimiento, velocidad, pausa y rendimiento. No declarar aprobado hasta recibir la comprobación visual del usuario.
 
 **Avance técnico 2026-11-01:** creado `prototype/character-editor-v01/index.html`, primer prototipo de editor jerárquico con presets de personaje y árbol, piezas seleccionables, rotación/escala/posición, relaciones padre-hijo, añadir/duplicar/eliminar piezas, guardado local y exportación JSON. Es una prueba inicial, no el editor completo; falta validar en iPad y desarrollar pivotes visibles, poses, skinning/deformación y texturas de producción. Documento: `docs/prototipo-editor-articulado-personajes-v0-1.md`.
+
+
+## Actualización — 2026-11-01: pivotes y articulaciones del editor de personajes
+- El prototipo `prototype/character-editor-v01/index.html` avanza a v0.2: pivote visible y arrastrable, ajuste X/Y, compensación de posición para conservar la geometría, límites mínimo/máximo de giro por pieza y pivotes iniciales en cabeza/cuello.
+- Se mantiene carga compatible con proyectos v1 y se guardan/exportan proyectos con esquema v2.
+- Código con validación estática de sintaxis JavaScript y comprobación de IDs del DOM: sin errores de sintaxis, IDs duplicados ni referencias a IDs inexistentes.
+- La validación estática no sustituye ejecutar el editor: aún falta probar en navegador, especialmente arrastre táctil y rotación en Safari del iPad.
+- No se modificó `main`, no hubo merge, PR ni despliegue; no se instalaron dependencias ni hubo gastos.
