@@ -21,7 +21,10 @@ export function buildLayerGroupLinks(groups = []) {
         contactStiffness: overrides.contactStiffness ?? group.contactStiffness ?? 0.65,
         contactNormalX: overrides.contactNormalX ?? group.contactNormalX ?? 0,
         contactNormalY: overrides.contactNormalY ?? group.contactNormalY ?? 1,
-        maxCorrection: overrides.maxCorrection ?? group.maxCorrection ?? 10
+        maxCorrection: overrides.maxCorrection ?? group.maxCorrection ?? 10,
+        tangentRestGap: overrides.tangentRestGap ?? group.tangentRestGap ?? 0,
+        friction: overrides.friction ?? group.friction ?? 0,
+        maxTangentialCorrection: overrides.maxTangentialCorrection ?? group.maxTangentialCorrection ?? 3
       });
     }
   }
