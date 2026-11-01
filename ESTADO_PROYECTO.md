@@ -165,3 +165,14 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - No es IK: no calcula automáticamente la posición de la mano o el pie, ni resuelve restricciones entre articulaciones. La siguiente mejora será validar las acciones en Safari/iPad y diseñar controles de cadena, antes de introducir IK 2D.
 - Código: `prototype/character-editor-v01/index.html`; documento actualizado: `docs/prototipo-editor-articulado-personajes-v0-1.md`.
 - No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos. No se ha probado la interfaz en navegador ni en iPad.
+
+
+## Actualización — 2026-11-01: primera cinemática inversa 2D v0.5
+- Se incorporó un solver geométrico de dos segmentos para las cuatro cadenas del preset Personaje: brazo izquierdo/derecho y pierna izquierda/derecha.
+- El usuario elige la cadena, define un objetivo X/Y relativo al torso y selecciona el lado de flexión. El solver calcula las rotaciones de los dos segmentos y las aplica mediante la transición existente.
+- Se valida alcance, límites angulares, pivotes neutros, escala unitaria y alineación de segmentos. Si no se cumplen los requisitos, se muestra un mensaje y no se aplica la solución.
+- Es IK 2D rígida inicial; no hay todavía arrastre del objetivo, colisiones, restricciones anatómicas avanzadas ni skinning/deformación de malla.
+- Código: `prototype/character-editor-v01/index.html`; documentación: `docs/prototipo-editor-articulado-personajes-v0-1.md`.
+- Commit de código: `3c2d7366a4ae316dcb9b7efe87504f5eeb186c4c`.
+- Verificación estática: sintaxis JavaScript correcta, sin IDs duplicados ni referencias DOM inexistentes. No se ha ejecutado la interfaz en navegador ni validado el solver visualmente en Safari/iPad.
+- No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
