@@ -137,3 +137,5 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se corrigieron las duraciones CSS de las animaciones de agua a unidades de tiempo (segundos) antes de publicar.
 - Los recursos siguen siendo SVG vectoriales provisionales. No se usa imagen maestra, arte final, audio, servicios externos ni gasto. No se modificó `main`.
 - **Validación pendiente:** comprobar ejecución de Actions y publicación; después revisar en Firefox y Safari del iPad composición, continuidad de loops, movimiento, velocidad, pausa y rendimiento. No declarar aprobado hasta recibir la comprobación visual del usuario.
+
+**Avance técnico 2026-11-01:** creado `prototype/character-editor-v01/index.html`, primer prototipo de editor jerárquico con presets de personaje y árbol, piezas seleccionables, rotación/escala/posición, relaciones padre-hijo, añadir/duplicar/eliminar piezas, guardado local y exportación JSON. Es una prueba inicial, no el editor completo; falta validar en iPad y desarrollar pivotes visibles, poses, skinning/deformación y texturas de producción. Documento: `docs/prototipo-editor-articulado-personajes-v0-1.md`.
