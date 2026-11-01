@@ -126,3 +126,12 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - El importador valida las formas faciales admitidas tanto en las piezas como en las poses.
 - Se amplió la suite con una prueba de persistencia/validación de formas faciales. GitHub Actions completó correctamente todas las verificaciones.
 - Estas expresiones son controles iniciales de demostración; todavía no hay un sistema de músculos faciales, morph targets, labios sincronizados ni editor de expresiones personalizadas.
+
+
+
+## Iteración v0.9.6 — materialidad de papel y rango de transformación
+
+- Se incorporó un filtro SVG de papel con grano muy sutil combinado con sombra proyectada, aplicado a las piezas vectoriales para evitar que se vean completamente planas.
+- Se ampliaron los rangos de los controles de posición y escala para facilitar el reparentado y la composición de rigs con transformaciones acumuladas.
+- Es una primera aproximación visual de materialidad; todavía no sustituye texturas de cartulina de alta resolución, cantos de papel, biseles ni un sistema de materiales editable.
+- GitHub Actions completó las comprobaciones automatizadas de la iteración anterior; el cambio visual requiere inspección en navegador y Safari/iPad.
