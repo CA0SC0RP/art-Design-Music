@@ -261,7 +261,7 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 ## Actualización — 2026-11-01: núcleo inicial de skinning 2D
 - Se creó `prototype/character-editor-v01/mesh-skinning.js`, un módulo independiente para deformar vértices 2D mediante Linear Blend Skinning, con matrices afines, matrices de referencia/actuales y hasta cuatro influencias normalizadas por vértice.
 - Límites defensivos iniciales: 50.000 vértices, 100 huesos y cuatro influencias. Se validan matrices, pesos, coordenadas y referencias antes de deformar; no se modifica la malla original.
-- La suite queda en 50 pruebas automatizadas (12 IK, 12 importación/migración, 6 geometría jerárquica, 10 skinning y 10 modelo de malla). El módulo todavía no está conectado a la interfaz; falta diseñar la edición visual de malla y pesos y validarla en Safari/iPad.
+- La suite queda en 51 pruebas automatizadas (12 IK, 13 importación/migración, 6 geometría jerárquica, 10 skinning y 10 modelo de malla). El módulo todavía no está conectado a la interfaz; falta diseñar la edición visual de malla y pesos y validarla en Safari/iPad.
 - El prototipo se identifica ahora como v0.9.8. No es todavía alfa/beta formal ni versión 1.0.
 
 
@@ -277,3 +277,10 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Las mallas forman parte de cada pieza y se conservan al guardar localmente y exportar/importar JSON. La importación valida topología, referencias de huesos y pesos.
 - Limitación importante: el wireframe y la edición de pesos ya son visibles, pero todavía no deforman la silueta vectorial del personaje. Falta conectar el skinning al renderizado de la geometría real. La malla inicial tampoco sigue todavía el contorno de cada silueta.
 - Suite automatizada: 50 pruebas. La prueba física táctil en Safari/iPad sigue pendiente; no se afirma validación de navegador real.
+
+
+
+### Complemento — previsualización de deformación del wireframe
+- La malla captura matrices de referencia relativas a su hueso dueño. Al mover articulaciones, se calculan matrices actuales del rig y se aplica skinning a los vértices del wireframe. Los nuevos huesos reciben su referencia al asignarles peso.
+- La importación/exportación conserva y valida esas matrices. Suite: 51 pruebas automatizadas, con ejecución completa satisfactoria en GitHub Actions.
+- Limitación pendiente: el wireframe sí se deforma con el rig, pero la silueta vectorial original aún no se transforma por triángulos. Tampoco se ha probado en Safari/iPad físico.
