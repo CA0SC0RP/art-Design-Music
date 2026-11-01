@@ -12,6 +12,9 @@
 - Dirección de producto: docs/direccion-motor-caricaturas-ipad.md
 - Arquitectura inicial: ARQUITECTURA.md
 - Instrucciones de trabajo: INSTRUCCIONES_PARA_IA.md
+- Resumen del repositorio: README.md
+
+**Documentos archivados o marcados como obsoletos:** contrato v2 de capas, plan de validación anterior y dirección artística anterior.
 
 **Estado de transición:** la auditoría técnica del 2026-10-29 queda cerrada como registro histórico del diseño anterior. El contrato v2 no está aprobado para el motor de caricaturas. La partitura audiovisual de Mountains That Breathe queda obsoleta para la planificación activa. Los documentos, prototipos y recursos antiguos se conservan como antecedentes hasta clasificarlos; no se borran.
 
