@@ -26,7 +26,7 @@ export class PaperPiece{
 }
 
 export class LivingPaperEngine{
-  constructor(host){this.host=host;this.app=null;this.world=null;this.pieces=new Map();this.articulations=new Set();this.speed=1;this.paused=false;this.elapsed=0;}
+  constructor(host){this.host=host;this.app=null;this.world=null;this.pieces=new Map();this.articulations=new Set();this.flexes=new Set();this.speed=1;this.paused=false;this.elapsed=0;}
   async init(){
     this.app=new Application();
     await this.app.init({background:0xdce5df,antialias:true,autoDensity:true,resolution:Math.min(window.devicePixelRatio||1,2),resizeTo:this.host});
@@ -38,13 +38,54 @@ export class LivingPaperEngine{
   getPiece(id){return this.pieces.get(id);}
   sortDepth(){const items=[...this.pieces.values()].sort((a,b)=>b.depth-a.depth);items.forEach((p,i)=>this.world.setChildIndex(p.container,i));}
   addArticulation(joint,parent){(parent||this.world).addChild(joint.container);this.articulations.add(joint);return joint;}
+  addFlex(flex,parent){(parent||this.world).addChild(flex.container);this.flexes.add(flex);return flex;}
   setSpeed(v){this.speed=Math.max(.1,Math.min(3,v));}
   setPaused(v){this.paused=Boolean(v);}
-  update(dt){if(this.paused)return;const step=dt*this.speed;this.elapsed+=step;for(const p of this.pieces.values())p.motion?.update(step,this.elapsed,p);for(const joint of this.articulations)joint.update(this.elapsed);}
+  update(dt){if(this.paused)return;const step=dt*this.speed;this.elapsed+=step;for(const p of this.pieces.values())p.motion?.update(step,this.elapsed,p);for(const joint of this.articulations)joint.update(this.elapsed);for(const flex of this.flexes)flex.update(this.elapsed);}
   layout(){if(!this.app||!this.world)return;const w=this.host.clientWidth||960,h=this.host.clientHeight||540;this.app.renderer.resize(w,h);const s=Math.min(w/1280,h/720);this.world.scale.set(s);this.world.position.set((w-1280*s)/2,(h-720*s)/2);}
-  destroy(){this.resizeObserver?.disconnect();this.app?.destroy(true,{children:true});this.pieces.clear();this.articulations.clear();}
+  destroy(){this.resizeObserver?.disconnect();this.app?.destroy(true,{children:true});this.pieces.clear();this.articulations.clear();this.flexes.clear();}
 }
 
+
+
+export class PaperFlex{
+  constructor({id,x=0,y=0,length=90,width=8,bend=0,maxBend=24,fill=0x78966d,material="matte",thickness=2,sway=null}){
+    this.id=id;this.length=length;this.width=width;this.bend=bend;this.restBend=bend;this.maxBend=maxBend;this.fill=fill;this.material=material;this.thickness=thickness;this.sway=sway;
+    this.container=new Container();this.container.position.set(x,y);this.shadow=new Graphics();this.art=new Graphics();this.container.addChild(this.shadow,this.art);this.render();
+  }
+  setBend(degrees){this.sway=null;this.bend=Math.max(-this.maxBend,Math.min(this.maxBend,degrees));this.render();}
+  setSway({amplitude=12,period=4,phase=0}={}){this.sway={amplitude,period:Math.max(.1,period),phase};}
+  render(){
+    const angle=this.bend*Math.PI/180,points=[];
+    for(let i=0;i<=12;i++){
+      const t=i/12,theta=angle*t;
+      const cx=Math.abs(angle)<.0001?0:this.length*(1-Math.cos(theta))/angle;
+      const cy=Math.abs(angle)<.0001?-this.length*t:-this.length*Math.sin(theta)/angle;
+      const nx=Math.cos(theta),ny=Math.sin(theta);
+      points.push([cx-nx*this.width/2,cy-ny*this.width/2]);
+    }
+    for(let i=12;i>=0;i--){
+      const t=i/12,theta=angle*t;
+      const cx=Math.abs(angle)<.0001?0:this.length*(1-Math.cos(theta))/angle;
+      const cy=Math.abs(angle)<.0001?-this.length*t:-this.length*Math.sin(theta)/angle;
+      const nx=Math.cos(theta),ny=Math.sin(theta);
+      points.push([cx+nx*this.width/2,cy+ny*this.width/2]);
+    }
+    const m=PAPER_MATERIALS[this.material]||PAPER_MATERIALS.matte;
+    const shadowPoints=points.map(([x,y])=>[x+2,y+3]);
+    this.shadow.clear();this.art.clear();
+    this.shadow.poly(flat(shadowPoints)).fill({color:0x27312d,alpha:.18});
+    this.art.poly(flat(points)).fill({color:this.fill});
+    this.art.poly(flat(points)).stroke({color:m.edge,width:Math.max(1,this.thickness*.35),alpha:.58});
+  }
+  update(elapsed){
+    if(!this.sway)return;
+    const {amplitude,period,phase}=this.sway;
+    const next=this.restBend+Math.sin((elapsed/period)*Math.PI*2+phase)*amplitude;
+    const bounded=Math.max(-this.maxBend,Math.min(this.maxBend,next));
+    if(Math.abs(bounded-this.bend)>.12){this.bend=bounded;this.render();}
+  }
+}
 
 export class PaperJoint{
   constructor({id,x=0,y=0,angle=0,minAngle=-45,maxAngle=45,material="matte",thickness=3,shadowStrength=.18,draw,sway=null}){
