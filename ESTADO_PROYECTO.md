@@ -2,13 +2,15 @@
 **Decisiones vigentes aprobadas el 2026-11-01:** la estética del producto es papel artesanal recortado 2D con profundidad, perspectiva y texturas de alta calidad; el editor completo de personajes es la primera prioridad. Codespaces se reserva para desarrollo y el iPad será el objetivo de renderizado local, sin servidores de render. Safari será el navegador de referencia inicial y se buscará compatibilidad con Chrome, Firefox y Opera en iPad. Objetivo de salida: 4K UHD y 24/30 fps; 10-bit/HDR10 y códecs concretos quedan sujetos a pruebas. Detalle: `docs/decisiones-editor-personajes-y-render-local-2026-11-01.md`.
 # Estado vigente — cambio de objetivo 2026-11-01
 
-**Objetivo actual:** construir un estudio web para crear caricaturas animadas e historias audiovisuales, accesible desde Safari, Chrome y Firefox. El producto principal será el editor ejecutado en el navegador; la salida final será un vídeo exportado, no un APK. Cada cuadro/obra podrá ser una historia independiente. La interfaz se prioriza para iPad. ChatGPT es el único asistente de IA que modifica y revisa el código; no se delega a otros asistentes.
+**Objetivo actual:** construir un estudio web para crear caricaturas digitales y microhistorias audiovisuales con estética de papel artesanal recortado en 2D, profundidad, perspectiva y texturas de alta calidad. Safari en iPad será el navegador de referencia inicial; se buscará compatibilidad con Chrome, Firefox y Opera en iPad. El producto principal será el editor web y la salida final será vídeo. ChatGPT es el único asistente de IA que modifica y revisa el código.
 
-**Primera meta funcional:** abrir desde Safari en iPad un escenario editable; seleccionar un personaje u objeto; modificar posición y tamaño con controles visuales; reproducir una animación sencilla y revisar el resultado.
+**Primera prioridad de producto:** completar un editor visual potente de personajes con partes, jerarquías, rig/huesos, deformación, texturas, poses y expresiones. Después se construirán escenas y animación, líneas de tiempo, renderizador local y exportación de vídeo. El prototipo actual de escenario es solo una prueba técnica inicial.
 
 **Colaboración:** inicialmente el usuario describe cambios en el chat, ChatGPT modifica código en la rama autorizada y el usuario actualiza la vista previa en iPad. No existe todavía una conexión directa y continua entre ChatGPT y el lienzo activo. Un puente de edición en tiempo real es una posibilidad futura, no una función existente.
 
-**Renderizado y audio:** el motor seguirá siendo necesario para calcular los fotogramas de cada historia y combinarlos con diálogo, música y efectos antes de codificar el vídeo. Se investigará primero la exportación local desde el navegador; no se activarán servicios remotos ni pagos sin autorización.
+**Renderizado y audio:** Codespaces se utilizará para desarrollar; el iPad será el objetivo de edición y renderizado local. El renderizador deberá calcular los fotogramas y codificar el vídeo en el dispositivo, sin depender de servidores GPU ni granjas de renderizado. Objetivo visual de salida: 4K UHD a 24/30 fps; 10-bit/HDR10 y códecs concretos quedan sujetos a pruebas. No se activarán servicios remotos ni pagos.
+
+**Decisiones vigentes:** `docs/decisiones-editor-personajes-y-render-local-2026-11-01.md`.
 
 **Documentos vigentes:**
 - Visión del estudio web y exportación de vídeo: docs/vision-estudio-web-y-exportacion-de-caricaturas-2026-11-01.md
