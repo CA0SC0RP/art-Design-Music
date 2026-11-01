@@ -27,6 +27,7 @@ export function enableFoldVolume(mesh, { intensity = 0.72, width = 34, resolutio
     }
   }
   const overlay = new MeshSimple({ texture, vertices: mesh.vertices, uvs: new Float32Array(uvs), indices: new Uint32Array(indices) });
+  overlay.autoUpdate = true;
   mesh.container.addChild(overlay);
 
   const settings = { intensity: clamp(intensity, 0, 1), width: clamp(width, 8, 90) };
