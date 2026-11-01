@@ -62,5 +62,7 @@ jobs:
           grep -q 'meshFrameCache' prototype/character-editor-v01/index.html
           grep -q 'setMeshStatus' prototype/character-editor-v01/index.html
           grep -q 'triangleTransform' prototype/character-editor-v01/index.html
+          grep -q 'shapeId=prefix+"_source"' prototype/character-editor-v01/index.html
+          grep -q '<use href="#' prototype/character-editor-v01/index.html
           grep -q 'ADM_RigGeometry.reparentPreserving' prototype/character-editor-v01/index.html
           echo "Editor de personajes: comprobaciones estructurales correctas."
