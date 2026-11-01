@@ -190,3 +190,12 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - Las dimensiones y posiciones iniciales de las mallas se ajustaron a los límites aproximados de las siluetas de personaje y árbol. Las matrices de referencia se guardan solo para huesos realmente influyentes, reduciendo datos innecesarios.
 - Se añadieron pruebas del mapeo triangular y del pincel de pesos. La suite suma 55 pruebas automatizadas y la última ejecución disponible de GitHub Actions pasó para la integración de fragmentos; el commit más reciente de matrices reducidas tiene una ejecución pendiente.
 - Pendiente: validar el resultado visual real en navegador, revisar posibles uniones/artefactos entre triángulos, rendimiento con varios personajes y prueba táctil física en Safari/iPad. La integración de código no equivale a una validación visual final.
+
+
+
+## Iteración v0.9.11 — consistencia de pesos y optimización de previsualización
+
+- Al pintar pesos sobre un hueso que todavía no tenía matriz de referencia en la malla, el editor ahora captura la matriz relativa en la pose actual antes de modificar influencias. Esto evita que el nuevo peso use una referencia inexistente o incorrecta.
+- La previsualización comparte las matrices mundiales del rig y los vértices deformados durante cada render, en vez de recalcular el rig por cada pieza. El caché se renueva en cada render para reflejar movimientos y ediciones.
+- Se añadieron pruebas de continuidad matemática en vértices compartidos entre triángulos y de traslación afín pura. Suite: 57 pruebas.
+- GitHub Actions comprueba también que la captura de matrices para el pincel y el caché de render permanezcan conectados. Esto reduce regresiones estructurales, pero no sustituye la inspección de artefactos SVG en navegador.
