@@ -72,12 +72,11 @@ export function buildMeshTriangles(mesh, matrix = composeWorldTransform(mesh.con
   const { vertices, columns, rows } = mesh, triangles = [];
   const shape = mesh.shape;
   const point = index => transformPoint(matrix, { x: vertices[index * 2], y: vertices[index * 2 + 1] });
-  const inside = (p) => !shape || pointInPolygon(p.x / mesh.width, p.y / mesh.height, shape);
+  const inside = p => !shape || pointInPolygon(p.x / mesh.width, p.y / mesh.height, shape);
   for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++) {
     const a = y * (columns + 1) + x, b = a + 1, d = (y + 1) * (columns + 1) + x, e = d + 1;
     for (const ids of [[a, b, d], [b, e, d]]) {
       const p0 = point(ids[0]), p1 = point(ids[1]), p2 = point(ids[2]);
-      const centroid = { x: (p0.x + p1.x + p2.x) / 3, y: (p0.y + p1.y + p2.y) / 3 };
       const localCentroid = {
         x: (vertices[ids[0] * 2] + vertices[ids[1] * 2] + vertices[ids[2] * 2]) / 3,
         y: (vertices[ids[0] * 2 + 1] + vertices[ids[1] * 2 + 1] + vertices[ids[2] * 2 + 1]) / 3
@@ -89,7 +88,48 @@ export function buildMeshTriangles(mesh, matrix = composeWorldTransform(mesh.con
   return triangles;
 }
 
-/** Closest point on any triangle of a transformed source surface. */
+/**
+ * Build a uniform-grid broadphase for transformed triangles.
+ * The returned index is rebuilt per contact pass because the source mesh moves.
+ */
+export function buildTriangleSpatialIndex(triangles, cellSize = 64) {
+  const size = Math.max(1, Number.isFinite(cellSize) ? cellSize : 64);
+  const cells = new Map();
+  for (const triangle of triangles) {
+    const minCellX = Math.floor(triangle.minX / size), maxCellX = Math.floor(triangle.maxX / size);
+    const minCellY = Math.floor(triangle.minY / size), maxCellY = Math.floor(triangle.maxY / size);
+    for (let y = minCellY; y <= maxCellY; y++) {
+      for (let x = minCellX; x <= maxCellX; x++) {
+        const key = `${x},${y}`;
+        let bucket = cells.get(key);
+        if (!bucket) cells.set(key, bucket = []);
+        bucket.push(triangle);
+      }
+    }
+  }
+  return { cellSize: size, cells, triangleCount: triangles.length };
+}
+
+/** Return unique triangles whose bounds overlap a world-space query rectangle. */
+export function queryTriangleSpatialIndex(index, bounds, epsilon = 1e-7) {
+  const size = index.cellSize;
+  const minCellX = Math.floor(bounds.minX / size), maxCellX = Math.floor(bounds.maxX / size);
+  const minCellY = Math.floor(bounds.minY / size), maxCellY = Math.floor(bounds.maxY / size);
+  const found = new Set();
+  for (let y = minCellY; y <= maxCellY; y++) {
+    for (let x = minCellX; x <= maxCellX; x++) {
+      const bucket = index.cells.get(`${x},${y}`);
+      if (!bucket) continue;
+      for (const triangle of bucket) {
+        if (triangle.maxX < bounds.minX - epsilon || triangle.minX > bounds.maxX + epsilon ||
+            triangle.maxY < bounds.minY - epsilon || triangle.minY > bounds.maxY + epsilon) continue;
+        found.add(triangle);
+      }
+    }
+  }
+  return [...found];
+}
+
 export function closestPointOnMesh(point, triangles, maxDistance = Infinity) {
   let best = null, bestDistanceSq = maxDistance * maxDistance;
   for (const triangle of triangles) {
