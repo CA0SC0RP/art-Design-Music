@@ -33,6 +33,7 @@ jobs:
           node --check living-paper-engine/src/rigging.js
           node --check living-paper-engine/src/volume.js
           node --check living-paper-engine/src/volume-math.js
+          node --check living-paper-engine/src/collision-math.js
           node --check living-paper-engine/src/layers.js
           node --check living-paper-engine/src/layer-groups.js
           node --check living-paper-engine/src/layer-math.js
@@ -40,6 +41,9 @@ jobs:
           node --experimental-default-type=module --test living-paper-engine/src/layer.test.mjs
           grep -q "enableLayerGroups" living-paper-engine/src/layer-groups.js
           grep -q "enableLayerInteraction" living-paper-engine/src/layers.js
+          grep -q "resolveContactConstraint" living-paper-engine/src/collision-math.js
+          grep -q "contactGapControl" living-paper-engine/index.html
+          grep -q "contactStiffnessControl" living-paper-engine/index.html
           node --check living-paper-engine/src/elastic.js
           node --check living-paper-engine/src/elastic-math.js
           node --check living-paper-engine/src/elastic.test.mjs
