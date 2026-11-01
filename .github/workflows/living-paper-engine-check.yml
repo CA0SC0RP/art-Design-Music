@@ -29,6 +29,7 @@ jobs:
           node --check living-paper-engine/src/engine.js
           node --check living-paper-engine/src/motion.js
           node --check living-paper-engine/src/demo.js
+          node --check living-paper-engine/src/deformation.js
 
       - name: Verificar estructura del prototipo
         run: |
@@ -37,7 +38,11 @@ jobs:
           test -s living-paper-engine/README.md
           grep -q 'pixi.js@8.10.1' living-paper-engine/src/engine.js
           grep -q 'export class PaperMesh' living-paper-engine/src/engine.js
+          grep -q 'enableLocalizedDeformation' living-paper-engine/src/deformation.js
+          grep -q 'setInfluenceZones' living-paper-engine/src/deformation.js
           grep -q 'new MeshSimple' living-paper-engine/src/engine.js
           grep -q 'meshWaveControl' living-paper-engine/src/demo.js
           grep -q 'meshFoldControl' living-paper-engine/index.html
+          grep -q 'influenceBendControl' living-paper-engine/index.html
+          grep -q 'enableLocalizedDeformation' living-paper-engine/src/demo.js
           echo "Living Paper Engine: estructura y sintaxis correctas."
