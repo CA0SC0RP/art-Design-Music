@@ -150,3 +150,24 @@ test("el solver evita la penetración de una hoja sin acumular correcciones", ()
   engine.update(1 / 60);
   assert.ok(Math.abs(target.vertices[centerY] - first) < 1e-6);
 });
+
+test("la fricción de contacto amortigua el deslizamiento tangencial con límite", () => {
+  const noFriction = resolveContactConstraint({ x: 0, y: 0 }, { x: 8, y: 0 }, {
+    normalX: 0, normalY: 1, minGap: 0, friction: 0
+  });
+  const friction = resolveContactConstraint({ x: 0, y: 0 }, { x: 8, y: 0 }, {
+    normalX: 0, normalY: 1, minGap: 0, friction: 0.5, maxTangentialCorrection: 2
+  });
+  assert.equal(noFriction.frictionCorrection, 0);
+  assert.equal(friction.slip, -8);
+  assert.equal(friction.frictionCorrection, 2);
+  assert.equal(friction.x, -2);
+  assert.equal(friction.y, 0);
+});
+
+test("la fricción conserva el desplazamiento tangencial de reposo", () => {
+  const result = resolveContactConstraint({ x: 0, y: 0 }, { x: 8, y: 0 }, {
+    normalX: 0, normalY: 1, minGap: 0, tangentRestGap: -8, friction: 1
+  });
+  assert.equal(result.frictionCorrection, 0);
+});
