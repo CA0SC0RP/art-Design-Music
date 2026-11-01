@@ -133,9 +133,11 @@
         <input id="contactGapControl" type="range" min="0" max="12" value="2">
         <div class="control-heading"><label for="contactStiffnessControl">Rigidez de respuesta al contacto</label><output id="contactStiffnessValue">65%</output></div>
         <input id="contactStiffnessControl" type="range" min="0" max="100" value="65">
+        <div class="control-heading"><label for="contactFrictionControl">Fricción al deslizarse</label><output id="contactFrictionValue">22%</output></div>
+        <input id="contactFrictionControl" type="range" min="0" max="100" value="22">
         <div class="control-heading"><label for="layerPropagationControl">Propagación a la tercera hoja</label><output id="layerPropagationValue">18%</output></div>
         <input id="layerPropagationControl" type="range" min="0" max="60" value="18">
-        <p class="control-hint">Tres hojas forman una pila articulada. El contacto detecta penetración entre vértices correspondientes, aplica una corrección limitada y actualiza la sombra. Ajusta la distancia mínima y la rigidez. Es un modelo 2.5D, no un solver físico volumétrico.</p>
+        <p class="control-hint">Tres hojas forman una pila articulada. El contacto detecta penetración entre vértices correspondientes, aplica una corrección limitada y actualiza la sombra. Ajusta la distancia mínima, rigidez y fricción tangencial para permitir que las hojas se deslicen o se adhieran parcialmente. Es un modelo 2.5D, no un solver físico volumétrico.</p>
         <strong class="control-section-title">CURVATURA CONTINUA Y MEMORIA ELÁSTICA</strong>
         <div class="control-heading"><label for="elasticCurvatureControl">Curvatura de superficie</label><output id="elasticCurvatureValue">0 px</output></div>
         <input id="elasticCurvatureControl" type="range" min="-30" max="30" value="0">
