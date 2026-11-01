@@ -76,3 +76,12 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se amplió el workflow de GitHub Pages para conservar el Nivel 01 en la raíz y publicar el Nivel 02 en `/level-02/`. La publicación de esta nueva versión queda pendiente de que Actions termine correctamente.
 - Esta segunda prueba mide comportamiento, independencia de ciclos y carga de varios sprites; no usa recursos finales, imagen maestra, música ni servicios de generación. No modifica `main` ni genera gastos.
 - Próxima validación: abrir `/level-02/` en Firefox y comprobar que los 14 elementos se mueven de forma independiente; después revisar fluidez y legibilidad en Safari del iPad. No avanzar aún a los recursos definitivos.
+
+
+## Actualización — 2026-11-01: Nivel 03, escena viva avanzada
+- A petición del usuario se añadió una tercera prueba más compleja en `prototype/level-03/index.html`, manteniendo las pruebas anteriores disponibles.
+- La escena reúne 12 estrellas con parpadeos escalonados, luna con brillo variable, dos grupos de nubes a velocidades distintas, 3 aves con trayectorias y aleteo, 5 luciérnagas, 2 mariposas, 3 hojas en caída, árboles con balanceo, cascada con textura animada, corrientes y ondas de río, y 2 peces con nado y cambio de dirección.
+- Incluye pausa/reanudación y control global de velocidad mediante variable CSS; JavaScript se limita a esos controles. Se respeta la preferencia de movimiento reducido.
+- Se amplió GitHub Pages para publicar el Nivel 03 en `/level-03/`, conservando raíz/Nivel 01 y `/level-02/`. Ejecución y publicación quedan pendientes de verificación.
+- Es una prueba técnica con SVG provisionales; no es arte final ni incorpora audio, imagen maestra o generación externa. No se modificó `main` ni se incurrió en gastos.
+- Próximo paso: abrir Nivel 03 en Firefox y validar movimiento, pausa, velocidad y fluidez; luego Safari en iPad. Chrome continúa como incidencia separada.
