@@ -44,7 +44,7 @@ export class LivingPaperEngine{
   setPaused(v){this.paused=Boolean(v);}
   update(dt){if(this.paused)return;const step=dt*this.speed;this.elapsed+=step;for(const p of this.pieces.values())p.motion?.update(step,this.elapsed,p);for(const joint of this.articulations)joint.update(this.elapsed);for(const flex of this.flexes)flex.update(this.elapsed);for(const mesh of this.meshes)mesh.update(this.elapsed);}
   layout(){if(!this.app||!this.world)return;const w=this.host.clientWidth||960,h=this.host.clientHeight||540;this.app.renderer.resize(w,h);const s=Math.min(w/1280,h/720);this.world.scale.set(s);this.world.position.set((w-1280*s)/2,(h-720*s)/2);}
-  destroy(){this.resizeObserver?.disconnect();this.app?.destroy(true,{children:true});this.pieces.clear();this.articulations.clear();this.flexes.clear();for(const mesh of this.meshes)mesh.destroy();this.meshes.clear();}
+  destroy(){this.resizeObserver?.disconnect();for(const mesh of this.meshes)mesh.destroy();this.meshes.clear();this.app?.destroy(true,{children:true});this.pieces.clear();this.articulations.clear();this.flexes.clear();}
 }
 
 
@@ -99,7 +99,7 @@ export class PaperMesh{
     ctx.fillStyle="#"+fill.toString(16).padStart(6,"0");ctx.fill();
     const m=PAPER_MATERIALS[material]||PAPER_MATERIALS.handmade;
     ctx.strokeStyle="#"+m.edge.toString(16).padStart(6,"0");ctx.lineWidth=5;ctx.stroke();
-    for(let i=0;i<1100;i++){const px=Math.random()*512,py=Math.random()*512;if(ctx.isPointInPath(px,py)){ctx.fillStyle="rgba(255,255,255,.08)";ctx.fillRect(px,py,1.2,1.2);}}
+    for(let i=0;i<1100;i++){const px=((i*137.508)%512),py=((i*73.117+19)%512);if(ctx.isPointInPath(px,py)){ctx.fillStyle="rgba(255,255,255,.08)";ctx.fillRect(px,py,1.2,1.2);}}
     this.texture=Texture.from(canvas);
     const shadowCanvas=document.createElement("canvas");shadowCanvas.width=512;shadowCanvas.height=512;
     const sc=shadowCanvas.getContext("2d");sc.drawImage(canvas,0,0);sc.globalCompositeOperation="source-in";sc.fillStyle="#26332f";sc.fillRect(0,0,512,512);
