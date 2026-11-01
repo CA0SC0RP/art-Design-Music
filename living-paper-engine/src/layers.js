@@ -1,9 +1,10 @@
 import { layerFalloff, resolveLayerResponse, sampleDisplacement, contactShadowOffset } from "./layer-math.js";
+import { resolveContactConstraint } from "./collision-math.js";
 
 /**
- * Couples overlapping PaperMesh surfaces with a lightweight 2.5D response.
- * Each target is recalculated from its own mesh update, then receives a
- * bounded share of the source deformation. No physical collision solver.
+ * Couples overlapping PaperMesh surfaces with a bounded 2.5D contact response.
+ * Contact is resolved along a configurable in-plane separation axis; this is
+ * an approximation for layered paper, not a volumetric collision solver.
  */
 export function enableLayerInteraction(engine, links = []) {
   if (!engine || typeof engine.update !== "function") {
@@ -29,8 +30,8 @@ export function enableLayerInteraction(engine, links = []) {
   engine.setLayerInteraction = (index, options = {}) => {
     const link = normalized[index];
     if (!link) throw new RangeError("Índice de interacción de capas inexistente.");
-    for (const key of ["coupling", "clearance", "contact", "maxDisplacement", "edgeRadius", "shadowReach"]) {
-      if (options[key] !== undefined) link[key] = clamp(Number(options[key]), key === "clearance" ? 0 : 0, key === "maxDisplacement" ? 40 : key === "edgeRadius" ? 0.8 : key === "clearance" || key === "shadowReach" ? 24 : 1);
+    for (const key of Object.keys(LIMITS)) {
+      if (options[key] !== undefined) link[key] = clamp(Number(options[key]), ...LIMITS[key]);
     }
     link.target.container.position.y = link.restY + link.clearance;
     applyLink(link);
@@ -46,6 +47,7 @@ export function enableLayerInteraction(engine, links = []) {
     delete engine.setLayerInteraction;
     delete engine.getLayerInteractions;
     delete engine.destroyLayerInteractions;
+    delete engine.layerInteractions;
   };
   engine.layerInteractions = normalized;
   normalized.forEach(applyLink);
@@ -54,11 +56,9 @@ export function enableLayerInteraction(engine, links = []) {
 
 function applyLink(link) {
   const { source, target } = link;
-  // Rebuild the target from its own rig before applying this frame's coupling.
-  // This prevents cumulative drift when controls are moved or the engine is paused.
   target.update(target.elapsed, true);
   const columns = target.columns, rows = target.rows;
-  let totalPressure = 0;
+  let totalPressure = 0, totalPenetration = 0, contactCount = 0;
   for (let row = 0; row <= rows; row++) {
     for (let col = 0; col <= columns; col++) {
       const i = (row * (columns + 1) + col) * 2;
@@ -68,16 +68,34 @@ function applyLink(link) {
       const response = resolveLayerResponse(delta.x, delta.y, { ...link, weight });
       target.vertices[i] += response.x;
       target.vertices[i + 1] += response.y;
+
+      const contact = resolveContactConstraint(
+        {
+          x: source.vertices[i] + (source.container.position.x || 0),
+          y: source.vertices[i + 1] + (source.container.position.y || 0)
+        },
+        {
+          x: target.vertices[i] + (target.container.position.x || 0),
+          y: target.vertices[i + 1] + (target.container.position.y || 0)
+        },
+        link
+      );
+      target.vertices[i] += contact.x;
+      target.vertices[i + 1] += contact.y;
+      totalPenetration += contact.penetration;
+      if (contact.touching) contactCount++;
+
       const shadowOffset = contactShadowOffset(delta.x, delta.y, { contact: link.contact, clearance: link.clearance, maxOffset: link.shadowReach });
       target.shadowVertices[i] = target.vertices[i] + 4 + shadowOffset.x;
       target.shadowVertices[i + 1] = target.vertices[i + 1] + 5 + shadowOffset.y;
-      totalPressure += response.pressure;
+      totalPressure += response.pressure + contact.penetration / Math.max(1, link.contactGap) * link.contactStiffness * 0.15;
     }
   }
   const count = (columns + 1) * (rows + 1);
   target.mesh.vertices = target.vertices;
   target.shadowMesh.vertices = target.shadowVertices;
   target.shadowMesh.alpha = clamp(link.baseShadowAlpha + (totalPressure / count) * 0.28, 0, 0.65);
+  link.lastContact = { activeVertices: contactCount, averagePenetration: totalPenetration / count };
 }
 
 function normalizeLink(link = {}) {
@@ -90,8 +108,14 @@ function normalizeLink(link = {}) {
     maxDisplacement: clamp(Number(link.maxDisplacement ?? 18), 0, 40),
     edgeRadius: clamp(Number(link.edgeRadius ?? 0.18), 0.05, 0.8),
     shadowReach: clamp(Number(link.shadowReach ?? 10), 0, 24),
+    contactGap: clamp(Number(link.contactGap ?? 2), 0, 20),
+    contactStiffness: clamp(Number(link.contactStiffness ?? 0.65), 0, 1),
+    contactNormalX: clamp(Number(link.contactNormalX ?? 0), -1, 1),
+    contactNormalY: clamp(Number(link.contactNormalY ?? 1), -1, 1),
+    maxCorrection: clamp(Number(link.maxCorrection ?? 10), 0, 20),
     restY: 0,
-    baseShadowAlpha: 0
+    baseShadowAlpha: 0,
+    lastContact: { activeVertices: 0, averagePenetration: 0 }
   };
 }
 function validateMesh(mesh, label) {
@@ -100,3 +124,9 @@ function validateMesh(mesh, label) {
   }
 }
 function clamp(value, min, max) { return Math.max(min, Math.min(max, Number.isFinite(value) ? value : min)); }
+const LIMITS = {
+  coupling: [0, 1], clearance: [0, 24], contact: [0, 1],
+  maxDisplacement: [0, 40], edgeRadius: [0.05, 0.8], shadowReach: [0, 24],
+  contactGap: [0, 20], contactStiffness: [0, 1],
+  contactNormalX: [-1, 1], contactNormalY: [-1, 1], maxCorrection: [0, 20]
+};
