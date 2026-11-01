@@ -115,3 +115,14 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - Se rechazan ciclos, padres inexistentes y cambios que exigirían superar los límites angulares de la articulación; en esos casos la jerarquía original permanece intacta.
 - Se añadieron pruebas de preservación de transformaciones en jerarquías anidadas, pivotes, escalas y rotaciones, además de casos de ciclo y límites. GitHub Actions completó correctamente sintaxis, suites y comprobaciones de integración.
 - La interacción visual del reparentado todavía debe validarse en Safari/iPad. No se declara aún la prueba táctil del editor.
+
+
+
+## Iteración v0.9.5 — expresiones faciales guardables
+
+- Se añadieron cejas y boca al preset de personaje, junto con cinco expresiones iniciales: neutral, alegre, triste, sorprendida y enojada. Cada expresión coordina inclinación de cejas, forma de la boca y escala de los ojos.
+- Los proyectos antiguos que ya contienen una cabeza reciben los rasgos faciales que falten al cargarse; los nuevos presets los incluyen desde el inicio.
+- La captura de poses ahora conserva también la forma de cada pieza, por lo que una expresión aplicada puede guardarse, exportarse e importarse como parte de una pose. Las transiciones cambian las formas discretas a mitad de la interpolación.
+- El importador valida las formas faciales admitidas tanto en las piezas como en las poses.
+- Se amplió la suite con una prueba de persistencia/validación de formas faciales. GitHub Actions completó correctamente todas las verificaciones.
+- Estas expresiones son controles iniciales de demostración; todavía no hay un sistema de músculos faciales, morph targets, labios sincronizados ni editor de expresiones personalizadas.
