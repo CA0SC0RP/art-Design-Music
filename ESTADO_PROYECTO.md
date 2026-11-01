@@ -241,3 +241,10 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Los proyectos antiguos con cabeza reciben los rasgos faciales faltantes al cargarse.
 - La suite automatizada suma 25 pruebas entre IK, importación, geometría jerárquica y persistencia de expresiones. GitHub Actions completó correctamente sintaxis, pruebas e integración.
 - Es un primer sistema de expresiones; no incorpora morph targets ni sincronización labial. Falta la validación visual/táctil en Safari del iPad.
+
+
+
+## Actualización — 2026-11-01: papel y controles de transformación
+- Las piezas vectoriales ahora combinan sombra proyectada y grano SVG tenue para una primera aproximación a la materialidad de papel. El efecto es provisional y aún debe inspeccionarse visualmente en navegador.
+- Se ampliaron los rangos de posición y escala del inspector para facilitar rigs con jerarquías y transformaciones acumuladas.
+- La suite se mantiene en 25 pruebas automatizadas; los últimos cambios de filtro y controles requieren completar su ejecución CI y validación visual en Safari/iPad.
