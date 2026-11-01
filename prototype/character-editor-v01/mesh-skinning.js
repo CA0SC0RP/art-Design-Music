@@ -16,6 +16,14 @@ function transformPoint(m,p){
  if(!validMatrix(m)||!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))throw new Error("Punto o matriz no válidos.");
  return {x:m[0]*p.x+m[2]*p.y+m[4],y:m[1]*p.x+m[3]*p.y+m[5]};
 }
+function expandTriangle(triangle,amount){
+ if(!Array.isArray(triangle)||triangle.length!==3||!triangle.every(p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y))||!Number.isFinite(amount)||amount<0)return {ok:false,message:"Triángulo o expansión no válidos."};
+ const area=(triangle[1].x-triangle[0].x)*(triangle[2].y-triangle[0].y)-(triangle[2].x-triangle[0].x)*(triangle[1].y-triangle[0].y);
+ if(Math.abs(area)<1e-9)return {ok:false,message:"No se puede expandir un triángulo degenerado."};
+ const center={x:(triangle[0].x+triangle[1].x+triangle[2].x)/3,y:(triangle[0].y+triangle[1].y+triangle[2].y)/3};
+ const expanded=triangle.map(p=>{const dx=p.x-center.x,dy=p.y-center.y,length=Math.hypot(dx,dy);return length<1e-9?{x:p.x,y:p.y}:{x:p.x+dx/length*amount,y:p.y+dy/length*amount};});
+ return expanded.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y))?{ok:true,triangle:expanded}:{ok:false,message:"La expansión produjo coordenadas no válidas."};
+}
 function triangleTransform(source,target){
  if(!Array.isArray(source)||!Array.isArray(target)||source.length!==3||target.length!==3||![...source,...target].every(p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y)))return {ok:false,message:"Los triángulos no son válidos."};
  const [p0,p1,p2]=source,[q0,q1,q2]=target,dx1=p1.x-p0.x,dy1=p1.y-p0.y,dx2=p2.x-p0.x,dy2=p2.y-p0.y,det=dx1*dy2-dx2*dy1;
@@ -52,5 +60,5 @@ function deformVertices(vertices,skinMatrices){
  }
  return {ok:true,vertices:output};
 }
-return {multiply,invert,transformPoint,triangleTransform,buildSkinMatrices,deformVertices,limits:{maxVertices:MAX_VERTICES,maxBones:MAX_BONES,maxInfluences:MAX_INFLUENCES}};
+return {multiply,invert,transformPoint,expandTriangle,triangleTransform,buildSkinMatrices,deformVertices,limits:{maxVertices:MAX_VERTICES,maxBones:MAX_BONES,maxInfluences:MAX_INFLUENCES}};
 });
