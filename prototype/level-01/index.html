@@ -19,14 +19,14 @@ button:focus-visible{outline:3px solid #b7d8ff;outline-offset:3px}
 .stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#101a2a;border:1px solid #43516a;border-radius:12px;isolation:isolate}
 .layer{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;will-change:transform}
 .sky{z-index:1}
-.mountains{z-index:2;animation:mountainDrift 24s ease-in-out infinite alternate}
-.forest{z-index:3;animation:forestDrift 17s ease-in-out infinite alternate}
-.river{z-index:4;animation:riverDrift 8s ease-in-out infinite alternate}
-.foreground{z-index:5;animation:foregroundDrift 11s ease-in-out infinite alternate}
-@keyframes mountainDrift{from{transform:translateX(-.35%) scale(1.005)}to{transform:translateX(.35%) scale(1.005)}}
-@keyframes forestDrift{from{transform:translateX(.45%) scale(1.01)}to{transform:translateX(-.45%) scale(1.01)}}
-@keyframes riverDrift{from{transform:translateX(-.3%) translateY(.12%)}to{transform:translateX(.3%) translateY(-.12%)}}
-@keyframes foregroundDrift{from{transform:translateX(-.55%) translateY(.12%)}to{transform:translateX(.55%) translateY(-.12%)}}
+.mountains{z-index:2;animation:mountainDrift 18s ease-in-out infinite alternate}
+.forest{z-index:3;animation:forestDrift 13s ease-in-out infinite alternate}
+.river{z-index:4;animation:riverDrift 5s ease-in-out infinite alternate}
+.foreground{z-index:5;animation:foregroundDrift 7s ease-in-out infinite alternate}
+@keyframes mountainDrift{from{transform:translateX(-1.1%) scale(1.035)}to{transform:translateX(1.1%) scale(1.035)}}
+@keyframes forestDrift{from{transform:translateX(1.6%) scale(1.04)}to{transform:translateX(-1.6%) scale(1.04)}}
+@keyframes riverDrift{from{transform:translateX(-1.8%) translateY(.65%) scale(1.035)}to{transform:translateX(1.8%) translateY(-.65%) scale(1.035)}}
+@keyframes foregroundDrift{from{transform:translateX(-2%) translateY(.45%) scale(1.05)}to{transform:translateX(2%) translateY(-.45%) scale(1.05)}}
 .stage.paused .layer{animation-play-state:paused}
 .legend{display:flex;gap:8px 16px;flex-wrap:wrap;margin-top:12px;color:#c5cede;font-size:.82rem}
 .legend span{display:inline-flex;align-items:center;gap:7px}
