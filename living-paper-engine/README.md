@@ -138,3 +138,7 @@ Un CI exitoso no sustituye la inspección visual ni demuestra compatibilidad en 
 - La telemetría distingue triángulos fuente, candidatos de vértices, candidatos de aristas, cruces detectados y celdas ocupadas.
 - Las pruebas automatizadas cubren consultas espaciales, coordenadas negativas, una sola actualización por frame, transformaciones anidadas y propagación de deformación con rotación/escala.
 - Esto mejora la estabilidad y el coste de búsqueda, pero no sustituye la auditoría de rendimiento ni las pruebas visuales en Firefox, Chrome y Safari/iPad.
+
+- La detección de aristas contempla cruces ordinarios, contactos en extremos y solapamientos colineales entre bordes coincidentes.
+- La máscara de silueta conserva triángulos que cruzan parcialmente su contorno; el recorte sigue siendo una aproximación por celdas y no un clipping poligonal exacto.
+- Los triángulos degenerados se consultan mediante sus segmentos, y las correcciones de arista no cuentan extremos que reciben contribución nula.
