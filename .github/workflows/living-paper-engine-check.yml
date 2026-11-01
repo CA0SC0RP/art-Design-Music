@@ -34,6 +34,7 @@ jobs:
           node --check living-paper-engine/src/volume.js
           node --check living-paper-engine/src/volume-math.js
           node --check living-paper-engine/src/collision-math.js
+          grep -q "frictionCorrection" living-paper-engine/src/collision-math.js
           node --check living-paper-engine/src/layers.js
           node --check living-paper-engine/src/layer-groups.js
           node --check living-paper-engine/src/layer-math.js
