@@ -92,7 +92,7 @@ export function buildMeshTriangles(mesh, matrix = composeWorldTransform(mesh.con
     }
     const a = point(i0), b = point(i1), c = point(i2);
     triangles.push({
-      a, b, c,
+      a, b, c, points: [a, b, c],
       minX: Math.min(a.x, b.x, c.x), maxX: Math.max(a.x, b.x, c.x),
       minY: Math.min(a.y, b.y, c.y), maxY: Math.max(a.y, b.y, c.y)
     });
@@ -274,9 +274,12 @@ export function segmentTriangleContacts(start, end, triangles, epsilon = 1e-7) {
   for (const triangle of triangles) {
     if (maxX < triangle.minX - epsilon || minX > triangle.maxX + epsilon ||
         maxY < triangle.minY - epsilon || minY > triangle.maxY + epsilon) continue;
-    const edges = [[triangle.a, triangle.b], [triangle.b, triangle.c], [triangle.c, triangle.a]];
-    for (const [a, b] of edges) {
-      for (const hit of segmentSegmentIntersections(start, end, a, b, epsilon)) {
+    const points = triangle.points || [triangle.a, triangle.b, triangle.c];
+    for (let edge = 0; edge < 3; edge++) {
+      const hits = segmentSegmentIntersections(start, end, points[edge], points[(edge + 1) % 3], epsilon);
+      if (!hits) continue;
+      const list = Array.isArray(hits) ? hits : [hits];
+      for (const hit of list) {
         if (!contacts.some(item => Math.abs(item.t - hit.t) < 1e-5 &&
             Math.hypot(item.point.x - hit.point.x, item.point.y - hit.point.y) < 1e-4)) {
           contacts.push({ ...hit, triangle });
@@ -289,7 +292,8 @@ export function segmentTriangleContacts(start, end, triangles, epsilon = 1e-7) {
 
 /** Return the first intersection for callers that need a single point. */
 export function segmentSegmentIntersection(a, b, c, d, epsilon = 1e-7) {
-  return segmentSegmentIntersections(a, b, c, d, epsilon)[0] || null;
+  const hits = segmentSegmentIntersections(a, b, c, d, epsilon);
+  return Array.isArray(hits) ? hits[0] || null : hits;
 }
 
 /** Handles ordinary crossings, endpoint touches, and collinear overlapping segments. */
@@ -300,32 +304,32 @@ function segmentSegmentIntersections(a, b, c, d, epsilon = 1e-7) {
 
   if (rr <= epsilon * epsilon && ss <= epsilon * epsilon) {
     return Math.hypot(a.x - c.x, a.y - c.y) <= epsilon
-      ? [{ t: 0, edgeT: 0, point: { x: a.x, y: a.y } }]
-      : [];
+      ? { t: 0, edgeT: 0, point: { x: a.x, y: a.y } }
+      : null;
   }
   if (rr <= epsilon * epsilon) {
     const u = ss ? dot(sub(a, c), s) / ss : 0;
     const projected = { x: c.x + s.x * u, y: c.y + s.y * u };
     return u >= -epsilon && u <= 1 + epsilon &&
       Math.hypot(projected.x - a.x, projected.y - a.y) <= epsilon
-      ? [{ t: 0, edgeT: clamp(u, 0, 1), point: { x: a.x, y: a.y } }]
-      : [];
+      ? { t: 0, edgeT: clamp(u, 0, 1), point: { x: a.x, y: a.y } }
+      : null;
   }
   if (ss <= epsilon * epsilon) {
     const t = dot(q, r) / rr;
     const projected = { x: a.x + r.x * t, y: a.y + r.y * t };
     return t >= -epsilon && t <= 1 + epsilon &&
       Math.hypot(projected.x - c.x, projected.y - c.y) <= epsilon
-      ? [{ t: clamp(t, 0, 1), edgeT: 0, point: { x: c.x, y: c.y } }]
-      : [];
+      ? { t: clamp(t, 0, 1), edgeT: 0, point: { x: c.x, y: c.y } }
+      : null;
   }
 
   if (Math.abs(denominator) <= epsilon) {
-    if (Math.abs(qCrossR) > epsilon) return [];
+    if (Math.abs(qCrossR) > epsilon) return null;
     const t0 = dot(q, r) / rr, t1 = t0 + dot(s, r) / rr;
     const overlapStart = Math.max(0, Math.min(t0, t1));
     const overlapEnd = Math.min(1, Math.max(t0, t1));
-    if (overlapEnd < overlapStart - epsilon) return [];
+    if (overlapEnd < overlapStart - epsilon) return null;
     const parameters = Math.abs(overlapEnd - overlapStart) <= epsilon
       ? [(overlapStart + overlapEnd) / 2]
       : [overlapStart, overlapEnd];
@@ -336,12 +340,12 @@ function segmentSegmentIntersections(a, b, c, d, epsilon = 1e-7) {
   }
 
   const t = cross(q, s) / denominator, u = cross(q, r) / denominator;
-  if (t < -epsilon || t > 1 + epsilon || u < -epsilon || u > 1 + epsilon) return [];
+  if (t < -epsilon || t > 1 + epsilon || u < -epsilon || u > 1 + epsilon) return null;
   const boundedT = clamp(t, 0, 1);
-  return [{
+  return {
     t: boundedT, edgeT: clamp(u, 0, 1),
     point: { x: a.x + r.x * boundedT, y: a.y + r.y * boundedT }
-  }];
+  };
 }
 
 function cross(a, b) { return a.x * b.y - a.y * b.x; }
