@@ -108,3 +108,13 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Commits de esta prueba: escena `e64140b`; workflow `f64b4f3`; README `aee466a`; actualización del estado `81b1738`.
 - No se tocó `main`, no se empleó imagen maestra, no se generó arte final ni audio y no hubo gasto externo.
 - Pendiente de verificar: ejecución de Pages y prueba visual del Nivel 03 en Firefox; después Safari en iPad. La incidencia de Chrome no se considera resuelta.
+
+
+## 2026-11-01 — Nivel 04: Ecosistema vivo
+- A petición del usuario se creó `prototype/level-04/index.html` en la rama `prototipo/prueba-cinco-capas-01`.
+- La escena añade profundidad por planos, bruma, nubes, viento compartido en árboles/ramas/hojas/flores, tres aves, cascada, bruma de agua, corrientes y reflejos del río, ondas, peces, mariposas y luciérnagas.
+- Se conservan pausa/reanudación y velocidad global de 0.5× a 1.8×. La velocidad modifica los tiempos de animación, no la posición de los objetos.
+- Se añadió `prototype/level-04/README.md` y se actualizó `.github/workflows/prototipo-cinco-capas.yml` para publicar en `/level-04/` junto a los niveles anteriores.
+- Commits: escena `c649da4`; README `7055c5c`; workflow `e9aea3c`.
+- Recursos SVG provisionales; sin imagen maestra, recursos finales, audio, APIs externas ni gastos. No se modificó `main`.
+- Pendiente: comprobar Actions/Pages y validación visual del usuario en navegador, incluyendo distribución de elementos, viento, agua, velocidad y pausa.
