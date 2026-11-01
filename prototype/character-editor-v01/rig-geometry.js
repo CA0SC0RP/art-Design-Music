@@ -15,6 +15,25 @@ function worldTransform(nodes,id,seen=new Set()){
  const result={x:p.x+c*lx-s*ly,y:p.y+s*lx+c*ly,rotation:p.rotation+own.rotation,scale:p.scale*own.scale};
  seen.delete(id);return result;
 }
+function multiplyMatrix(a,b){return [a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];}
+function worldMatrix(nodes,id,seen=new Set()){
+ const map=nodes instanceof Map?nodes:new Map(nodes.map(n=>[n.id,n])),node=map.get(id);
+ if(!node)throw new Error("La pieza solicitada no existe.");
+ if(seen.has(id))throw new Error("La jerarquía contiene un ciclo.");
+ seen.add(id);
+ const x=Number(node.x),y=Number(node.y),rotation=Number(node.rotation)||0,scale=Number(node.scale)||1,px=Number(node.pivotX)||0,py=Number(node.pivotY)||0;
+ if(![x,y,rotation,scale,px,py].every(Number.isFinite)||scale<=0)throw new Error("Transformación local no válida.");
+ const rad=rotation*Math.PI/180,a=Math.cos(rad)*scale,b=Math.sin(rad)*scale,c=-Math.sin(rad)*scale,d=Math.cos(rad)*scale;
+ const local=[a,b,c,d,x-a*px-c*py,y-b*px-d*py];
+ if(!node.parent){seen.delete(id);return local;}
+ if(!map.has(node.parent))throw new Error("La pieza padre no existe.");
+ const parent=worldMatrix(map,node.parent,seen),result=multiplyMatrix(parent,local);seen.delete(id);return result;
+}
+function worldMatrices(nodes){
+ const map=nodes instanceof Map?nodes:new Map(nodes.map(n=>[n.id,n])),result={};
+ try{for(const id of map.keys())result[id]=worldMatrix(map,id);return {ok:true,matrices:result};}
+ catch(error){return {ok:false,message:error.message};}
+}
 function reparentPreserving(nodes,id,newParentId){
  const map=nodes instanceof Map?nodes:new Map(nodes.map(n=>[n.id,n])),node=map.get(id),parent=map.get(newParentId);
  if(!node||!parent||id===newParentId)return {ok:false,message:"La pieza o el nuevo padre no son válidos."};
@@ -28,5 +47,5 @@ function reparentPreserving(nodes,id,newParentId){
   return {ok:true,message:"Jerarquía actualizada conservando la posición visual."};
  }catch(error){return {ok:false,message:error.message||"No se pudo cambiar la jerarquía."};}
 }
-return {worldTransform,reparentPreserving};
+return {worldTransform,worldMatrix,worldMatrices,reparentPreserving};
 });
