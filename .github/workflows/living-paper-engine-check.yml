@@ -45,6 +45,10 @@ jobs:
           grep -q "enableLayerGroups" living-paper-engine/src/layer-groups.js
           grep -q "enableLayerInteraction" living-paper-engine/src/layers.js
           grep -q "resolveContactConstraint" living-paper-engine/src/collision-math.js
+          grep -q "buildMeshTriangles" living-paper-engine/src/collision-math.js
+          grep -q "closestPointOnMesh" living-paper-engine/src/collision-math.js
+          grep -q "composeWorldTransform" living-paper-engine/src/collision-math.js
+          grep -q "contactRangeControl" living-paper-engine/index.html
           grep -q "contactGapControl" living-paper-engine/index.html
           grep -q "contactStiffnessControl" living-paper-engine/index.html
           node --check living-paper-engine/src/elastic.js
