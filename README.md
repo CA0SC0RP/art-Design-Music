@@ -1,59 +1,50 @@
-# Cuadro Vivo — Mountains That Breathe
+# Living Paper Engine — motor de caricaturas y microhistorias
 
-## Estado del proyecto
+## Objetivo vigente
 
-Primera pieza visual aprobada: paisaje de montañas construido como capas de papel recortado, enmarcado por un marco ornamental de madera y dorado. El marco forma parte integral de la composición y debe permanecer visible en sus cuatro lados.
+Este repositorio está reorientado al desarrollo de un motor y estudio visual para crear caricaturas animadas y microhistorias. La interfaz se diseñará primero para utilizarse desde un iPad.
 
-Para el estado técnico, las ramas abiertas y lo pendiente, ver [ESTADO_PROYECTO.md](ESTADO_PROYECTO.md).
+La meta inicial es que el usuario pueda abrir un escenario en Safari, seleccionar un personaje u objeto, modificar sus propiedades con controles visuales, reproducir una animación sencilla y revisar el resultado.
 
-### Imagen maestra
-- Archivo: `cuadro_vivo_mountains_that_breathe_master_4k.png`, en la raíz del repositorio. No se mueve ni se modifica.
-- Verificado el 26-10-2026 en `main`: PNG de 3840 × 2160 (UHD 4K, 16:9), RGB de 8 bits, sin perfil de color incrustado.
-- SHA-256: `d216046d9f78331c5372f867afc56a90a7b9f9659e27e026b28a89958cf2cfdc`.
-- Imagen fuente aprobada: 1672 × 941.
-- Método de ampliación: Lanczos con enfoque moderado para reforzar bordes existentes.
-- Nota de calidad: la ampliación aumenta la resolución de salida; no equivale a recuperar detalle original que no estuviera en la fuente. Revisar texturas y contornos al 100 % antes de declarar la maestra como final.
+El usuario dirige la creación. ChatGPT es el único asistente de IA que participa en el diseño, la lectura de archivos, la modificación del código y la revisión. No se delegan tareas a Claude ni a otros asistentes.
 
-### Reglas visuales no negociables
-1. Mantener intacta la composición aprobada: montañas, árboles, río y cascada, niebla, flores, ciervo, aves, cielo y marco.
-2. No recortar ni ocultar ningún lado del marco.
-3. Mantener orientación horizontal 16:9.
-4. La escena debe sentirse como un diorama de papel en capas, no como un visualizador genérico.
-5. Los movimientos deben ser sutiles y naturales; evitar que todos los elementos reaccionen a la música al mismo tiempo.
+## Documentos vigentes
 
-### Próximos pasos
-1. Revisar y aprobar el contrato de capas v2, el esquema `works/work.schema.json` y el plan de validación automática.
-2. Medir de nuevo las coordenadas de cada elemento sobre la imagen maestra original; las coordenadas preliminares v0.1 no se reutilizan.
-3. Producir y revisar las capas, reconstruyendo las zonas ocultas detrás de cada elemento móvil.
-4. Implementar el validador y, solo después de aprobar contrato y plan, el prototipo web (primera plataforma, probado en Safari del iPad).
-5. Crear animaciones suaves y un mapeo musical para la pista «Mountains That Breathe — warm, atmospheric, uplifting lo-fi».
-6. En una etapa posterior, adaptación a Android TV.
-
-### Estructura del repositorio
-Existe hoy:
-- `cuadro_vivo_mountains_that_breathe_master_4k.png` — imagen maestra.
-- `docs/` — contrato de capas, flujo de producción, controles de calidad, plan de validación y referencias.
-- `README.md`, `ESTADO_PROYECTO.md`, `INSTRUCCIONES_PARA_IA.md`, `ARQUITECTURA.md`, `BITACORA.md`.
-
-Previsto (aún no existe salvo lo que indique `ESTADO_PROYECTO.md`):
-- `works/index.json` y `works/work.schema.json` — índice de obras y esquema.
-- `works/<id>/work.json`, `works/<id>/layers/`, `works/<id>/audio/` — cada obra, sus capas y su pista.
-- `src/` — motor, visor y audio.
-- `tools/` — validador (no existe; solo está planeado).
-- `tests/test_contrato_v2.py` — pruebas del esquema y comprobaciones de referencia; ya está en la rama de propuesta `contrato/capas-v2-esquema-y-validacion`, no en `main`, y no es el validador.
-
-La ruta canónica definitiva de la maestra está pendiente de aprobación del usuario; mientras tanto permanece en la raíz.
-
-## Protocolo de colaboración y documentos técnicos
-
-Antes de trabajar, las IA deben leer:
-- [Instrucciones para IA](INSTRUCCIONES_PARA_IA.md)
+- [Dirección del motor de caricaturas para iPad](docs/direccion-motor-caricaturas-ipad.md)
 - [Estado del proyecto](ESTADO_PROYECTO.md)
-- [Arquitectura propuesta](ARQUITECTURA.md)
-- [Bitácora de decisiones](BITACORA.md)
-- [Contrato de capas y work.json](docs/contrato-de-capas-y-work-json.md)
-- [Plan de validación automática](docs/plan-de-validacion-automatica.md)
+- [Arquitectura inicial](ARQUITECTURA.md)
+- [Instrucciones de trabajo](INSTRUCCIONES_PARA_IA.md)
+- [Bitácora](BITACORA.md)
 
-**Reparto de trabajo:** ChatGPT prepara y revisa los recursos visuales; Claude desarrolla el motor, visor, audio e integración; el usuario aprueba las decisiones creativas y entregas. Cuadro Vivo es arte visual en movimiento inspirado en cuadros de papel recortado, no un videojuego.
+## Experiencia prevista
 
-Los documentos técnicos son propuestas hasta que el usuario los apruebe; no significan que exista una aplicación implementada ni que las capas finales estén listas. Revisar los archivos reales y el estado de GitHub antes de afirmar lo contrario. Cuando dos documentos se contradigan, rige el contrato de capas una vez aprobado y, mientras tanto, se pregunta al usuario.
+- Escenario visual y selección de personajes/objetos.
+- Panel de propiedades con controles táctiles.
+- Acciones, poses y animaciones.
+- Línea de tiempo y organización de escenas.
+- Diálogo, efectos y música original para cada microhistoria.
+- Exportación de vídeo en una etapa posterior.
+
+Estas funciones son objetivos de desarrollo, no funciones ya implementadas.
+
+## Cómo se trabajará desde el iPad
+
+En la primera etapa, el usuario describe los cambios en el chat; ChatGPT modifica el código en la rama de trabajo; el usuario abre o actualiza la vista previa en Safari y revisa el resultado. No existe todavía una conexión directa y continua entre ChatGPT y el lienzo activo. Un puente de edición en tiempo real podrá evaluarse más adelante.
+
+## Estado técnico
+
+El editor nuevo todavía no está implementado ni validado en Safari del iPad. El siguiente paso es auditar el código experimental y los prototipos existentes para identificar qué puede reutilizarse.
+
+La rama de trabajo autorizada es feature/living-paper-engine-foundation. No modificar main, fusionar, abrir PR ni desplegar sin autorización expresa.
+
+## Antecedentes conservados
+
+Los prototipos de cuadros de papel recortado, la imagen maestra Mountains That Breathe, el motor experimental anterior, el contrato v2 de capas y sus documentos se conservan como antecedentes. No son requisitos de la nueva aplicación y no se eliminan durante la transición.
+
+- [Auditoría técnica del 29-10-2026 — cerrada como registro histórico](docs/auditoria-tecnica-2026-10-29.md)
+- [Contrato v2 de capas — no aprobado para el motor nuevo](docs/contrato-de-capas-y-work-json.md)
+- [Plan de validación del contrato anterior — archivado](docs/plan-de-validacion-automatica.md)
+- [Dirección artística anterior — archivada](docs/direccion-artistica-y-partitura-audiovisual.md)
+- [Partitura de Mountains That Breathe — obsoleta para la planificación activa](docs/partitura-audiovisual-mountains-that-breathe-propuesta-v0-1.md)
+
+No asumir que el código anterior es compatible con el motor nuevo. Clasificarlo antes de reutilizarlo.
