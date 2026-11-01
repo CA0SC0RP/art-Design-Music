@@ -320,3 +320,14 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se amplió la prueba de reconstrucción del extremo a ocho posiciones en distintos cuadrantes y ambos sentidos de flexión; se añadieron casos de longitudes desiguales y límites inválidos.
 - GitHub Actions ejecutó correctamente sintaxis, suite matemática ampliada y comprobación de integración del solver externo. La validación de navegador y Safari/iPad sigue pendiente.
 - Cambios limitados a la rama `feature/living-paper-engine-foundation`; sin merge, despliegue, dependencias nuevas ni gastos.
+
+
+
+## 2026-11-01 — Importación validada de proyectos JSON
+
+- Se incorporó al editor un botón para importar archivos JSON exportados anteriormente.
+- Se añadió `prototype/character-editor-v01/project-io.js` para validar y normalizar proyectos v1/v2, jerarquías, IDs, formas, colores, transformaciones y poses antes de cargarlos.
+- Se añadió límite de 10 MB y escape de contenido de texto para reducir riesgos al procesar archivos JSON externos o modificados.
+- Se añadieron pruebas automatizadas de importación y seguridad de datos. GitHub Actions ahora valida ambos módulos, ejecuta las suites, comprueba la sintaxis del JavaScript del editor y revisa las referencias de integración.
+- La ejecución completa del workflow terminó correctamente. La importación todavía requiere prueba manual en Safari/iPad; no se declara validación de navegador.
+- Todo permanece en `feature/living-paper-engine-foundation`, sin modificar `main`, sin despliegue, sin nuevas dependencias y sin gastos.
