@@ -53,7 +53,7 @@ Esta es una primera estructura de articulación por piezas rígidas con IK geom�
 - El selector de padre permite cambiar jerarquías simples; falta una experiencia de reparentado visual con validaciones y feedback más completos.
 - El guardado local depende del navegador y del almacenamiento disponible. La exportación JSON es la vía portátil de respaldo.
 - No se ha probado aún en Safari, Chrome, Firefox u Opera en iPad.
-- No se ha ejecutado una suite de pruebas automatizadas para esta interfaz.
+- La lógica geométrica del solver IK sí cuenta con pruebas automatizadas en Node.js; la interfaz gráfica y sus interacciones aún no tienen pruebas de navegador ni validación física en iPad.
 
 ## Siguiente trabajo
 
@@ -76,3 +76,11 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - Se añadió una suite sin dependencias externas en `tests/ik-solver.test.js` para objetivos alcanzables, ambos sentidos de flexión, alcance máximo, objetivo fuera de alcance, exceso de flexión, límites configurados y parámetros inválidos.
 - Esta etapa mejora el solver rígido, pero no constituye un modelo anatómico universal ni incorpora colisiones, anatomía por personaje o deformación de malla. Los rangos deberán poder ajustarse por rig y tipo de personaje en una etapa posterior.
 - La interfaz continúa en v0.8 mientras se valida esta mejora del motor; no se declara todavía una versión visual nueva ni una prueba en Safari/iPad.
+
+
+## Iteración v0.9.1 — convención de coordenadas SVG y verificación del extremo IK
+
+- Se corrigió el signo del ángulo horizontal objetivo: en el sistema de coordenadas SVG, una rotación positiva de un segmento inicialmente vertical desplaza su extremo hacia X negativo. El solver ahora calcula el ángulo objetivo con esa convención.
+- Se añadió una prueba de cinemática directa que reconstruye la posición final del extremo a partir de los dos ángulos devueltos y comprueba que coincide con el objetivo solicitado, dentro de una tolerancia numérica de (10^{-6}), para ambos sentidos de flexión.
+- La suite contiene ahora ocho pruebas automatizadas. Estas pruebas verifican el módulo matemático, no sustituyen la prueba visual del editor ni la validación táctil en Safari del iPad.
+- Se conserva la etiqueta visual v0.8: este cambio corrige el motor IK sin presentar todavía una nueva versión de interfaz.
