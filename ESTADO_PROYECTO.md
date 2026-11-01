@@ -188,3 +188,13 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se verificó estáticamente la sintaxis JavaScript, la ausencia de IDs DOM duplicados y la ausencia de referencias a IDs inexistentes. No se ejecutó navegador ni se probó en Safari/iPad; la interacción táctil sigue pendiente de validación real.
 - Rama de trabajo: `feature/living-paper-engine-foundation`. No se modificó `main`, no hubo merge, PR ni despliegue; no se añadieron dependencias ni gastos.
 - Próximo paso: validación manual de las cuatro cadenas IK, los límites, el alcance, los dos sentidos de flexión y el bloqueo/liberación en Safari del iPad.
+
+
+## Iteración v0.8 — preparación de validación táctil
+
+- Se corrigió la regla CSS base de botones: parte de sus propiedades había quedado fuera del selector, por lo que no se aplicaban correctamente borde, color, radio y relleno.
+- Se sincronizó la etiqueta visible del editor a v0.8; el encabezado mostraba v0.6 aunque la documentación ya describía v0.7.
+- Se reforzó el lienzo para evitar selección accidental de texto y desplazamiento de overscroll durante la manipulación, conservando `touch-action:none` en el SVG para que los gestos de edición se reciban como Pointer Events.
+- Se añadieron estilos de foco visible para botones, campos y selectores.
+- **Verificación estática:** JavaScript pasó compilación sintáctica con `new Function`; no se encontraron IDs DOM duplicados; balance de llaves CSS revisado. No se ejecutó navegador ni se probó todavía en Safari del iPad.
+- **Siguiente paso:** prueba táctil manual en Safari: seleccionar y mover piezas, arrastrar pivotes y los cuatro objetivos IK, fijar/liberar, usar sliders, guardar y exportar JSON. Mouse queda para una validación posterior.
