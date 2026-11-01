@@ -236,3 +236,13 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Commits de código: `fef4099bf08271a15d221a7ba14dbdea1dfb4e6a`, `73d72e46f0f73f26028fc6496ec2405be30b2e26`, `af757c5794018ffa93bccb26f2146913168cb567`, `0bdb1ff7246c897c9df12186cebe18eeb2651323`, `639859fc7031c70823591d8cdfa2db957a762c2d` y `63efde1d29fbaf7734b2ec77eb92c4d4ff9b2311`. Documento actualizado en el commit `5928e4f65c668519d3d61fad6c3c784510b63045`.
 - **Verificación estática:** sintaxis JavaScript validada; no hay IDs DOM duplicados ni referencias a IDs inexistentes. No se ha ejecutado navegador ni validado el manejo táctil en Safari/iPad. Tampoco se ha certificado IK, skinning ni deformación de malla; no forman parte de esta iteración.
 - No se modificó `main`, no hubo merge, PR, despliegue, instalación de dependencias ni gastos.
+
+
+## 2026-11-01 — Editor de personajes v0.3: biblioteca de poses
+- Se añadió una biblioteca de poses por proyecto en `prototype/character-editor-v01/index.html`.
+- El usuario puede nombrar y guardar el estado actual de todas las piezas (posición X/Y, rotación y escala), seleccionar poses existentes, aplicarlas con transición suave (~520 ms) y eliminarlas.
+- Las poses se almacenan en el objeto del proyecto, se guardan en localStorage y se incluyen en el JSON exportado. Los proyectos previos sin campo `poses` cargan con biblioteca vacía.
+- La transición usa interpolación con easing y se cancela al comenzar una manipulación manual o cambiar de preset.
+- Commits de esta etapa: implementación `22c269a5f075113d6c7450a818c703c500c0b2a6`, ajuste de cancelación y controles `f89d60a5b2495340359bfe0b5e6cfb0f91ea68ac`; documentación `e2a33c4431aa1c77121fad34fc9445632cb8a973`; estado `99bd45e41cf0dfc456956563179384a62f7d2ff6`.
+- **Verificación:** sintaxis JavaScript comprobada; falta ejecutar el editor en navegador, probar guardar/aplicar/eliminar y confirmar transiciones en Safari/iPad.
+- No se modificó `main`, no hubo merge, PR, despliegue, dependencias nuevas ni gastos.
