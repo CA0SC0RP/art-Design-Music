@@ -110,7 +110,7 @@ function applyLink(link) {
 
   // Vertex tests can miss a thin crossing when both edge endpoints remain outside.
   const edgeCorrections = new Float64Array(target.vertices.length);
-  const edgeWeights = new Uint16Array(target.vertices.length / 2);
+  const edgeWeights = new Uint32Array(target.vertices.length / 2);
   let edgeTests = 0, edgeIntersections = 0, edgeCandidateTriangles = 0;
   const normalLength = Math.hypot(link.contactNormalX, link.contactNormalY) || 1;
   const nx = link.contactNormalX / normalLength, ny = link.contactNormalY / normalLength;
@@ -146,7 +146,7 @@ function applyLink(link) {
       edgeCorrections[ia * 2 + 1] += localCorrection.y * wa;
       edgeCorrections[ib * 2] += localCorrection.x * wb;
       edgeCorrections[ib * 2 + 1] += localCorrection.y * wb;
-      edgeWeights[ia]++; edgeWeights[ib]++;
+      if (wa > 1e-8) edgeWeights[ia]++;\n      if (wb > 1e-8) edgeWeights[ib]++;
       edgeIntersections++;
     }
   };
