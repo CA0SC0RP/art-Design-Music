@@ -1,9 +1,11 @@
-# Editor articulado de personajes — prototipo v0.7
+# Editor articulado de personajes — prototipo v0.8
 
 **Ruta:** `prototype/character-editor-v01/index.html`  
 **Estado:** prototipo incremental de estructura jerárquica, pivotes editables, límites de articulación, biblioteca de poses e IK 2D con objetivos arrastrables; no es el editor completo ni está validado en iPad.
 
 ## Objetivo de esta iteración
+
+Corregir la regla base de estilos de botones que había quedado fuera del selector CSS, sincronizar la etiqueta visible del prototipo con la versión documentada y reforzar el área del lienzo para evitar selección accidental de texto/gestos del navegador durante la manipulación táctil. Se añadieron indicadores de foco visibles para controles operables por teclado.
 
 Comprobar que el proyecto puede representar un objeto complejo como un árbol de piezas 2D vinculadas por pivotes. Cada pieza puede transformarse y sus descendientes heredan el movimiento/rotación de sus padres.
 
