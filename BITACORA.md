@@ -185,3 +185,18 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Documento nuevo: `docs/vision-estudio-web-y-exportacion-de-caricaturas-2026-11-01.md`. Commit inicial: `e15480b486882461f8b3ea0eae1c31a4744efeb9`.
 - Se actualizaron `README.md` y `ESTADO_PROYECTO.md`. No se modificó `main`, no hubo fusión ni PR.
 - Siguiente paso técnico: validar el prototipo en iPad; después separar el estado de escena de la representación SVG y crear un primer documento de proyecto guardable/restaurable.
+
+
+## 2026-11-01 — Decisiones de editor, navegadores y renderizado local
+
+- El usuario confirma la estética central: caricaturas y microhistorias construidas visualmente como papel artesanal recortado en 2D, con perspectiva, profundidad, texturas de alta calidad, bordes nítidos, iluminación y sombras entre capas. La calidad visual tiene prioridad sobre reducir el tamaño del archivo.
+- Se confirma el orden: (1) editor completo de personajes con partes, jerarquías, rig/huesos, deformación, texturas, poses y expresiones; (2) escenas y animación; (3) líneas de tiempo; (4) renderizador local; (5) exportación de vídeo desde iPad; (6) un único APK reproductor de vídeos para Android TV, no un motor de renderizado.
+- Se aprueba separar desarrollo y renderizado: GitHub Codespaces se utiliza para desarrollar y probar el software; el iPad será el dispositivo objetivo para editar y renderizar localmente. No se contratarán servidores GPU ni granjas de renderizado. No activar servicios de pago sin autorización.
+- Safari en iPad queda como navegador de referencia para la primera validación. Se intentará compatibilidad adicional con Chrome, Firefox y Opera en iPad. Se probarán por separado las funciones del editor y las capacidades de exportación; no se asumirán capacidades de escritorio ni compatibilidad no verificada.
+- Objetivo inicial de movimiento: salida 24/30 fps, con cadencias de animación de 12/15 dibujos por segundo cuando convenga al estilo. 60 fps queda como opción para casos justificados, no como objetivo predeterminado.
+- Objetivo de calidad: 4K UHD (3840×2160), texturas de alta resolución y, si la cadena técnica lo soporta, color de 10 bits/HDR10. Los contenedores/códecs se decidirán después de pruebas reales; no se promete codificación 4K/HDR solo por poder reproducir vídeos 4K HDR en YouTube.
+- Documento nuevo: `docs/decisiones-editor-personajes-y-render-local-2026-11-01.md`. Commit: `c0d8ecbb540215f17fa69af9995efb622c2bf3be`.
+- Se añadió el enlace al documento en `README.md`. Commit: `d301446f25472d704d53785da4fb7a1565b23f44`.
+- No se modificó `main`, no hubo merge, PR ni despliegue; no se activaron servicios externos ni gastos.
+- Estado real: el prototipo `prototype/caricature-studio-v01/index.html` sigue siendo una prueba inicial; no existe aún editor completo ni renderizador local, y no se han certificado navegadores o exportación 4K/HDR.
+- Siguiente trabajo: continuar el editor de personajes como prioridad, sin adelantar el exportador ni el APK de TV.
