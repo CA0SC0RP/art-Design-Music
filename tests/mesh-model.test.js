@@ -71,6 +71,18 @@ test("el pincel pinta con caída suave y normaliza pesos",()=>{
  assert.ok(center.weights.some(w=>w.boneId==="arm"));assert.ok(corner.weights.find(w=>w.boneId==="arm").weight<center.weights.find(w=>w.boneId==="arm").weight);
  for(const v of r.mesh.vertices)assert.ok(Math.abs(v.weights.reduce((sum,w)=>sum+w.weight,0)-1)<1e-8);
 });
+test("el pincel rechaza pesos corruptos sin modificar vértices anteriores",()=>{
+ const r=model.createGrid({width:10,height:10,columns:2,rows:2,boneId:"root"}),first=r.mesh.vertices[0],last=r.mesh.vertices[3];
+ last.weights=[{boneId:"root",weight:NaN}];
+ const before=JSON.stringify(first.weights);
+ const result=model.paintInfluence(r.mesh,first.x,first.y,"arm",.8,20);
+ assert.equal(result.ok,false);assert.equal(JSON.stringify(first.weights),before);
+});
+test("el pincel rechaza identificadores de hueso vacíos sin mutar la malla",()=>{
+ const r=model.createGrid({width:10,height:10,columns:2,rows:2,boneId:"root"}),before=JSON.stringify(r.mesh);
+ assert.equal(model.paintInfluence(r.mesh,0,0,"",.5,20).ok,false);
+ assert.equal(JSON.stringify(r.mesh),before);
+});
 test("el pincel no modifica la malla si supera el límite de influencias",()=>{
  const r=model.createGrid({width:20,height:20,columns:2,rows:2,boneId:"a"}),v=r.mesh.vertices[0];
  v.weights=[{boneId:"a",weight:.25},{boneId:"b",weight:.25},{boneId:"c",weight:.25},{boneId:"d",weight:.25}];
