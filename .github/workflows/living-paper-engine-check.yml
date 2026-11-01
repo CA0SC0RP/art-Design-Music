@@ -47,6 +47,9 @@ jobs:
           grep -q "resolveContactConstraint" living-paper-engine/src/collision-math.js
           grep -q "buildMeshTriangles" living-paper-engine/src/collision-math.js
           grep -q "closestPointOnMesh" living-paper-engine/src/collision-math.js
+          grep -q "segmentTriangleContacts" living-paper-engine/src/collision-math.js
+          grep -q "edgeIntersections" living-paper-engine/src/layers.js
+          grep -q "segmentTriangleContacts" living-paper-engine/src/collision.test.mjs
           grep -q "composeWorldTransform" living-paper-engine/src/collision-math.js
           grep -q "contactRangeControl" living-paper-engine/index.html
           grep -q "contactGapControl" living-paper-engine/index.html
