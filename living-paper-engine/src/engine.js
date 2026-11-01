@@ -116,8 +116,8 @@ export class PaperMesh{
     this.shadowVertices=new Float32Array(vertices.map((v,i)=>v+(i%2?5:4)));
     const indexData=new Uint32Array(indices),uvData=new Float32Array(uvs);
     this.shadowMesh=new MeshSimple({texture:this.shadowTexture,vertices:this.shadowVertices,uvs:uvData,indices:indexData});
-    this.shadowMesh.alpha=.2;
-    this.mesh=new MeshSimple({texture:this.texture,vertices:this.vertices,uvs:uvData,indices:indexData});
+    this.shadowMesh.alpha=.2;this.shadowMesh.autoUpdate=true;
+    this.mesh=new MeshSimple({texture:this.texture,vertices:this.vertices,uvs:uvData,indices:indexData});this.mesh.autoUpdate=true;
     this.container.addChild(this.shadowMesh,this.mesh);
   }
   setDeformation({wave=this.wave,fold=this.fold,frequency=this.frequency}={}){
