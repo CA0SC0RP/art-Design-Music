@@ -33,6 +33,11 @@ jobs:
           node --check living-paper-engine/src/rigging.js
           node --check living-paper-engine/src/volume.js
           node --check living-paper-engine/src/volume-math.js
+          node --check living-paper-engine/src/elastic.js
+          node --check living-paper-engine/src/elastic-math.js
+          node --check living-paper-engine/src/elastic.test.mjs
+          node --experimental-default-type=module --test living-paper-engine/src/elastic.test.mjs
+          grep -q "enableElasticCurvature" living-paper-engine/src/elastic.js
           node --check living-paper-engine/src/edges.js
           node --check living-paper-engine/src/edge-math.js
           node --check living-paper-engine/src/edge.test.mjs
@@ -65,4 +70,6 @@ jobs:
           grep -q 'setFolds' living-paper-engine/src/rigging.js
           grep -q 'anchorStrengthControl' living-paper-engine/index.html
           grep -q 'controlledFoldAngleControl' living-paper-engine/index.html
+          grep -q 'elasticCurvatureControl' living-paper-engine/index.html
+          grep -q 'setElasticCurvature' living-paper-engine/src/demo.js
           echo "Living Paper Engine: estructura y sintaxis correctas."
