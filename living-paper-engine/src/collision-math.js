@@ -76,7 +76,6 @@ export function buildMeshTriangles(mesh, matrix = composeWorldTransform(mesh.con
   const { vertices, columns, rows } = mesh, triangles = [];
   const shape = mesh.shape;
   const point = index => transformPoint(matrix, { x: vertices[index * 2], y: vertices[index * 2 + 1] });
-  const inside = p => !shape || pointInPolygon(p.x / mesh.width, p.y / mesh.height, shape);
   for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++) {
     const a = y * (columns + 1) + x, b = a + 1, d = (y + 1) * (columns + 1) + x, e = d + 1;
     for (const ids of [[a, b, d], [b, e, d]]) {
