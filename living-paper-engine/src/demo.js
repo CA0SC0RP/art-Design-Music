@@ -1,7 +1,7 @@
 import { LivingPaperEngine, PaperPiece, PaperJoint, PaperFlex, PaperMesh, paperCut } from "./engine.js";
 import { MotionPath, smoothStep } from "./motion.js";
 import { enableLocalizedDeformation } from "./deformation.js";
-import { enablePaperRig } from "./rigging.js";
+import { enablePaperRig, bindJointToFold } from "./rigging.js";
 
 const host=document.querySelector("#stage");
 const status=document.querySelector("#engineStatus");
@@ -39,7 +39,8 @@ branchJoint.addChild(new PaperJoint({id:"small-leaf",x:0,y:-38,angle:-10,minAngl
 const flexibleStem=engine.addFlex(new PaperFlex({id:"flexible-stem",x:55,y:-70,length:82,width:7,bend:0,maxBend:28,fill:0x6f9871,sway:{amplitude:13,period:4.4,phase:.8}}),tree.container);
 const meshLeaf=engine.addPaperMesh(new PaperMesh({id:"mesh-leaf",x:75,y:-225,width:150,height:92,fill:0x7d9f70,material:"handmade",columns:14,rows:10,wave:5,fold:3,frequency:1.35,phase:.6,shape:[[.02,.5],[.16,.24],[.42,.06],[.7,.04],[.94,.3],[.99,.5],[.78,.76],[.48,.94],[.2,.78]]}),tree.container);
 enableLocalizedDeformation(meshLeaf,[{u:.78,v:.28,radius:.34,strength:.9,bend:15,offsetX:3,offsetY:-2}]);
-enablePaperRig(meshLeaf,{anchors:[{u:.18,v:.5,radius:25,strength:1}],folds:[{x1:.18,y1:.5,x2:.84,y2:.5,angle:24,strength:1,side:"positive"}]});
+enablePaperRig(meshLeaf,{anchors:[{u:.18,v:.5,radius:25,strength:1}],folds:[{x1:.18,y1:.5,x2:.84,y2:.5,angle:24,strength:.9,side:"positive"},{x1:.42,y1:.12,x2:.72,y2:.9,angle:12,strength:.7,side:"negative"}]});
+bindJointToFold(meshLeaf,leafJoint,{foldIndex:1,restAngle:0,multiplier:.85,minAngle:-65,maxAngle:65});
 const bird=engine.addPiece(new PaperPiece({id:"bird",name:"Ave de prueba",depth:3,x:170,y:230,draw:(g,s,style)=>{
   const body=[[-30,0],[-10,-9],[10,-5],[30,5],[12,13],[-12,10]];
   cut(g,s,body,0x3c5960,style);
@@ -71,7 +72,7 @@ const updateMesh=()=>{meshLeaf.setDeformation({wave:Number(meshWaveControl.value
 meshWaveControl.addEventListener("input",updateMesh);meshFoldControl.addEventListener("input",updateMesh);
 const updateInfluence=()=>{meshLeaf.setInfluenceZones([{u:Number(influenceX.value)/100,v:Number(influenceY.value)/100,radius:.36,strength:Number(influenceStrength.value)/100,bend:Number(influenceBend.value),offsetX:0,offsetY:0}]);syncLabels();};
 for(const control of [influenceX,influenceY,influenceStrength,influenceBend])control.addEventListener("input",updateInfluence);
-const updateRig=()=>{meshLeaf.setAnchors([{u:Number(anchorX.value)/100,v:Number(anchorY.value)/100,radius:25,strength:Number(anchorStrength.value)/100}]);meshLeaf.setFolds([{x1:.18,y1:.5,x2:.84,y2:.5,angle:Number(foldAngle.value),strength:1,side:"positive"}]);syncLabels();};
+const updateRig=()=>{meshLeaf.setAnchors([{u:Number(anchorX.value)/100,v:Number(anchorY.value)/100,radius:25,strength:Number(anchorStrength.value)/100}]);meshLeaf.setFolds([{x1:.18,y1:.5,x2:.84,y2:.5,angle:Number(foldAngle.value),strength:.9,side:"positive"},{x1:.42,y1:.12,x2:.72,y2:.9,angle:leafJoint.angle*.85,strength:.7,side:"negative"}]);syncLabels();};
 for(const control of [anchorX,anchorY,anchorStrength,foldAngle])control.addEventListener("input",updateRig);
 scale.addEventListener("input",()=>{selected.setScale(Number(scale.value)/100);syncLabels();});
 rotation.addEventListener("input",()=>{selected.setRotation(Number(rotation.value));syncLabels();});
@@ -83,5 +84,5 @@ speed.addEventListener("input",()=>{engine.setSpeed(Number(speed.value)/100);syn
 document.querySelector("#pauseButton").addEventListener("click",event=>{engine.setPaused(!engine.paused);event.currentTarget.textContent=engine.paused?"Reanudar":"Pausar";});
 document.querySelector("#resetButton").addEventListener("click",()=>{mountain.setScale(1);mountain.setRotation(0);mountain.setDepth(5);mountain.setPosition(640,360);hill.setScale(1);hill.setRotation(0);hill.setDepth(4);hill.setPosition(640,470);tree.setScale(1);tree.setRotation(0);tree.setDepth(2);tree.setPosition(330,450);bird.setScale(1);bird.setRotation(0);bird.setDepth(3);bird.motion.time=0;flexibleStem.setSway({amplitude:13,period:4.4,phase:.8});flexBend.value=0;meshWaveControl.value=5;meshFoldControl.value=3;meshLeaf.setDeformation({wave:5,fold:3,frequency:1.35});influenceX.value=78;influenceY.value=28;influenceStrength.value=90;influenceBend.value=15;updateInfluence();anchorX.value=18;anchorY.value=50;anchorStrength.value=100;foldAngle.value=24;updateRig();branchJoint.setSway({amplitude:7,period:5,phase:.4});leafJoint.setSway({amplitude:17,period:2.8,phase:1.1});jointSelect.value="branch";selectedJoint=branchJoint;jointAngle.value=-7;for(const p of [mountain,hill,tree,bird]){p.setMaterial("matte");p.setThickness(4);p.setShadowStrength(.22);}speed.value=100;engine.setSpeed(1);choose("mountain");});
 choose("mountain");
-status.textContent="PixiJS 8 · articulación · anclajes · pliegues controlados · malla 2D";
+status.textContent="PixiJS 8 · pliegues múltiples · articulación combinada · anclajes · malla 2D";
 window.addEventListener("beforeunload",()=>engine.destroy());
