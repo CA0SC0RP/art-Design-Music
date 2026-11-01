@@ -1,7 +1,6 @@
 /**
- * Paper rig: normalized anchor pins and controllable crease folds for PaperMesh.
- * Anchors soften movement around attachment points. Folds are a 2D projection
- * approximation, not a physical cloth simulation.
+ * Paper rig: normalized anchor pins, composable crease folds and joint-driven folds.
+ * This is a deterministic 2D geometry approximation, not a physical cloth solver.
  */
 export function enablePaperRig(mesh, { anchors = [], folds = [] } = {}) {
   if (!mesh?.mesh || !mesh?.shadowMesh || !mesh?.baseVertices) {
@@ -12,51 +11,46 @@ export function enablePaperRig(mesh, { anchors = [], folds = [] } = {}) {
   mesh.anchors = anchors.map(normalizeAnchor);
   mesh.folds = folds.map(normalizeFold);
 
-  mesh.setAnchors = (items = []) => {
-    mesh.anchors = items.map(normalizeAnchor);
-    mesh.update(mesh.elapsed, true);
-    return mesh;
-  };
-  mesh.addAnchor = (item) => {
-    mesh.anchors.push(normalizeAnchor(item));
-    mesh.update(mesh.elapsed, true);
-    return mesh;
-  };
-  mesh.clearAnchors = () => {
-    mesh.anchors = [];
-    mesh.update(mesh.elapsed, true);
-    return mesh;
-  };
-  mesh.setFolds = (items = []) => {
-    mesh.folds = items.map(normalizeFold);
-    mesh.update(mesh.elapsed, true);
-    return mesh;
-  };
-  mesh.addFold = (item) => {
-    mesh.folds.push(normalizeFold(item));
-    mesh.update(mesh.elapsed, true);
-    return mesh;
-  };
-  mesh.clearFolds = () => {
-    mesh.folds = [];
-    mesh.update(mesh.elapsed, true);
-    return mesh;
-  };
+  mesh.setAnchors = (items = []) => { mesh.anchors = items.map(normalizeAnchor); mesh.update(mesh.elapsed, true); return mesh; };
+  mesh.addAnchor = (item) => { mesh.anchors.push(normalizeAnchor(item)); mesh.update(mesh.elapsed, true); return mesh; };
+  mesh.clearAnchors = () => { mesh.anchors = []; mesh.update(mesh.elapsed, true); return mesh; };
+  mesh.setFolds = (items = []) => { mesh.folds = items.map(normalizeFold); mesh.update(mesh.elapsed, true); return mesh; };
+  mesh.addFold = (item) => { mesh.folds.push(normalizeFold(item)); mesh.update(mesh.elapsed, true); return mesh; };
+  mesh.clearFolds = () => { mesh.folds = []; mesh.update(mesh.elapsed, true); return mesh; };
 
   mesh.update = (elapsed, force = false) => {
     baseUpdate(elapsed, true);
     applyPaperRig(mesh, mesh.anchors, mesh.folds);
   };
-
   mesh.update(mesh.elapsed, true);
   return mesh;
+}
+
+/** Connect a PaperJoint angle to one fold's angle. Returns an unbind function. */
+export function bindJointToFold(mesh, joint, { foldIndex = 0, restAngle = 0, multiplier = 1, offset = 0, minAngle = -85, maxAngle = 85 } = {}) {
+  if (!mesh?.folds || !joint || !Number.isInteger(foldIndex) || !mesh.folds[foldIndex]) {
+    throw new TypeError("bindJointToFold requiere un pliegue existente y una articulación.");
+  }
+  const previous = joint.onUpdate;
+  const sync = (angle) => {
+    const next = clamp(restAngle + (angle - restAngle) * multiplier + offset, minAngle, maxAngle);
+    mesh.folds[foldIndex] = { ...mesh.folds[foldIndex], angle: next };
+    mesh.update(mesh.elapsed, true);
+    previous?.(angle, joint);
+  };
+  joint.onUpdate = sync;
+  sync(joint.angle);
+  return () => { if (joint.onUpdate === sync) joint.onUpdate = previous || null; };
 }
 
 export function applyPaperRig(mesh, anchors = [], folds = []) {
   const { vertices, shadowVertices, baseVertices, columns, rows, width, height } = mesh;
   const stride = columns + 1;
+  const source = new Float32Array(vertices);
+  const dxTotal = new Float32Array(vertices.length);
+  const dyTotal = new Float32Array(vertices.length);
 
-  // Apply crease folds to the already animated/localized surface.
+  // Every crease reads the same pre-fold surface; displacements are blended additively.
   for (const fold of folds) {
     const ax = fold.x1 * width, ay = fold.y1 * height;
     const bx = fold.x2 * width, by = fold.y2 * height;
@@ -72,31 +66,35 @@ export function applyPaperRig(mesh, anchors = [], folds = []) {
     for (let row = 0; row <= rows; row++) {
       for (let col = 0; col <= columns; col++) {
         const i = (row * stride + col) * 2;
-        const px = vertices[i], py = vertices[i + 1];
-        const rx = px - ax, ry = py - ay;
+        const rx = source[i] - ax, ry = source[i + 1] - ay;
         const along = rx * tx + ry * ty;
         if (along < 0 || along > lineLength) continue;
         const signedDistance = rx * nx + ry * ny;
         if (fold.side === "positive" && signedDistance < 0) continue;
         if (fold.side === "negative" && signedDistance > 0) continue;
         const edge = Math.min(along / fold.endSoftness, (lineLength - along) / fold.endSoftness, 1);
-        const envelope = smooth(edge) * fold.strength;
+        const envelope = smooth(Math.max(0, edge)) * fold.strength;
         const d = Math.abs(signedDistance);
         const direction = Math.sign(signedDistance) || 1;
-        vertices[i] += nx * (-signedDistance * contraction * envelope + direction * d * lift * envelope * 0.18);
-        vertices[i + 1] += ny * (-signedDistance * contraction * envelope + direction * d * lift * envelope * 0.18);
+        const displacement = -signedDistance * contraction * envelope + direction * d * lift * envelope * 0.18;
+        dxTotal[i] += nx * displacement;
+        dyTotal[i + 1] += ny * displacement;
       }
     }
   }
 
-  // Pin selected regions back toward their undeformed rest positions.
+  for (let i = 0; i < vertices.length; i += 2) {
+    vertices[i] = source[i] + dxTotal[i];
+    vertices[i + 1] = source[i + 1] + dyTotal[i + 1];
+  }
+
+  // Pins pull the final result toward the rest surface.
   for (const anchor of anchors) {
     const cx = anchor.u * width, cy = anchor.v * height;
     for (let row = 0; row <= rows; row++) {
       for (let col = 0; col <= columns; col++) {
         const i = (row * stride + col) * 2;
-        const x = baseVertices[i], y = baseVertices[i + 1];
-        const distance = Math.hypot(x - cx, y - cy);
+        const distance = Math.hypot(baseVertices[i] - cx, baseVertices[i + 1] - cy);
         const t = Math.max(0, 1 - distance / anchor.radius);
         const weight = smooth(t) * anchor.strength;
         vertices[i] += (baseVertices[i] - vertices[i]) * weight;
@@ -115,26 +113,16 @@ export function applyPaperRig(mesh, anchors = [], folds = []) {
 }
 
 function normalizeAnchor(item = {}) {
-  return {
-    u: clamp(Number(item.u ?? 0.2), 0, 1),
-    v: clamp(Number(item.v ?? 0.5), 0, 1),
-    radius: clamp(Number(item.radius ?? 18), 1, 120),
-    strength: clamp(Number(item.strength ?? 1), 0, 1)
-  };
+  return { u: clamp(Number(item.u ?? 0.2), 0, 1), v: clamp(Number(item.v ?? 0.5), 0, 1), radius: clamp(Number(item.radius ?? 18), 1, 120), strength: clamp(Number(item.strength ?? 1), 0, 1) };
 }
 function normalizeFold(item = {}) {
   return {
-    x1: clamp(Number(item.x1 ?? 0.2), 0, 1),
-    y1: clamp(Number(item.y1 ?? 0.5), 0, 1),
-    x2: clamp(Number(item.x2 ?? 0.8), 0, 1),
-    y2: clamp(Number(item.y2 ?? 0.5), 0, 1),
-    angle: clamp(Number(item.angle ?? 25), -85, 85),
-    strength: clamp(Number(item.strength ?? 1), 0, 1),
+    x1: clamp(Number(item.x1 ?? 0.2), 0, 1), y1: clamp(Number(item.y1 ?? 0.5), 0, 1),
+    x2: clamp(Number(item.x2 ?? 0.8), 0, 1), y2: clamp(Number(item.y2 ?? 0.5), 0, 1),
+    angle: clamp(Number(item.angle ?? 25), -85, 85), strength: clamp(Number(item.strength ?? 1), 0, 1),
     side: item.side === "negative" ? "negative" : "positive",
     endSoftness: clamp(Number(item.endSoftness ?? 22), 1, 200)
   };
 }
 function smooth(t) { return t * t * (3 - 2 * t); }
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, Number.isFinite(value) ? value : min));
-}
+function clamp(value, min, max) { return Math.max(min, Math.min(max, Number.isFinite(value) ? value : min)); }
