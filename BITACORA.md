@@ -98,3 +98,13 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Commits de esta etapa: creación del Nivel 02 `e2c0321`; publicación conjunta `51c906d`.
 - No se modificó `main`, la imagen maestra ni se usaron recursos finales, audio, APIs externas o generación de imágenes. No hay gasto asociado.
 - Pendiente: comprobar ejecución exitosa de GitHub Actions y abrir el Nivel 02 en Firefox; verificar los 14 sprites, pausa/reanudación y fluidez. Luego probar Safari en iPad y revisar Chrome por separado.
+
+
+## 2026-11-01 — Nivel 03: escena viva avanzada
+- Se añadió `prototype/level-03/index.html` como prueba más compleja, a petición del usuario.
+- Incluye 12 estrellas con parpadeos independientes, luna con resplandor pulsante, nubes a dos velocidades, 3 aves con vuelo/aleteo, 5 luciérnagas, 2 mariposas, 3 hojas, árboles con balanceo, cascada con flujo, dos corrientes de río, tres ondas y 2 peces con cambio de dirección.
+- Se añadieron controles para pausar/reanudar y ajustar la velocidad global; se respeta `prefers-reduced-motion`.
+- Se amplió el workflow de Pages para publicar el Nivel 03 en `/level-03/` sin retirar los prototipos anteriores.
+- Commits de esta prueba: escena `e64140b`; workflow `f64b4f3`; README `aee466a`; actualización del estado `81b1738`.
+- No se tocó `main`, no se empleó imagen maestra, no se generó arte final ni audio y no hubo gasto externo.
+- Pendiente de verificar: ejecución de Pages y prueba visual del Nivel 03 en Firefox; después Safari en iPad. La incidencia de Chrome no se considera resuelta.
