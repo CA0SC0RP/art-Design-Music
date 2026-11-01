@@ -1,3 +1,23 @@
+> **CIERRE — 2026-11-01.** Esta auditoría queda cerrada como registro histórico del proyecto anterior de cuadros de papel recortado y animación ambiental. Sus hallazgos describen aquel contrato y aquella arquitectura; no son bloqueos ni tareas pendientes del motor de caricaturas. No se ejecutarán las fases A/B ni las decisiones D1–D9 como fueron planteadas. La información técnica se conserva para consulta y reutilización selectiva. La arquitectura nueva se define en docs/direccion-motor-caricaturas-ipad.md.
+
+## Disposición final de D1–D9
+
+| ID | Asunto original | Cierre para el proyecto anterior |
+|---|---|---|
+| D1 | Aprobación del contrato v2 tras su fusión. | La fusión en Git no equivale a aprobación del usuario. El contrato v2 queda no aprobado para el motor nuevo. |
+| D2 | Maestra canónica y negro OLED. | Se cierra sin decisión: ya no se producirán capas para esa obra en esta etapa. Se conserva la maestra intacta como antecedente. |
+| D3 | Sprites, ciclos y eventos musicales. | Se sustituye por un modelo nuevo de personajes, objetos, escenas, acciones y animaciones. No ampliar el contrato anterior. |
+| D4 | Ajuste Ajv strict del esquema v2. | No se implementa; el esquema antiguo queda archivado. |
+| D5 | Imágenes sintéticas para pruebas de capas. | No se requiere resolverlo para el nuevo editor. Los recursos de prueba futuros se definirán por separado. |
+| D6 | Lenguaje del validador y CI del formato anterior. | Se cancela la implementación del validador/CI de capas. La validación del nuevo motor se decidirá con su arquitectura. |
+| D7 | Matriz de canales por tipo de capa y nuevos kind. | Se sustituye por el modelo de personajes, objetos, propiedades y acciones del motor de caricaturas. |
+| D8 | Memoria, rendimiento y Git LFS para capas 4K. | Se cierra para el flujo de capas anterior. El rendimiento del editor iPad se medirá con escenas reales del nuevo motor. |
+| D9 | Correcciones documentales y formato de bitácora anterior. | Se atiende mediante la actualización de instrucciones, estado, arquitectura y bitácora para el nuevo objetivo. |
+
+**Resultado:** nueve decisiones cerradas por cambio de alcance, no por implementación de las soluciones técnicas originales. No quedan acciones D1–D9 pendientes para el motor de caricaturas.
+
+---
+
 # Auditoría técnica del estado actual — 2026-10-29
 
 **Rama:** `auditoria/estado-2026-10-29`, creada desde `main` en `e2c7399`.
