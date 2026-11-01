@@ -1,4 +1,4 @@
-# Editor articulado de personajes — prototipo v0.3
+# Editor articulado de personajes — prototipo v0.4
 
 **Ruta:** `prototype/character-editor-v01/index.html`  
 **Estado:** prototipo incremental de estructura jerárquica, pivotes editables, límites de articulación y biblioteca de poses; no es el editor completo ni está validado en iPad.
@@ -25,6 +25,8 @@ Comprobar que el proyecto puede representar un objeto complejo como un árbol de
 - Las poses almacenan posición X/Y, rotación y escala por pieza; no alteran la configuración estructural del rig ni los pivotes/límites.
 - Las transiciones interpolan las transformaciones durante aproximadamente medio segundo y se cancelan al comenzar una edición manual.
 - Las poses forman parte del proyecto, se conservan en el guardado local y se incluyen en el JSON exportado.
+- Acciones coordinadas de prueba: saludo (brazo superior, antebrazo y mano), dos fases alternas de caminata (brazos, muslos, piernas inferiores y pies) y reposo. Las acciones parten del estado actual, cambian las articulaciones implicadas con una transición y pueden guardarse después como poses normales.
+- Las acciones coordinadas solo están preparadas para el preset de personaje y requieren que existan las piezas con los identificadores esperados. No calculan IK ni resuelven automáticamente la posición final de la mano o el pie.
 - Guardado en localStorage del navegador y exportación del proyecto como JSON.
 - Restauración automática del último proyecto guardado en ese navegador.
 
@@ -45,9 +47,9 @@ Esta es una primera estructura de articulación por piezas rígidas. Los límite
 
 ## Siguiente trabajo
 
-1. Validar en Safari del iPad el arrastre del pivote, la conservación de la posición visual y los límites de giro.
-2. Corregir cualquier problema táctil o de transformación detectado.
-3. Probar en el navegador guardar, aplicar, eliminar y exportar poses, incluida la transición y la interrupción por edición manual.
+1. Validar en Safari del iPad el arrastre del pivote, la conservación de la posición visual, las acciones coordinadas y los límites de giro.
+2. Corregir problemas táctiles o de transformación detectados.
+3. Evolucionar las acciones de prueba hacia controles de cadena más precisos; estudiar IK 2D para posicionar mano/pie sin confundirlo con las poses actuales.
 4. Incorporar recursos de imagen/textura de papel y recorte con bordes y sombras de calidad.
 5. Después abordar deformación de malla y skinning, solo cuando la base jerárquica esté estable.
 
