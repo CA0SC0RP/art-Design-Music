@@ -90,6 +90,16 @@
         <div class="control-heading"><label for="meshFoldControl">Pliegue progresivo</label><output id="meshFoldValue">3°</output></div>
         <input id="meshFoldControl" type="range" min="-15" max="15" value="3">
         <p class="control-hint">La hoja se deforma mediante una cuadrícula de vértices, manteniendo su textura y silueta transparente.</p>
+        <strong class="control-section-title">INFLUENCIA LOCALIZADA</strong>
+        <div class="control-heading"><label for="influenceXControl">Centro horizontal</label><output id="influenceXValue">78%</output></div>
+        <input id="influenceXControl" type="range" min="0" max="100" value="78">
+        <div class="control-heading"><label for="influenceYControl">Centro vertical</label><output id="influenceYValue">28%</output></div>
+        <input id="influenceYControl" type="range" min="0" max="100" value="28">
+        <div class="control-heading"><label for="influenceStrengthControl">Intensidad de influencia</label><output id="influenceStrengthValue">90%</output></div>
+        <input id="influenceStrengthControl" type="range" min="0" max="100" value="90">
+        <div class="control-heading"><label for="influenceBendControl">Curvatura localizada</label><output id="influenceBendValue">15°</output></div>
+        <input id="influenceBendControl" type="range" min="-30" max="30" value="15">
+        <p class="control-hint">Mueve el centro de influencia y concentra el pliegue en una zona. El efecto disminuye suavemente hacia los bordes.</p>
       </div>
       <div class="control-group">
         <div class="control-heading"><label for="speedControl">Velocidad global</label><output id="speedValue">1.0×</output></div>
