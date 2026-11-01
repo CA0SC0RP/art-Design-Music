@@ -33,7 +33,7 @@ test("con fricción desactivada no se altera el desplazamiento tangencial", () =
 
 import {
   composeWorldTransform, transformPoint, buildMeshTriangles, closestPointOnMesh,
-  pointInPolygon, inverseTransformVector, segmentTriangleContacts
+  pointInPolygon, inverseTransformVector, transformVector, segmentTriangleContacts
 } from "./collision-math.js";
 
 function quadMesh({ columns = 1, rows = 1, x = 0, y = 0, shape } = {}) {
@@ -131,4 +131,18 @@ test("el índice espacial maneja coordenadas negativas y evita duplicar triángu
   const found = queryTriangleSpatialIndex(index, { minX:-4,maxX:4,minY:-4,maxY:4 });
   assert.equal(found.length, 1);
   assert.equal(found[0], triangle);
+});
+
+
+test("la transformación de vectores conserva dirección y escala sin trasladar el vector", () => {
+  const matrix = composeWorldTransform({
+    position: { x: 50, y: -20 }, scale: { x: 2, y: 0.5 }, rotation: Math.PI / 2,
+    pivot: { x: 0, y: 0 }, parent: null
+  });
+  const world = transformVector(matrix, { x: 3, y: 4 });
+  assert.ok(Math.abs(world.x + 2) < 1e-6);
+  assert.ok(Math.abs(world.y - 6) < 1e-6);
+  const local = inverseTransformVector(matrix, world);
+  assert.ok(Math.abs(local.x - 3) < 1e-6);
+  assert.ok(Math.abs(local.y - 4) < 1e-6);
 });
