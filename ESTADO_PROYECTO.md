@@ -60,3 +60,10 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Siguiente paso técnico: habilitar una forma verificable de abrir el prototipo desde Safari (sitio estático o alternativa equivalente), revisar la carga y los movimientos, y registrar resultados antes de pasar al Nivel 02.
 
 - Se añadió `.github/workflows/prototipo-cinco-capas.yml` para publicar la carpeta del prototipo con GitHub Pages al recibir cambios en esta rama. La API de Actions consultada aún no muestra ejecuciones; la publicación no está confirmada y la URL pública no se considera disponible hasta verificar una ejecución exitosa.
+
+
+## Actualización — corrección de movimiento interno del prototipo
+- Tras el reporte de que la escena seguía estática, se inspeccionaron los archivos reales de la rama. Se confirmó que nubes y estrellas eran figuras SVG sin animación y que el río solo tenía formas y trazos estáticos; el CSS anterior movía planos completos, no sus elementos internos.
+- Se modificó `prototype/level-01/assets/01-cielo.svg`: nubes con desplazamiento lento independiente y estrellas con parpadeo escalonado.
+- Se modificó `prototype/level-01/assets/04-rio.svg`: reflejos y trazos superficiales con desplazamiento continuo y pulsos de opacidad.
+- `main` y la imagen maestra permanecen intactos. No se han probado todavía estas animaciones en Safari del iPad; queda pendiente comprobar la publicación nueva y la reproducción real.
