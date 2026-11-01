@@ -1,0 +1,30 @@
+"use strict";
+const test=require("node:test");
+const assert=require("node:assert/strict");
+const {normalizeProject,escapeHtml}=require("../prototype/character-editor-v01/project-io.js");
+function project(overrides={}){return {version:2,name:"Prueba",root:"root",nodes:[
+ {id:"root",name:"Raíz",type:"grupo",x:500,y:300,rotation:0,parent:null,shape:null,fill:null},
+ {id:"arm",name:"Brazo",type:"brazo",x:0,y:40,rotation:0,parent:"root",shape:"limb",fill:"#d9ad7c"}
+ ],poses:[],...overrides};}
+test("normaliza un proyecto válido y aplica valores predeterminados de compatibilidad",()=>{
+ const raw=project();delete raw.nodes[1].pivotX;delete raw.nodes[1].pivotY;delete raw.nodes[1].rotationMin;delete raw.nodes[1].rotationMax;delete raw.nodes[1].scale;
+ const r=normalizeProject(raw);assert.equal(r.ok,true);assert.equal(r.project.version,2);assert.equal(r.project.nodes[1].scale,1);assert.equal(r.project.nodes[1].pivotX,0);
+});
+test("rechaza identificadores repetidos y referencias a padres inexistentes",()=>{
+ const dup=project();dup.nodes.push({...dup.nodes[1]});assert.equal(normalizeProject(dup).ok,false);
+ const missing=project();missing.nodes[1].parent="fantasma";assert.equal(normalizeProject(missing).ok,false);
+});
+test("rechaza ciclos en la jerarquía",()=>{
+ const p=project();p.nodes[0].parent="arm";assert.equal(normalizeProject(p).ok,false);
+});
+test("rechaza formas y colores no permitidos",()=>{
+ const shape=project();shape.nodes[1].shape="script";assert.equal(normalizeProject(shape).ok,false);
+ const fill=project();fill.nodes[1].fill='red" onload="alert(1)';assert.equal(normalizeProject(fill).ok,false);
+});
+test("normaliza poses y limita rotaciones al rango de cada articulación",()=>{
+ const p=project();p.nodes[1].rotationMin=-45;p.nodes[1].rotationMax=45;p.poses=[{id:"p1",name:"Pose",nodes:[{id:"arm",x:2,y:3,rotation:90,scale:1}]}];
+ const r=normalizeProject(p);assert.equal(r.ok,true);assert.equal(r.project.poses[0].nodes[0].rotation,45);
+});
+test("escapa texto importado antes de insertarlo en HTML",()=>{
+ assert.equal(escapeHtml('<img src=x onerror="x"> & \'ok\''),'&lt;img src=x onerror=&quot;x&quot;&gt; &amp; &#39;ok&#39;');
+});
