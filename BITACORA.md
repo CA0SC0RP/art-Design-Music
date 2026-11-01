@@ -211,3 +211,15 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - Se aclaró que Codespaces es para desarrollo y que el objetivo es renderizar localmente en iPad, sin servidores de renderizado.
 - Se mantuvo la regla de no modificar `main`, no fusionar, no abrir PR ni desplegar. No se activaron servicios ni hubo gastos.
 - No se ejecutaron pruebas de navegador ni de renderizado; estos cambios son de documentación y alineación de decisiones.
+
+
+## 2026-11-01 — Primer prototipo de editor articulado de personajes
+
+- Creado `prototype/character-editor-v01/index.html` con un lienzo SVG adaptable y una jerarquía recursiva de piezas padre-hijo.
+- Incluye presets iniciales de personaje (torso, cuello, cabeza, cabello, ojos, brazos, antebrazos, manos, muslos, piernas y pies) y árbol (tronco, ramas, ramitas y grupos de hojas). Las piezas hijas heredan transformaciones de sus padres.
+- Incluye selección desde jerarquía/lienzo, arrastre, inspector de posición/rotación/escala, cambio de padre, añadir piezas, duplicar, eliminar y cambiar orden.
+- Incluye guardado local en el navegador, restauración automática y exportación JSON.
+- Documento técnico: `docs/prototipo-editor-articulado-personajes-v0-1.md`.
+- Es un prototipo funcional inicial de estructura rígida; no implementa todavía skinning, IK, deformación de malla, pivotes editables visualmente, poses guardadas ni texturas de papel de producción.
+- No se ejecutaron pruebas de navegador ni se validó en iPad. No se modificó `main`, no se abrió PR ni se desplegó. No se activaron servicios ni gastos.
+- Próximo paso: validar el prototipo en iPad y después mejorar edición de pivotes/articulaciones y poses antes de añadir deformación avanzada.
