@@ -446,3 +446,8 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - El cambio reduce el tamaño del SVG generado y evita repetir nodos de geometría en el marcado por cada cara. No se afirma aún una mejora medida de FPS o memoria; eso requiere perfilado en navegador.
 - El workflow incorpora comprobaciones estructurales para verificar la definición compartida y el uso de referencias SVG.
 - Pendiente: validar representación de `use` y clip paths en Safari/iPad, revisar contornos/costuras y medir rendimiento con mallas densas.
+
+
+## 2026-11-01 — Validación automatizada v0.9.15
+- GitHub Actions, ejecución #70 (commit `9d49a828f6950f4eb216b753c175bfd349352ee3`): completada con éxito. Sintaxis de módulos y JavaScript integrado correctas; comprobaciones estructurales del editor correctas.
+- Suite completa: 63 pruebas superadas, 0 fallidas. Esto valida lógica y estructura automatizable; no sustituye la revisión visual ni la prueba táctil en Safari/iPad.
