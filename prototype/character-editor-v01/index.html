@@ -8,7 +8,7 @@
 @media(pointer:coarse){button{min-height:44px;padding:10px 12px}.tools button,.toolbar button{min-height:44px}.item{min-height:44px}.field input[type=text],.field select,.field input[type=number],select{min-height:44px}input[type=range]{height:36px;touch-action:pan-y}input[type=range]::-webkit-slider-thumb{width:24px;height:24px}input[type=range]::-moz-range-thumb{width:24px;height:24px}}
 @media(pointer:fine){button:hover{border-color:#8b9bad} .item:hover{background:#2a3948}}
 </style></head><body>
-<header><span class="brand">ADM / CHARACTER ATELIER</span><span class="sub">Editor articulado · Prototipo v0.9.10</span><span class="spacer"></span><span id="status" class="muted">Proyecto local</span><button id="save">Guardar</button><button id="import">Importar JSON</button><button id="export" class="primary">Exportar JSON</button></header>
+<header><span class="brand">ADM / CHARACTER ATELIER</span><span class="sub">Editor articulado · Prototipo v0.9.12</span><span class="spacer"></span><span id="status" class="muted">Proyecto local</span><button id="save">Guardar</button><button id="import">Importar JSON</button><button id="export" class="primary">Exportar JSON</button></header>
 <input id="importFile" type="file" accept=".json,application/json" hidden><main>
 <section class="panel left"><div class="head">Jerarquía <span id="count" class="itype"></span></div><div class="body"><div class="tools"><button data-add="arm">＋ Brazo</button><button data-add="leg">＋ Pierna</button><button data-add="branch">＋ Rama</button><button data-add="leaf">＋ Hojas</button><button data-add="joint">＋ Articulación</button><button id="duplicate">Duplicar</button></div><div class="label">Árbol de partes</div><div id="tree" class="tree"></div><div class="hint">Las piezas hijas heredan el movimiento y la rotación de su padre. Selecciona una pieza para ajustar su articulación.</div></div></section>
 <section class="panel center"><div class="toolbar"><button id="human" class="active">Personaje</button><button id="treePreset">Árbol</button><span class="spacer"></span><button id="front">Traer al frente</button><button id="reset">Restablecer</button></div>
@@ -85,7 +85,7 @@ function meshDeformedShape(n){
  for(let i=0;i<n.mesh.faces.length;i++){
   const face=n.mesh.faces[i],source=face.map(index=>original[index]),target=face.map(index=>posed[index]);
   const mapped=window.ADM_MeshSkinning.triangleTransform(source,target);if(!mapped.ok)continue;
-  const clipId=prefix+"_"+i,points=source.map(p=>p.x+","+p.y).join(" ");
+  const expanded=window.ADM_MeshSkinning.expandTriangle(source,0.35),clipId=prefix+"_"+i,clipPoints=expanded.ok?expanded.triangle:source,points=clipPoints.map(p=>p.x+","+p.y).join(" ");
   defs.push('<clipPath id="'+clipId+'" clipPathUnits="userSpaceOnUse"><polygon points="'+points+'"/></clipPath>');
   fragments.push('<g class="mesh-skin-fragment" transform="matrix('+mapped.matrix.join(" ")+')" clip-path="url(#'+clipId+')">'+base+'</g>');
  }
