@@ -59,3 +59,21 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - **No ejecutado:** validador (no existe), reglas entre campos, PNG reales, composición contra la maestra, pruebas en iPad Safari y TCL 55Q650G. No se pudo instalar Ajv desde npm (registro inalcanzable); se usó una copia preinstalada.
 - **Problemas encontrados:** textos de estado contradictorios con el repositorio; maestra canónica sin confirmar; el contrato v2 no cubre sprites, ciclos, aleteo, eventos musicales ni el negro OLED; Ajv estricto no compila el esquema; 18 reglas del plan sin prueba ni marcador; sin `.gitignore` ni `requirements`.
 - **Pendiente:** tus decisiones D1 a D9 del informe (§8.1). No se inicia la siguiente fase sin tu aprobación.
+
+
+## 2026-11-01 — Inicio del prototipo de cinco capas y política de recursos
+- **Objetivo:** demostrar primero la composición y el movimiento independiente con cinco planos sencillos, sin utilizar arte final ni consumir generaciones de imágenes.
+- **Rama y punto de partida:** `prototipo/prueba-cinco-capas-01`, creada desde `auditoria/estado-2026-10-29`. No se modificó `main`.
+- **Archivos creados:**
+  - `prototype/level-01/index.html`: visor web 16:9 con cinco capas, animaciones suaves independientes y control de pausa/reanudación.
+  - `prototype/level-01/assets/01-cielo.svg`
+  - `prototype/level-01/assets/02-montanas.svg`
+  - `prototype/level-01/assets/03-bosque.svg`
+  - `prototype/level-01/assets/04-rio.svg`
+  - `prototype/level-01/assets/05-primer-plano.svg`
+  - `prototype/level-01/README.md`: alcance, limitaciones y protocolo de prueba.
+  - `docs/politica-de-recursos-visuales.md`: fuentes, licencias, atribución, capas, sprites, hojas de sprites, secuencias de poses y control de costos.
+- **Implementación:** cinco SVG originales provisionales como archivos separados; composición por profundidad; movimientos CSS sutiles y diferenciados; botón de pausa/reanudación; respeto por la preferencia de movimiento reducido del sistema.
+- **Protecciones:** no se usó ni modificó la imagen maestra; no se añadieron recursos externos ni finales; no se generaron gastos; no se tocó `main`.
+- **Pruebas:** no se ha ejecutado todavía en navegador ni en iPad Safari. Los archivos están creados en la rama, pero la funcionalidad visual queda pendiente de verificación real.
+- **Siguiente paso:** habilitar acceso de prueba desde Safari, verificar carga de los cinco SVG y comportamiento de pausa/movimiento, corregir cualquier problema y solo entonces avanzar.
