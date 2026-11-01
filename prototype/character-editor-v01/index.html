@@ -54,7 +54,7 @@ case"joint":return'<circle r="13" fill="#d9b178" stroke="#62482f" stroke-width="
 default:return'<rect x="-20" y="-20" width="40" height="40" rx="8" '+c+'/>';
 }}
 function meshDisplayVertices(n){const m=n.mesh;if(!m||!m.bindMatrices||!Object.keys(m.bindMatrices).length)return m?.vertices||[];try{const world=window.ADM_RigGeometry.worldMatrices(data.nodes);if(!world.ok)return m.vertices;const inverse=window.ADM_MeshSkinning.invert(world.matrices[n.id]),current={};for(const id of Object.keys(m.bindMatrices)){if(!world.matrices[id])return m.vertices;current[id]=window.ADM_MeshSkinning.multiply(inverse,world.matrices[id]);}const matrices=window.ADM_MeshSkinning.buildSkinMatrices(m.bindMatrices,current);if(!matrices.ok)return m.vertices;const result=window.ADM_MeshSkinning.deformVertices(m.vertices,matrices.matrices);return result.ok?result.vertices:m.vertices;}catch(e){return m.vertices;}}
-function meshBindMatrices(ownerId){const world=window.ADM_RigGeometry.worldMatrices(data.nodes);if(!world.ok)throw new Error(world.message);const inverse=window.ADM_MeshSkinning.invert(world.matrices[ownerId]),result={};for(const n of data.nodes)result[n.id]=window.ADM_MeshSkinning.multiply(inverse,world.matrices[n.id]);return result;}
+function meshBindMatrices(ownerId){const world=window.ADM_RigGeometry.worldMatrices(data.nodes);if(!world.ok)throw new Error(world.message);const inverse=window.ADM_MeshSkinning.invert(world.matrices[ownerId]);return {[ownerId]:window.ADM_MeshSkinning.multiply(inverse,world.matrices[ownerId])};}
 function meshDeformedShape(n){
  if(!n.mesh||!n.mesh.bindMatrices||!n.mesh.faces.length||!n.shape)return shape(n);
  const original=n.mesh.vertices,posed=meshDisplayVertices(n);
