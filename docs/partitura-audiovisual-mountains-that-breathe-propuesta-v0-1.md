@@ -1,3 +1,5 @@
+> **OBSOLETA PARA LA PLANIFICACIÓN ACTIVA — 2026-11-01.** Esta propuesta se creó para el concepto anterior de cuadros de papel recortado y ambiente musical. El proyecto ahora se centra en un motor de caricaturas y microhistorias. No usar sus referencias ambient/lo-fi/chillout, 72 BPM, duración ni eventos visuales como requisitos del nuevo motor. Se conserva únicamente como antecedente histórico; la música futura será específica de cada microhistoria.
+
 # Mountains That Breathe — partitura audiovisual conceptual v0.1
 
 **Estado:** propuesta creativa para revisión del usuario. No aprobada; no representa audio producido, recursos existentes ni una especificación técnica definitiva.
