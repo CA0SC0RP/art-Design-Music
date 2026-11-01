@@ -34,9 +34,17 @@ test("actualiza y normaliza una influencia",()=>{
  assert.equal(model.setInfluence(r.mesh,0,"arm",1).ok,true);const w=r.mesh.vertices[0].weights;
  assert.equal(w.length,2);assert.equal(w.reduce((s,x)=>s+x.weight,0),1);
 });
-test("rechaza borrar el último peso positivo",()=>{
- const r=model.createGrid({width:20,height:20,columns:2,rows:2,boneId:"root"});
+test("rechaza borrar el último peso positivo sin modificar el vértice",()=>{
+ const r=model.createGrid({width:20,height:20,columns:2,rows:2,boneId:"root"}),before=JSON.stringify(r.mesh.vertices[0].weights);
  assert.equal(model.setInfluence(r.mesh,0,"root",0).ok,false);
+ assert.equal(JSON.stringify(r.mesh.vertices[0].weights),before);
+});
+test("una influencia inválida no altera los pesos existentes",()=>{
+ const r=model.createGrid({width:20,height:20,columns:2,rows:2,boneId:"a"}),v=r.mesh.vertices[0];
+ v.weights=[{boneId:"a",weight:.4},{boneId:"b",weight:.3},{boneId:"c",weight:.2},{boneId:"d",weight:.1}];
+ const before=JSON.stringify(v.weights);
+ assert.equal(model.setInfluence(r.mesh,0,"e",.5).ok,false);
+ assert.equal(JSON.stringify(v.weights),before);
 });
 test("limita las influencias a cuatro huesos",()=>{
  const r=model.createGrid({width:20,height:20,columns:2,rows:2,boneId:"a"});
