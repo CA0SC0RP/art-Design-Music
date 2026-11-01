@@ -96,7 +96,7 @@ function applyLink(link) {
       const candidates = queryTriangleSpatialIndex(spatialIndex, {
         minX: worldPoint.x - link.contactRange, maxX: worldPoint.x + link.contactRange,
         minY: worldPoint.y - link.contactRange, maxY: worldPoint.y + link.contactRange
-      });
+      }, 1e-7, vertexCandidates);
       candidateTriangles += candidates.length;
       testedVertices++;
       let contact = { x: 0, y: 0, penetration: 0, touching: false };
