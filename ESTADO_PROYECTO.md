@@ -222,7 +222,7 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 ## Actualización — 2026-11-01: importación de proyectos JSON
 - El editor incorpora **Importar JSON** para recuperar proyectos exportados y transferirlos entre dispositivos/navegadores.
 - El módulo de importación normaliza formatos v1/v2 y valida estructura, jerarquía, identificadores, formas, colores, transformaciones y poses. Los archivos mayores de 10 MB se rechazan y el texto importado se escapa antes de insertarse en HTML.
-- Se amplió GitHub Actions: validación sintáctica de módulos, 24 pruebas unitarias entre IK, importación y geometría jerárquica, comprobación de sintaxis del JavaScript integrado y revisión de integración. La ejecución del workflow terminó correctamente.
+- Se amplió GitHub Actions: validación sintáctica de módulos, 25 pruebas unitarias entre IK, importación, geometría jerárquica y expresiones faciales, comprobación de sintaxis del JavaScript integrado y revisión de integración. La ejecución del workflow terminó correctamente.
 - Falta probar el flujo real de selección e importación de archivo en Safari del iPad; la validación automatizada no sustituye esa prueba.
 
 
@@ -232,3 +232,12 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se rechazan ciclos, padres inexistentes y cambios incompatibles con los límites angulares configurados.
 - Se añadieron pruebas automatizadas de jerarquías anidadas y preservación de descendientes. GitHub Actions completó las pruebas y comprobaciones de integración correctamente.
 - La interfaz aún requiere validación visual/táctil en Safari del iPad.
+
+
+
+## Actualización — 2026-11-01: expresiones faciales iniciales
+- El preset Personaje incorpora cejas y boca y permite aplicar cinco expresiones: neutral, alegre, triste, sorprendida y enojada.
+- Las expresiones pueden guardarse como poses. El formato de pose conserva también la forma de cada pieza y el importador valida las formas faciales admitidas.
+- Los proyectos antiguos con cabeza reciben los rasgos faciales faltantes al cargarse.
+- La suite automatizada suma 25 pruebas entre IK, importación, geometría jerárquica y persistencia de expresiones. GitHub Actions completó correctamente sintaxis, pruebas e integración.
+- Es un primer sistema de expresiones; no incorpora morph targets ni sincronización labial. Falta la validación visual/táctil en Safari del iPad.
