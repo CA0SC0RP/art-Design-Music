@@ -84,3 +84,13 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - Se añadió una prueba de cinemática directa que reconstruye la posición final del extremo a partir de los dos ángulos devueltos y comprueba que coincide con el objetivo solicitado, dentro de una tolerancia numérica de (10^{-6}), para ambos sentidos de flexión.
 - La suite contiene ahora ocho pruebas automatizadas. Estas pruebas verifican el módulo matemático, no sustituyen la prueba visual del editor ni la validación táctil en Safari del iPad.
 - Se conserva la etiqueta visual v0.8: este cambio corrige el motor IK sin presentar todavía una nueva versión de interfaz.
+
+
+
+## Iteración v0.9.2 — robustez del alcance y cobertura geométrica
+
+- Se corrigió el rechazo excesivo de objetivos cercanos al origen: el solver ahora admite objetivos dentro del alcance geométrico real, aunque su distancia sea menor que una unidad, y rechaza explícitamente la raíz singular cuando la orientación no está definida.
+- Se validan los límites articulares configurados antes de calcular una solución; rangos invertidos o valores no finitos se rechazan con un mensaje específico.
+- La suite amplió la reconstrucción de cinemática directa a ocho cuadrantes/posiciones y ambos sentidos de flexión, además de probar cadenas con longitudes desiguales cerca del origen y límites inválidos.
+- La validación automatizada de esta iteración se ejecutó en GitHub Actions con Node.js. El paso de pruebas reportó éxito para el commit de la suite ampliada. Esto valida el módulo matemático, no el lienzo ni el comportamiento táctil en Safari.
+- La etiqueta visual del editor permanece en v0.8 hasta completar validación real de interfaz; no se declara una nueva versión funcional.
