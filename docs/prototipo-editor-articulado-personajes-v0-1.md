@@ -94,3 +94,14 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - La suite amplió la reconstrucción de cinemática directa a ocho cuadrantes/posiciones y ambos sentidos de flexión, además de probar cadenas con longitudes desiguales cerca del origen y límites inválidos.
 - La validación automatizada de esta iteración se ejecutó en GitHub Actions con Node.js. El paso de pruebas reportó éxito para el commit de la suite ampliada. Esto valida el módulo matemático, no el lienzo ni el comportamiento táctil en Safari.
 - La etiqueta visual del editor permanece en v0.8 hasta completar validación real de interfaz; no se declara una nueva versión funcional.
+
+
+
+## Iteración v0.9.3 — importación segura de proyectos JSON
+
+- Se añadió la acción **Importar JSON** al encabezado del editor para volver a abrir proyectos exportados o transferidos entre navegadores/dispositivos.
+- Se creó el módulo independiente `project-io.js`, que normaliza proyectos v1/v2 al formato actual y valida raíz, identificadores únicos, jerarquía sin ciclos, formas admitidas, colores, transformaciones, límites articulares y poses antes de sustituir el proyecto activo.
+- Se limita la carga a archivos de hasta 10 MB y se escapa el texto importado antes de insertarlo en HTML. Se rechazan IDs inseguros y referencias inválidas para evitar que contenido JSON manipulado altere el marcado del editor.
+- La importación no sobrescribe automáticamente el guardado local: después de cargar el archivo, el usuario puede pulsar **Guardar** para conservarlo en ese navegador.
+- Se añadieron pruebas unitarias del normalizador y del escape HTML. El workflow comprueba sintaxis de ambos módulos, las pruebas de IK e importación, la sintaxis del JavaScript integrado y las referencias entre módulos.
+- La automatización terminó correctamente. No se ha probado aún la selección del archivo ni la importación dentro de Safari/iPad; esa comprobación de interfaz sigue pendiente.
