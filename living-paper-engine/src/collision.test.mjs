@@ -30,3 +30,54 @@ test("con fricción desactivada no se altera el desplazamiento tangencial", () =
   assert.equal(result.x, 0);
   assert.equal(result.y, 0);
 });
+
+import {
+  composeWorldTransform, transformPoint, buildMeshTriangles, closestPointOnMesh,
+  pointInPolygon, inverseTransformVector
+} from "./collision-math.js";
+
+function quadMesh({ columns = 1, rows = 1, x = 0, y = 0, shape } = {}) {
+  const vertices = [];
+  for (let row = 0; row <= rows; row++) {
+    for (let col = 0; col <= columns; col++) vertices.push(col * 10, row * 10);
+  }
+  const container = { position: { x, y }, scale: { x: 1, y: 1 }, rotation: 0, pivot: { x: 0, y: 0 }, parent: null };
+  return { vertices: new Float32Array(vertices), columns, rows, width: columns * 10, height: rows * 10, shape, container };
+}
+
+test("la búsqueda encuentra el punto más cercano en una malla de resolución distinta", () => {
+  const source = quadMesh({ columns: 1, rows: 1 });
+  const target = quadMesh({ columns: 3, rows: 2 });
+  const triangles = buildMeshTriangles(source);
+  const closest = closestPointOnMesh({ x: 4, y: 6 }, triangles);
+  assert.ok(closest);
+  assert.ok(Math.abs(closest.x - 4) < 1e-6);
+  assert.ok(Math.abs(closest.y - 6) < 1e-6);
+  assert.equal(buildMeshTriangles(target).length, 12);
+});
+
+test("la transformación mundial compone rotación y posición de capas anidadas", () => {
+  const parent = { position: { x: 100, y: 50 }, scale: { x: 1, y: 1 }, rotation: Math.PI / 2, pivot: { x: 0, y: 0 }, parent: null };
+  const child = { position: { x: 10, y: 0 }, scale: { x: 1, y: 1 }, rotation: 0, pivot: { x: 0, y: 0 }, parent };
+  const world = composeWorldTransform(child);
+  const point = transformPoint(world, { x: 2, y: 0 });
+  assert.ok(Math.abs(point.x - 100) < 1e-6);
+  assert.ok(Math.abs(point.y - 62) < 1e-6);
+  const local = inverseTransformVector(world, { x: 0, y: 5 });
+  assert.ok(Math.abs(local.x - 5) < 1e-6);
+  assert.ok(Math.abs(local.y) < 1e-6);
+});
+
+test("la máscara de silueta excluye celdas completamente fuera del papel", () => {
+  const mesh = quadMesh({ columns: 2, rows: 2, shape: [[0,0],[0.5,0],[0,0.5]] });
+  const triangles = buildMeshTriangles(mesh);
+  assert.ok(triangles.length > 0);
+  assert.ok(triangles.length < 8);
+  assert.equal(pointInPolygon(0.1, 0.1, mesh.shape), true);
+  assert.equal(pointInPolygon(0.9, 0.9, mesh.shape), false);
+});
+
+test("la consulta de superficie respeta el radio máximo y devuelve null lejos", () => {
+  const triangles = buildMeshTriangles(quadMesh());
+  assert.equal(closestPointOnMesh({ x: 100, y: 100 }, triangles, 5), null);
+});
