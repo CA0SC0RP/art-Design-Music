@@ -105,3 +105,13 @@ No adelantar escenas narrativas, timeline ni exportador en esta etapa.
 - La importación no sobrescribe automáticamente el guardado local: después de cargar el archivo, el usuario puede pulsar **Guardar** para conservarlo en ese navegador.
 - Se añadieron pruebas unitarias del normalizador y del escape HTML. El workflow comprueba sintaxis de ambos módulos, las pruebas de IK e importación, la sintaxis del JavaScript integrado y las referencias entre módulos.
 - La automatización terminó correctamente. No se ha probado aún la selección del archivo ni la importación dentro de Safari/iPad; esa comprobación de interfaz sigue pendiente.
+
+
+
+## Iteración v0.9.4 — reparentado sin saltos visuales
+
+- Se añadió `rig-geometry.js` con cálculo de transformaciones mundiales acumuladas (posición, rotación y escala), incluyendo los pivotes de los padres.
+- Al cambiar el padre desde el inspector, el editor calcula la nueva transformación local para conservar la posición, orientación y escala mundiales de la pieza y de sus descendientes.
+- Se rechazan ciclos, padres inexistentes y cambios que exigirían superar los límites angulares de la articulación; en esos casos la jerarquía original permanece intacta.
+- Se añadieron pruebas de preservación de transformaciones en jerarquías anidadas, pivotes, escalas y rotaciones, además de casos de ciclo y límites. GitHub Actions completó correctamente sintaxis, suites y comprobaciones de integración.
+- La interacción visual del reparentado todavía debe validarse en Safari/iPad. No se declara aún la prueba táctil del editor.
