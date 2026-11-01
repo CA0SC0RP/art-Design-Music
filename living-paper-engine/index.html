@@ -84,6 +84,12 @@
         <div class="control-heading"><label for="flexBendControl">Flexión continua del tallo</label><output id="flexBendValue">0°</output></div>
         <input id="flexBendControl" type="range" min="-28" max="28" value="0">
         <p class="control-hint">Prueba una curvatura suave de una sola pieza, sin separar sus segmentos.</p>
+        <strong class="control-section-title">MALLA 2D</strong>
+        <div class="control-heading"><label for="meshWaveControl">Ondulación de superficie</label><output id="meshWaveValue">5 px</output></div>
+        <input id="meshWaveControl" type="range" min="0" max="20" value="5">
+        <div class="control-heading"><label for="meshFoldControl">Pliegue progresivo</label><output id="meshFoldValue">3°</output></div>
+        <input id="meshFoldControl" type="range" min="-15" max="15" value="3">
+        <p class="control-hint">La hoja se deforma mediante una cuadrícula de vértices, manteniendo su textura y silueta transparente.</p>
       </div>
       <div class="control-group">
         <div class="control-heading"><label for="speedControl">Velocidad global</label><output id="speedValue">1.0×</output></div>
