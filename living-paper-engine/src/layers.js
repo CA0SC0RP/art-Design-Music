@@ -114,7 +114,7 @@ function applyLink(link) {
         target.vertices[i] += localCorrection.x;
         target.vertices[i + 1] += localCorrection.y;
         totalPenetration += contact.penetration;
-        if (contact.touching) contactCount++;
+        if (contact.touching) { contactCount++; vertexTouching[i / 2] = 1; }
       }
       const shadowOffset = contactShadowOffset(deltaX, deltaY, {
         contact: link.contact, clearance: link.clearance, maxOffset: link.shadowReach
@@ -128,11 +128,12 @@ function applyLink(link) {
   // Vertex tests can miss a thin crossing when both edge endpoints remain outside.
   const edgeCorrections = new Float64Array(target.vertices.length);
   const edgeWeights = new Uint32Array(target.vertices.length / 2);
-  let edgeTests = 0, edgeIntersections = 0, edgeCandidateTriangles = 0;
+  let edgeTests = 0, edgeIntersections = 0, edgeCandidateTriangles = 0, skippedResolvedEdges = 0;
   const normalLength = Math.hypot(link.contactNormalX, link.contactNormalY) || 1;
   const nx = link.contactNormalX / normalLength, ny = link.contactNormalY / normalLength;
   const gridIndex = (x, y) => y * (target.columns + 1) + x;
   const testEdge = (ia, ib) => {
+    if (vertexTouching[ia] && vertexTouching[ib]) { skippedResolvedEdges++; return; }
     const ax = target.vertices[ia * 2], ay = target.vertices[ia * 2 + 1];
     const bx = target.vertices[ib * 2], by = target.vertices[ib * 2 + 1];
     const midpoint = { x: (ax + bx) / 2, y: (ay + by) / 2 };
@@ -192,7 +193,7 @@ function applyLink(link) {
   link.lastContact = {
     activeVertices: contactCount, averagePenetration: totalPenetration / count,
     testedVertices, sourceTriangles: sourceTriangles.length, candidateTriangles,
-    testedEdges: edgeTests, edgeIntersections, edgeCandidateTriangles,
+    testedEdges: edgeTests, skippedResolvedEdges, edgeIntersections, edgeCandidateTriangles,
     indexedCells: spatialIndex.cells.size
   };
 }
