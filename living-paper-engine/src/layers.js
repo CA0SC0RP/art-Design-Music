@@ -1,6 +1,6 @@
 import { layerFalloff, resolveLayerResponse, sampleDisplacement, contactShadowOffset } from "./layer-math.js";
 import {
-  resolveContactConstraint, composeWorldTransform, transformPoint, inverseTransformVector,
+  resolveContactConstraint, composeWorldTransform, transformPoint, transformVector, inverseTransformVector,
   buildMeshTriangles, buildTriangleSpatialIndex, queryTriangleSpatialIndex,
   closestPointOnMesh, pointInPolygon, segmentTriangleContacts
 } from "./collision-math.js";
