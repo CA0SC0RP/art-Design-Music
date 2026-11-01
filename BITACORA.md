@@ -432,3 +432,10 @@ Se incorporó expansión conservadora de los polígonos de recorte triangulares 
 
 ## 2026-11-01 — Editor de personajes v0.9.13
 Se refinó la expansión de recortes triangulares para usar offsets paralelos de distancia uniforme y no una expansión radial aproximada. Se agregaron pruebas de distancia perpendicular para ambos sentidos de orientación y de copia independiente con expansión cero. Pendiente evaluación visual de costuras, halos y bordes en navegador/Safari del iPad.
+
+
+## 2026-11-01 — Editor de personajes v0.9.14: atomicidad de influencias
+- Durante la revisión de `mesh-model.js` se detectó que `setInfluence()` podía poner en cero el último peso y después devolver error, dejando el vértice alterado.
+- Se reescribió la operación para calcular las influencias candidatas en una copia, validar suma y límite de huesos y confirmar el cambio solo si todo es válido. Un rechazo ahora conserva exactamente los pesos originales.
+- Se amplió `tests/mesh-model.test.js` con regresiones para el último peso positivo y el límite de cuatro influencias.
+- Código y pruebas actualizados en la rama `feature/living-paper-engine-foundation`. Pendiente confirmar CI de GitHub Actions. No se hizo prueba visual de navegador/Safari/iPad ni se modificó `main`.
