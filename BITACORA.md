@@ -439,3 +439,10 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - Se reescribió la operación para calcular las influencias candidatas en una copia, validar suma y límite de huesos y confirmar el cambio solo si todo es válido. Un rechazo ahora conserva exactamente los pesos originales.
 - Se amplió `tests/mesh-model.test.js` con regresiones para el último peso positivo y el límite de cuatro influencias.
 - Código y pruebas actualizados en la rama `feature/living-paper-engine-foundation`. Pendiente confirmar CI de GitHub Actions. No se hizo prueba visual de navegador/Safari/iPad ni se modificó `main`.
+
+
+## 2026-11-01 — Editor de personajes v0.9.15: reutilización de geometría SVG
+- Se eliminó la duplicación del marcado SVG de la forma base dentro de cada triángulo deformado. La geometría original ahora se declara una sola vez en `defs` y cada fragmento la instancia mediante `use`, manteniendo su transformación afín y su recorte independiente.
+- El cambio reduce el tamaño del SVG generado y evita repetir nodos de geometría en el marcado por cada cara. No se afirma aún una mejora medida de FPS o memoria; eso requiere perfilado en navegador.
+- El workflow incorpora comprobaciones estructurales para verificar la definición compartida y el uso de referencias SVG.
+- Pendiente: validar representación de `use` y clip paths en Safari/iPad, revisar contornos/costuras y medir rendimiento con mallas densas.
