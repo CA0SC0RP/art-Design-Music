@@ -257,3 +257,31 @@ test("el acoplamiento se mantiene sin deriva durante ciclos repetidos de deforma
     assert.ok(Math.abs(target.vertices[i] - afterFirstCycle[i]) < 1e-5);
   }
 });
+
+
+test("el contacto transformado mantiene estabilidad con ambas capas bajo el mismo rig", () => {
+  const source = makeMesh("front", { sourceLift: 40 });
+  const target = makeMesh("back");
+  const parent = {
+    position: { x: 30, y: -12 }, scale: { x: 1.2, y: 0.8 },
+    rotation: 0.4, pivot: { x: 0, y: 0 }, parent: null
+  };
+  source.container.parent = parent;
+  target.container.parent = parent;
+  const engine = { paused: false, update(dt) { source.update(dt); target.update(dt); } };
+  enableLayerInteraction(engine, [{
+    source, target, coupling: 0, clearance: 6, contactGap: 2,
+    contactStiffness: 0.5, maxCorrection: 8, contactRange: 32,
+    contactNormalX: -Math.sin(0.4), contactNormalY: Math.cos(0.4)
+  }]);
+  engine.update(1 / 60);
+  const first = new Float32Array(target.vertices);
+  const telemetry = engine.layerInteractions[0].lastContact;
+  assert.ok(telemetry.activeVertices > 0);
+  assert.ok(telemetry.testedEdges > 0);
+  for (let frame = 0; frame < 60; frame++) engine.update(1 / 60);
+  for (let i = 0; i < first.length; i++) {
+    assert.ok(Number.isFinite(target.vertices[i]));
+    assert.ok(Math.abs(target.vertices[i] - first[i]) < 1e-5);
+  }
+});
