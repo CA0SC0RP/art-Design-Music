@@ -22,6 +22,9 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Relieve aparente mediante una segunda malla de iluminación ligada a los mismos vértices y UV.
 - Bandas de luz y sombra ajustables según ángulo, orientación e intensidad de cada pliegue.
 - La iluminación se actualiza cuando cambian los pliegues y sigue la deformación de la superficie.
+- Cantos levantados dibujados sobre la línea del pliegue con espesor aparente variable.
+- Sombra propia del canto y reflejo fino para separar visualmente la cara superior y el borde expuesto.
+- Perfil de espesor dependiente del ángulo, el lado del pliegue y la intensidad configurada.
 - Movimiento heredado entre rama y hojas articuladas.
 
 ### Materiales de papel (prototipo)
@@ -31,7 +34,7 @@ Motor experimental reutilizable para cuadros vivos de papel multicapa de Art Des
 - Línea de luz sutil en el borde superior.
 - Intensidad de sombra y grosor ajustables por pieza desde el inspector.
 
-La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final. Las zonas de influencia se expresan en coordenadas normalizadas de la superficie y usan una caída suave para evitar límites abruptos. Los anclajes conservan regiones de la malla cerca de su posición de reposo. Los pliegues aplican una aproximación geométrica 2D a un lado de una línea de pliegue; la capa de volumen añade iluminación y sombra mapeadas para sugerir relieve. No es geometría 3D ni simulación física de papel.
+La malla demostrativa usa una silueta y textura generadas en el navegador; sirve para validar deformación y UV, no es un recurso artístico final. Las zonas de influencia se expresan en coordenadas normalizadas de la superficie y usan una caída suave para evitar límites abruptos. Los anclajes conservan regiones de la malla cerca de su posición de reposo. Los pliegues aplican una aproximación geométrica 2D a un lado de una línea de pliegue; la capa de volumen añade iluminación y sombra mapeadas para sugerir relieve; los cantos levantados añaden una banda visible de espesor variable. No es geometría 3D ni simulación física de papel.
 
 Los materiales son aproximaciones 2D deliberadas. Aún no representan simulación física ni una malla 3D de papel.
 
