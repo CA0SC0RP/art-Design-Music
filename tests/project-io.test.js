@@ -56,7 +56,7 @@ test("conserva una malla válida y normaliza sus pesos al importar",()=>{
  {id:"v1",x:10,y:-10,weights:[{boneId:"arm",weight:1}]},
  {id:"v2",x:-10,y:10,weights:[{boneId:"arm",weight:1}]},
  {id:"v3",x:10,y:10,weights:[{boneId:"arm",weight:1}]}
- ],faces:[[0,1,3],[0,3,2]]};
+ ],faces:[[0,1,3],[0,3,2]],bindMatrices:{root:[1,0,0,1,0,0],arm:[1,0,0,1,0,0]}};
  const r=normalizeProject(p);assert.equal(r.ok,true);assert.equal(r.project.nodes[1].mesh.vertices.length,4);assert.equal(r.project.nodes[1].mesh.vertices[0].weights[0].weight,1);
 });
 test("rechaza mallas con huesos inexistentes, pesos cero o caras inválidas",()=>{
@@ -68,4 +68,15 @@ test("rechaza mallas con huesos inexistentes, pesos cero o caras inválidas",()=
  assert.equal(normalizeProject(p).ok,false);
  p.nodes[1].mesh.vertices[0].weights=[{boneId:"arm",weight:0}];assert.equal(normalizeProject(p).ok,false);
  p.nodes[1].mesh.vertices[0].weights=[{boneId:"arm",weight:1}];p.nodes[1].mesh.faces=[[0,1,9]];assert.equal(normalizeProject(p).ok,false);
+});
+
+test("valida y conserva matrices de referencia de la malla",()=>{
+ const p=project();p.nodes[1].mesh={vertices:[
+ {id:"v0",x:0,y:0,weights:[{boneId:"arm",weight:1}]},
+ {id:"v1",x:1,y:0,weights:[{boneId:"arm",weight:1}]},
+ {id:"v2",x:0,y:1,weights:[{boneId:"arm",weight:1}]}
+ ],faces:[[0,1,2]],bindMatrices:{arm:[1,0,0,1,0,0]}};
+ let r=normalizeProject(p);assert.equal(r.ok,true);assert.deepEqual(r.project.nodes[1].mesh.bindMatrices.arm,[1,0,0,1,0,0]);
+ p.nodes[1].mesh.bindMatrices.arm=[1,2];assert.equal(normalizeProject(p).ok,false);
+ p.nodes[1].mesh.bindMatrices={ghost:[1,0,0,1,0,0]};assert.equal(normalizeProject(p).ok,false);
 });
