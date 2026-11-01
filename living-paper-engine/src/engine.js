@@ -156,6 +156,7 @@ export class PaperJoint{
       this.angle=Math.max(this.minAngle,Math.min(this.maxAngle,this.restAngle+swing));
       this.container.rotation=this.angle*Math.PI/180;
     }
+    this.onUpdate?.(this.angle,this);
     for(const child of this.children)child.update(elapsed);
   }
 }
