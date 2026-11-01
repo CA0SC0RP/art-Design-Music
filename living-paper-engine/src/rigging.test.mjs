@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { applyPaperRig } from "./rigging.js";
+import { applyPaperRig, bindJointToFold } from "./rigging.js";
 
 function mockMesh() {
   const base = new Float32Array([
@@ -42,4 +42,27 @@ test("shadow vertices track the final folded surface", () => {
     assert.equal(mesh.shadowVertices[i],mesh.vertices[i]+4);
     assert.equal(mesh.shadowVertices[i+1],mesh.vertices[i+1]+5);
   }
+});
+
+test("multiple crease folds combine without non-finite vertices", () => {
+  const mesh=mockMesh();
+  const folds=[
+    {x1:0,y1:.5,x2:1,y2:.5,angle:35,strength:.8,side:"positive",endSoftness:10},
+    {x1:.5,y1:0,x2:.5,y2:1,angle:-28,strength:.65,side:"negative",endSoftness:10}
+  ];
+  applyPaperRig(mesh,[],folds);
+  assert.ok(mesh.vertices.every(Number.isFinite));
+  assert.ok(mesh.vertices.some((value,index)=>value!==mesh.baseVertices[index]));
+});
+
+test("a joint drives its linked fold angle and can be unbound", () => {
+  const mesh={folds:[{angle:0}],elapsed:0,update(){this.updates=(this.updates||0)+1;}};
+  const joint={angle:10,onUpdate:null};
+  const unbind=bindJointToFold(mesh,joint,{foldIndex:0,restAngle:0,multiplier:2});
+  assert.equal(mesh.folds[0].angle,20);
+  joint.angle=25;
+  joint.onUpdate(joint.angle,joint);
+  assert.equal(mesh.folds[0].angle,50);
+  unbind();
+  assert.equal(joint.onUpdate,null);
 });
