@@ -8,6 +8,7 @@ on:
       - "prototype/character-editor-v01/**"
       - "tests/ik-solver.test.js"
       - "tests/project-io.test.js"
+      - "tests/rig-geometry.test.js"
       - ".github/workflows/character-editor-check.yml"
   workflow_dispatch:
 
@@ -29,11 +30,13 @@ jobs:
       - name: Validar sintaxis del solver IK
         run: node --check prototype/character-editor-v01/ik-solver.js
 
-      - name: Validar módulo de importación de proyectos
-        run: node --check prototype/character-editor-v01/project-io.js
+      - name: Validar módulos del editor
+        run: |
+          node --check prototype/character-editor-v01/project-io.js
+          node --check prototype/character-editor-v01/rig-geometry.js
 
       - name: Ejecutar pruebas automatizadas
-        run: node --test tests/ik-solver.test.js tests/project-io.test.js
+        run: node --test tests/ik-solver.test.js tests/project-io.test.js tests/rig-geometry.test.js
 
       - name: Validar sintaxis del JavaScript integrado en el editor
         run: |
@@ -45,4 +48,6 @@ jobs:
           grep -q 'ADM_IK.solveTwoBone' prototype/character-editor-v01/index.html
           grep -q 'project-io.js' prototype/character-editor-v01/index.html
           grep -q 'ADM_ProjectIO.normalizeProject' prototype/character-editor-v01/index.html
+          grep -q 'rig-geometry.js' prototype/character-editor-v01/index.html
+          grep -q 'ADM_RigGeometry.reparentPreserving' prototype/character-editor-v01/index.html
           echo "Editor de personajes: comprobaciones estructurales correctas."
