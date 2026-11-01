@@ -173,3 +173,15 @@ Anotar cada decisión aprobada, cambio de esquema, archivo creado, prueba ejecut
 - No se instalaron dependencias, no se usaron servicios pagos y no se copió código de los repositorios investigados.
 - Próximo paso: abrir el prototipo mediante la vista previa de Codespaces y probar toque, arrastre, escala, rotación, reproducción y pausa en Safari del iPad; corregir según el resultado.
 - Revisión estática posterior del prototipo: se corrigió el cálculo de rotación al cruzar ±180° y se limitaron los desplazamientos del personaje para reducir salidas del escenario. Commit: `ca457d0d9c01efd398f9c7a08a06b4fdc8c77cda`. Esta revisión no sustituye una prueba de navegador.
+
+
+## 2026-11-01 — Decisión de producto: estudio web y salida de vídeo
+- Se define el producto como un estudio web accesible desde Safari, Chrome y Firefox; no se desarrollará un APK Android como producto principal.
+- Cada cuadro/obra podrá ser una historia/caricatura independiente, organizada como proyecto con personajes, escenarios, escenas, animación y audio.
+- La salida principal será un vídeo descargable y publicable. El renderizado sigue siendo necesario: el motor debe calcular fotogramas, componer imagen y audio y codificar el archivo final.
+- La animación dibujada a mano no es un objetivo del producto; las fuentes de investigación se usan para extraer técnicas útiles para personajes digitales, jerarquía, rigging, mallas, timeline y dirección de diálogos.
+- Se investigará primero la exportación local en navegador. No se activa hosting, almacenamiento remoto, render remoto, API pagada ni suscripción sin permiso explícito.
+- Política preventiva de licencias documentada: priorizar licencias permisivas; no copiar código GPL de Umamo; verificar individualmente runtimes, dependencias, modelos, fuentes, música, voces y recursos antes de incorporarlos.
+- Documento nuevo: `docs/vision-estudio-web-y-exportacion-de-caricaturas-2026-11-01.md`. Commit inicial: `e15480b486882461f8b3ea0eae1c31a4744efeb9`.
+- Se actualizaron `README.md` y `ESTADO_PROYECTO.md`. No se modificó `main`, no hubo fusión ni PR.
+- Siguiente paso técnico: validar el prototipo en iPad; después separar el estado de escena de la representación SVG y crear un primer documento de proyecto guardable/restaurable.
