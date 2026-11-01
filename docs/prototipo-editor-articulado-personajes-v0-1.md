@@ -14,7 +14,7 @@ Comprobar que el proyecto puede representar un objeto complejo como un árbol de
 - Personaje separado en torso, cuello, cabeza, cabello, ojos, brazos, antebrazos, manos, muslos, piernas y pies.
 - Árbol separado en tronco, ramas, ramitas y grupos de hojas.
 - Jerarquía visual de partes con selección desde el árbol o el lienzo.
-- Manipulación directa por arrastre.
+- Manipulación directa por arrastre, convirtiendo las coordenadas al espacio local del padre para que las piezas hijas puedan moverse correctamente incluso bajo transformaciones jerárquicas.
 - Inspector de nombre, posición X/Y, rotación, escala y relación padre.
 - Añadir partes de brazo, pierna, rama, hojas y articulación; duplicar, eliminar y cambiar orden.
 - Guardado en localStorage del navegador y exportación del proyecto como JSON.
