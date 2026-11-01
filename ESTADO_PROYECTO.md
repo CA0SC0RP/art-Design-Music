@@ -312,3 +312,10 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se añadieron dos pruebas automatizadas para expansión válida, preservación de la malla original y rechazo de entradas inválidas.
 - **Pendiente de evaluación visual:** comprobar si disminuyen las juntas sin generar halos, solapamientos visibles o pérdida de detalle en bordes. No se considera validado en Safari/iPad.
 - Se mantiene la rama `feature/living-paper-engine-foundation`; no se modifica `main`.
+
+
+## Actualización — 2026-11-01: v0.9.13, expansión geométrica uniforme
+- Se refinó `expandTriangle()`: ahora calcula el desplazamiento como intersección de lados paralelos, de modo que cada borde del recorte se separa una distancia uniforme, en lugar de mover vértices radialmente desde el centroide.
+- Se conserva el soporte para ambas orientaciones del triángulo, se valida degeneración y la expansión cero devuelve una copia independiente.
+- Se añadieron pruebas que miden la distancia perpendicular real a cada lado en triángulos con ambos sentidos de recorrido.
+- La magnitud aplicada al recorte continúa siendo 0.35 unidades locales. La inspección visual en navegador y Safari/iPad sigue pendiente; esta mejora geométrica no demuestra por sí sola ausencia de halos.
