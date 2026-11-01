@@ -27,8 +27,8 @@ export function enableLayerInteraction(engine, links = []) {
     const link = normalized[index];
     if (!link) throw new RangeError("Índice de interacción de capas inexistente.");
     for (const key of Object.keys(LIMITS)) if (options[key] !== undefined) link[key] = clamp(Number(options[key]), ...LIMITS[key]);
+    // Recompute on the next engine tick, after the base mesh update has reset prior contact offsets.
     link.target.container.position.y = link.restY + link.clearance;
-    applyLink(link);
     return engine;
   };
   engine.getLayerInteractions = () => normalized.map(({ source, target, ...settings }) => ({ source: source.id, target: target.id, ...settings }));
