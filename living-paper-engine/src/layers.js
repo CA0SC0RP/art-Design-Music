@@ -1,5 +1,5 @@
 import { layerFalloff, resolveLayerResponse, sampleDisplacement, contactShadowOffset } from "./layer-math.js";
-import { resolveContactConstraint, composeWorldTransform, transformPoint, inverseTransformVector, buildMeshTriangles, closestPointOnMesh, pointInPolygon } from "./collision-math.js";
+import { resolveContactConstraint, composeWorldTransform, transformPoint, inverseTransformVector, buildMeshTriangles, closestPointOnMesh, pointInPolygon, segmentTriangleContacts } from "./collision-math.js";
 
 /**
  * Couples overlapping PaperMesh surfaces with a bounded 2.5D contact response.
@@ -107,6 +107,64 @@ function applyLink(link) {
     }
   }
 
+  // A vertex-only test can miss a thin crossing when both edge endpoints remain outside.
+  // Test every unique grid edge against the source triangulation and distribute a bounded
+  // separation correction to the two target vertices surrounding each intersection.
+  const edgeCorrections = new Float64Array(target.vertices.length);
+  const edgeWeights = new Uint16Array(target.vertices.length / 2);
+  let edgeTests = 0, edgeIntersections = 0;
+  const normalLength = Math.hypot(link.contactNormalX, link.contactNormalY) || 1;
+  const nx = link.contactNormalX / normalLength, ny = link.contactNormalY / normalLength;
+  const gridIndex = (x, y) => y * (target.columns + 1) + x;
+  const testEdge = (ia, ib) => {
+    const ax = target.vertices[ia * 2], ay = target.vertices[ia * 2 + 1];
+    const bx = target.vertices[ib * 2], by = target.vertices[ib * 2 + 1];
+    const midpoint = { x: (ax + bx) / 2, y: (ay + by) / 2 };
+    if (target.shape && !pointInPolygon(midpoint.x / target.width, midpoint.y / target.height, target.shape)) return;
+    const worldA = transformPoint(targetTransform, { x: ax, y: ay });
+    const worldB = transformPoint(targetTransform, { x: bx, y: by });
+    edgeTests++;
+    const hits = segmentTriangleContacts(worldA, worldB, sourceTriangles);
+    for (const hit of hits) {
+      const triangleCenter = {
+        x: (hit.triangle.a.x + hit.triangle.b.x + hit.triangle.c.x) / 3,
+        y: (hit.triangle.a.y + hit.triangle.b.y + hit.triangle.c.y) / 3
+      };
+      const side = (midpoint.x * targetTransform.a + midpoint.y * targetTransform.c + targetTransform.tx - triangleCenter.x) * nx +
+        (midpoint.x * targetTransform.b + midpoint.y * targetTransform.d + targetTransform.ty - triangleCenter.y) * ny;
+      const direction = side < -1e-6 ? -1 : 1;
+      const amount = Math.min(link.maxCorrection, Math.max(0.5, link.contactGap) * link.contactStiffness);
+      if (amount <= 0) continue;
+      const t = hit.t, denominator = Math.max(1e-6, (1 - t) ** 2 + t ** 2);
+      const wa = (1 - t) / denominator, wb = t / denominator;
+      const worldCorrection = { x: nx * amount * direction, y: ny * amount * direction };
+      const localCorrection = inverseTransformVector(targetTransform, worldCorrection);
+      edgeCorrections[ia * 2] += localCorrection.x * wa;
+      edgeCorrections[ia * 2 + 1] += localCorrection.y * wa;
+      edgeCorrections[ib * 2] += localCorrection.x * wb;
+      edgeCorrections[ib * 2 + 1] += localCorrection.y * wb;
+      edgeWeights[ia]++; edgeWeights[ib]++;
+      edgeIntersections++;
+    }
+  };
+  for (let y = 0; y <= target.rows; y++) for (let x = 0; x <= target.columns; x++) {
+    const a = gridIndex(x, y);
+    if (x < target.columns) testEdge(a, gridIndex(x + 1, y));
+    if (y < target.rows) testEdge(a, gridIndex(x, y + 1));
+    if (x < target.columns && y < target.rows) testEdge(gridIndex(x + 1, y), gridIndex(x, y + 1));
+  }
+  for (let vertex = 0; vertex < edgeWeights.length; vertex++) {
+    if (!edgeWeights[vertex]) continue;
+    const divisor = edgeWeights[vertex];
+    const dx = clamp(edgeCorrections[vertex * 2] / divisor, -link.maxCorrection, link.maxCorrection);
+    const dy = clamp(edgeCorrections[vertex * 2 + 1] / divisor, -link.maxCorrection, link.maxCorrection);
+    target.vertices[vertex * 2] += dx;
+    target.vertices[vertex * 2 + 1] += dy;
+    target.shadowVertices[vertex * 2] += dx;
+    target.shadowVertices[vertex * 2 + 1] += dy;
+  }
+  edgeIntersections = Math.min(edgeIntersections, edgeTests * 3);
+
   const count = Math.max(1, testedVertices);
   target.mesh.vertices = target.vertices;
   target.shadowMesh.vertices = target.shadowVertices;
@@ -115,7 +173,9 @@ function applyLink(link) {
     activeVertices: contactCount,
     averagePenetration: totalPenetration / count,
     testedVertices,
-    sourceTriangles: sourceTriangles.length
+    sourceTriangles: sourceTriangles.length,
+    testedEdges: edgeTests,
+    edgeIntersections
   };
 }
 function normalizeLink(link = {}) {
@@ -139,7 +199,7 @@ function normalizeLink(link = {}) {
     maxTangentialCorrection: clamp(Number(link.maxTangentialCorrection ?? 3), 0, 12),
     restY: 0,
     baseShadowAlpha: 0,
-    lastContact: { activeVertices: 0, averagePenetration: 0 }
+    lastContact: { activeVertices: 0, averagePenetration: 0, testedEdges: 0, edgeIntersections: 0 }
   };
 }
 function validateMesh(mesh, label) {
