@@ -198,3 +198,12 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se añadieron estilos de foco visible para botones, campos y selectores.
 - **Verificación estática:** JavaScript pasó compilación sintáctica con `new Function`; no se encontraron IDs DOM duplicados; balance de llaves CSS revisado. No se ejecutó navegador ni se probó todavía en Safari del iPad.
 - **Siguiente paso:** prueba táctil manual en Safari: seleccionar y mover piezas, arrastrar pivotes y los cuatro objetivos IK, fijar/liberar, usar sliders, guardar y exportar JSON. Mouse queda para una validación posterior.
+
+
+## Actualización 2026-11-01 — IK con restricciones anatómicas iniciales
+
+- El solver geométrico se extrajo a `prototype/character-editor-v01/ik-solver.js` para separar cálculo y presentación.
+- Se añadieron límites iniciales conservadores para hombro/cadera (±165°) y flexión direccional de codo/rodilla (hasta 150°), respetando límites articulares más restrictivos configurados en cada pieza.
+- Las soluciones inválidas se rechazan antes de cambiar el rig; el estado de la última pose válida se conserva.
+- Se añadió `tests/ik-solver.test.js` con pruebas de alcance, flexión en ambos sentidos, límites y parámetros inválidos. La suite está incorporada al repositorio; su ejecución en Codespaces queda pendiente de confirmación.
+- La interfaz no se ha probado en Safari/iPad. La validación táctil sigue pendiente y tiene prioridad antes de ampliar la deformación.
