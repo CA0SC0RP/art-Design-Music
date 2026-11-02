@@ -89,3 +89,15 @@ test("el pincel no modifica la malla si supera el límite de influencias",()=>{
  const before=JSON.stringify(v.weights),result=model.paintInfluence(r.mesh,v.x,v.y,"e",.8,10);
  assert.equal(result.ok,false);assert.equal(JSON.stringify(v.weights),before);
 });
+
+
+test("el pincel rechaza coordenadas de vértice inválidas sin lanzar ni mutar",()=>{
+ const r=model.createGrid({width:10,height:10,columns:2,rows:2,boneId:"root"}),before=JSON.stringify(r.mesh);
+ r.mesh.vertices[3].x=NaN;
+ const beforeInvalid=JSON.stringify(r.mesh);
+ assert.doesNotThrow(()=>assert.equal(model.paintInfluence(r.mesh,0,0,"arm",.8,20).ok,false));
+ assert.equal(JSON.stringify(r.mesh),beforeInvalid);
+ r.mesh.vertices[3]=null;
+ assert.equal(model.paintInfluence(r.mesh,0,0,"arm",.8,20).ok,false);
+ assert.equal(r.mesh.vertices[0].weights[0].boneId,"root");
+});
