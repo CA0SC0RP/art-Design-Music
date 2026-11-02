@@ -13,9 +13,10 @@ function worldTransform(nodes,id,seen=new Set()){
  const p=worldTransform(map,parent.id,seen),px=Number(parent.pivotX)||0,py=Number(parent.pivotY)||0;
  const lx=(own.x-px)*p.scale,ly=(own.y-py)*p.scale,rad=p.rotation*Math.PI/180,c=Math.cos(rad),s=Math.sin(rad);
  const result={x:p.x+c*lx-s*ly,y:p.y+s*lx+c*ly,rotation:p.rotation+own.rotation,scale:p.scale*own.scale};
+ if(![result.x,result.y,result.rotation,result.scale].every(Number.isFinite)||result.scale<=0)throw new Error("La transformación mundial produjo valores no finitos.");
  seen.delete(id);return result;
 }
-function multiplyMatrix(a,b){return [a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];}
+function multiplyMatrix(a,b){const result=[a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];if(!result.every(Number.isFinite))throw new Error("La composición del rig produjo una matriz no finita.");return result;}
 function worldMatrix(nodes,id,seen=new Set()){
  const map=nodes instanceof Map?nodes:new Map(nodes.map(n=>[n.id,n])),node=map.get(id);
  if(!node)throw new Error("La pieza solicitada no existe.");
