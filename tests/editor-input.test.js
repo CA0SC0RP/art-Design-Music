@@ -315,3 +315,16 @@ test("el adaptador muestra solo propuestas válidas y conserva intacto el proyec
  assert.equal(api.clearPreview().cleared,true);
  assert.equal(JSON.stringify(project),before);
 });
+
+
+test("el panel temporal permite crear, validar, previsualizar y limpiar una propuesta local",()=>{
+ assert.match(html,/id="creativeTestCreate"/);
+ assert.match(html,/id="creativeTestValidate"/);
+ assert.match(html,/id="creativeTestPreview"/);
+ assert.match(html,/id="creativeTestClear"/);
+ assert.match(html,/window\.ADM_CreativeControl\.previewProposal\(creativeTestProposal\)/);
+ assert.match(html,/window\.ADM_CreativeControl\.validateProposal\(creativeTestProposal\)/);
+ assert.match(html,/window\.ADM_CreativeControl\.clearPreview\(\)/);
+ assert.match(html,/Sin conexión a modelos ni servicios externos/);
+ assert.match(html,/No modifica ni guarda el personaje/);
+});
