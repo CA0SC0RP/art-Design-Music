@@ -90,3 +90,23 @@ test("conserva matrices de referencia de todos los huesos añadidos al pintar in
  ],faces:[[0,1,2]],bindMatrices:{arm:[1,0,0,1,0,0],forearm:[1,0,0,1,0,20]}};
  const r=normalizeProject(p);assert.equal(r.ok,true);assert.deepEqual(r.project.nodes[1].mesh.bindMatrices,p.nodes[1].mesh.bindMatrices);
 });
+
+
+test("rechaza caras degeneradas también durante la importación",()=>{
+ const p=project();p.nodes[1].mesh={vertices:[
+  {id:"v0",x:0,y:0,weights:[{boneId:"arm",weight:1}]},
+  {id:"v1",x:5,y:5,weights:[{boneId:"arm",weight:1}]},
+  {id:"v2",x:10,y:10,weights:[{boneId:"arm",weight:1}]}
+ ],faces:[[0,1,2]]};
+ assert.equal(normalizeProject(p).ok,false);
+ p.nodes[1].mesh.vertices[2].y=5+1e-12;assert.equal(normalizeProject(p).ok,false);
+});
+
+test("rechaza matrices de referencia singulares al importar mallas",()=>{
+ const p=project();p.nodes[1].mesh={vertices:[
+  {id:"v0",x:0,y:0,weights:[{boneId:"arm",weight:1}]},
+  {id:"v1",x:1,y:0,weights:[{boneId:"arm",weight:1}]},
+  {id:"v2",x:0,y:1,weights:[{boneId:"arm",weight:1}]}
+ ],faces:[[0,1,2]],bindMatrices:{arm:[1,2,2,4,0,0]}};
+ assert.equal(normalizeProject(p).ok,false);
+});
