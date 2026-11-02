@@ -475,3 +475,9 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - Se detectó que el importador validaba índices de caras, pero no su área geométrica, y aceptaba matrices de referencia singulares. Eso permitía importar una malla que después fallaría al construir el skinning.
 - `project-io.js` ahora rechaza mallas sin caras, triángulos degenerados o casi degenerados (umbral alineado con `mesh-model.js`) y matrices de referencia no invertibles.
 - Se agregaron pruebas de regresión para ambos casos. Pendiente confirmar CI; no se afirma prueba visual en Safari/iPad.
+
+
+## 2026-11-02 — Validación automatizada v0.9.18
+- GitHub Actions, ejecución #78: 69 pruebas superadas, 0 fallidas; sintaxis y comprobaciones estructurales correctas.
+- Durante la primera ejecución (#76) falló el fixture de prueba para casi colinealidad porque sus coordenadas no representaban un triángulo casi degenerado. Se corrigió el caso y la ejecución #78 lo validó correctamente. El fallo correspondía al test, no al código del importador.
+- Sigue pendiente la inspección visual en navegador y la prueba táctil real en Safari/iPad.
