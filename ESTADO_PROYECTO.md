@@ -490,3 +490,15 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - CI #132 y #133 exitosos. CI #133 completó 104 pruebas: 104 aprobadas, 0 fallidas; también pasaron sintaxis del JavaScript integrado y comprobaciones estructurales del editor.
 - Próximo paso: vista previa visual no mutante que muestre el resultado propuesto sin alterar el proyecto. Aún no hay aprobación/commit ni ejecución IA.
 - Todo permanece en `feature/living-paper-engine-foundation`; `main` intacta, sin fusión, despliegue ni gastos. Safari/iPad real pendiente.
+
+
+## Actualización — 2026-11-02: vista previa creativa aislada
+
+- Se añadió `creative-control/preview-state.js`, que clona el proyecto y aplica transformaciones, poses, soluciones IK y expresiones sobre una copia temporal. El original no se modifica.
+- El adaptador expone `previewProposal(proposal)` y `clearPreview()`. Primero valida la propuesta y comprueba que la revisión del proyecto siga vigente.
+- El editor incorpora una capa SVG de preview separada; atenúa el arte original mientras muestra la propuesta. La siguiente operación de render del editor cancela la preview para evitar que permanezca visible tras cambios.
+- La preview rechaza proyectos con mallas/skinning hasta disponer de render aislado compatible. Es una limitación intencional para no presentar un resultado visual incorrecto.
+- El contexto ahora incluye transformaciones de poses guardadas y excluye la raíz. El validador verifica IDs, valores numéricos, rangos y límites articulares.
+- Se retiró `transitionMs` del contrato de poses porque el handler actual usa una duración fija de 520 ms. No se declara configurable algo que el editor no implementa.
+- La preview no acepta ni ejecuta cambios: aprobación, commit transaccional, undo y chat siguen pendientes.
+- Validación automatizada de esta etapa pendiente de GitHub Actions. La prueba real de esta capa en Safari/iPad también está pendiente.
