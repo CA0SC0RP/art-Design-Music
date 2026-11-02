@@ -17,3 +17,9 @@ test("la interfaz aumenta controles para dispositivos de puntero táctil",()=>{
  assert.match(html,/@media\s*\(pointer:\s*coarse\)/);
  assert.match(html,/button\{min-height:44px/);
 });
+
+test("la malla muestra un mapa de calor del peso del hueso seleccionado",()=>{
+ assert.match(html,/data-weight=/);
+ assert.match(html,/Math\.round\(weight\*100\)/);
+ assert.match(html,/meshBone"\)\.onchange=\(\)=>\{meshStatusMessage="";render\(\);\}/);
+});
