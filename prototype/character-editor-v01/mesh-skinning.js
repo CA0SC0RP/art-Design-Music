@@ -67,7 +67,7 @@ function deformVertices(vertices,skinMatrices){
    seen.add(influence.boneId);total+=influence.weight;
   }
   if(!Number.isFinite(total)||total<=1e-10)return {ok:false,message:"La suma de pesos de un vértice debe ser mayor que cero."};
-  for(const influence of vertex.weights){const p=transformPoint(skinMatrices[influence.boneId],vertex),w=influence.weight/total;x+=p.x*w;y+=p.y*w;}
+  for(const influence of vertex.weights){if(influence.weight===0)continue;const p=transformPoint(skinMatrices[influence.boneId],vertex),w=influence.weight/total;x+=p.x*w;y+=p.y*w;}
   if(!Number.isFinite(x)||!Number.isFinite(y))return {ok:false,message:"La deformación produjo coordenadas no válidas."};
   output.push({x,y});
  }
