@@ -4,13 +4,17 @@ const MAX_VERTICES=50000,MAX_BONES=100,MAX_INFLUENCES=4;
 function validMatrix(m){return Array.isArray(m)&&m.length===6&&m.every(Number.isFinite);}
 function multiply(a,b){
  if(!validMatrix(a)||!validMatrix(b))throw new Error("Matriz afín no válida.");
- return [a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];
+ const result=[a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];
+ if(!result.every(Number.isFinite))throw new Error("La multiplicación produjo una matriz no finita.");
+ return result;
 }
 function invert(m){
  if(!validMatrix(m))throw new Error("Matriz afín no válida.");
  const det=m[0]*m[3]-m[1]*m[2];
  if(!Number.isFinite(det)||Math.abs(det)<1e-10)throw new Error("La matriz de referencia no se puede invertir.");
- return [m[3]/det,-m[1]/det,-m[2]/det,m[0]/det,(m[2]*m[5]-m[3]*m[4])/det,(m[1]*m[4]-m[0]*m[5])/det];
+ const result=[m[3]/det,-m[1]/det,-m[2]/det,m[0]/det,(m[2]*m[5]-m[3]*m[4])/det,(m[1]*m[4]-m[0]*m[5])/det];
+ if(!result.every(Number.isFinite))throw new Error("La inversión produjo una matriz no finita.");
+ return result;
 }
 function transformPoint(m,p){
  if(!validMatrix(m)||!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))throw new Error("Punto o matriz no válidos.");
