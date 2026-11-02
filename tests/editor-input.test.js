@@ -285,3 +285,33 @@ test("las propuestas de pose validan transformaciones completas y ya no prometen
  assert.equal(schema.includes("transitionMs"),false);
  assert.doesNotThrow(()=>JSON.parse(schema));
 });
+
+
+test("el adaptador muestra solo propuestas válidas y conserva intacto el proyecto",()=>{
+ const validatorSource=fs.readFileSync(path.join(__dirname,"../creative-control/proposal-validator.js"),"utf8");
+ const calls=[];
+ const project={version:2,name:"Prueba",root:"root",nodes:[
+  {id:"root",name:"Raíz",type:"grupo",x:0,y:0,rotation:0,scale:1},
+  {id:"arm",name:"Brazo",type:"brazo",shape:"limb",parent:"root",x:10,y:20,rotation:0,scale:1,rotationMin:-90,rotationMax:90}
+ ],poses:[]};
+ const sandbox={window:{ADM_EditorPreview:{
+  present:(validation,context)=>{calls.push({validation,revision:context.project.revision});return {ok:true,mutatesProject:false,executionEnabled:false};},
+  clear:()=>({ok:true,cleared:true,mutatesProject:false})
+ }},data:project,selected:"arm"};
+ vm.createContext(sandbox);
+ vm.runInContext(validatorSource,sandbox);
+ vm.runInContext(adapter,sandbox);
+ const api=sandbox.window.ADM_CreativeControl;
+ const before=JSON.stringify(project);
+ const proposal={schemaVersion:"1.0",proposalId:"preview-bridge",projectVersion:String(api.getContext().project.revision),workspace:"character",summary:"Mover brazo.",actions:[{type:"set_part_transform",targetId:"arm",transform:{rotation:25}}]};
+ const shown=api.previewProposal(proposal);
+ assert.equal(shown.ok,true);
+ assert.equal(calls.length,1);
+ assert.equal(calls[0].validation.effects[0].after.rotation,25);
+ assert.equal(JSON.stringify(project),before);
+ const stale=api.previewProposal({...proposal,projectVersion:"0"});
+ assert.equal(stale.ok,false);
+ assert.equal(calls.length,1);
+ assert.equal(api.clearPreview().cleared,true);
+ assert.equal(JSON.stringify(project),before);
+});
