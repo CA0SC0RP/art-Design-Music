@@ -99,7 +99,7 @@ test("rechaza caras degeneradas también durante la importación",()=>{
   {id:"v2",x:10,y:10,weights:[{boneId:"arm",weight:1}]}
  ],faces:[[0,1,2]]};
  assert.equal(normalizeProject(p).ok,false);
- p.nodes[1].mesh.vertices[2].y=5+1e-12;assert.equal(normalizeProject(p).ok,false);
+ p.nodes[1].mesh.vertices[2].y=10+1e-12;assert.equal(normalizeProject(p).ok,false);
 });
 
 test("rechaza matrices de referencia singulares al importar mallas",()=>{
