@@ -61,10 +61,10 @@ function deformVertices(vertices,skinMatrices){
  const output=[];
  for(const vertex of vertices){
   if(!vertex||!Number.isFinite(vertex.x)||!Number.isFinite(vertex.y)||!Array.isArray(vertex.weights)||vertex.weights.length<1||vertex.weights.length>MAX_INFLUENCES)return {ok:false,message:"Un vértice tiene coordenadas o influencias no válidas."};
-  let total=0,x=0,y=0;
+  let total=0,x=0,y=0;const seen=new Set();
   for(const influence of vertex.weights){
-   if(!influence||typeof influence.boneId!=="string"||!Object.prototype.hasOwnProperty.call(skinMatrices,influence.boneId)||!Number.isFinite(influence.weight)||influence.weight<0)return {ok:false,message:"Una influencia referencia un hueso inválido o tiene peso negativo."};
-   total+=influence.weight;
+   if(!influence||typeof influence.boneId!=="string"||!influence.boneId||!Object.prototype.hasOwnProperty.call(skinMatrices,influence.boneId)||seen.has(influence.boneId)||!Number.isFinite(influence.weight)||influence.weight<0)return {ok:false,message:"Una influencia referencia un hueso inválido, duplicado o tiene peso negativo."};
+   seen.add(influence.boneId);total+=influence.weight;
   }
   if(!Number.isFinite(total)||total<=1e-10)return {ok:false,message:"La suma de pesos de un vértice debe ser mayor que cero."};
   for(const influence of vertex.weights){const p=transformPoint(skinMatrices[influence.boneId],vertex),w=influence.weight/total;x+=p.x*w;y+=p.y*w;}
