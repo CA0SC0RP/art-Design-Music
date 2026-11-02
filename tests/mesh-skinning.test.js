@@ -144,3 +144,10 @@ test("rechaza matrices de skinning que desbordan al combinar poses",()=>{
 test("rechaza inversión que produce componentes no finitos",()=>{
  assert.throws(()=>skin.invert([1,0,1e308,1,1e308,1e308]),/no finita/);
 });
+
+test("rechaza puntos que desbordan al aplicar una matriz afín",()=>{
+ assert.throws(()=>skin.transformPoint([1e308,0,0,1,0,0],{x:10,y:0}),/no finito/);
+});
+test("rechaza puntos no finitos aunque la matriz sea válida",()=>{
+ assert.throws(()=>skin.transformPoint([1,0,0,1,0,0],{x:Number.MAX_VALUE,y:Number.MAX_VALUE}),/no finito/);
+});
