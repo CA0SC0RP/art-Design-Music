@@ -117,6 +117,8 @@ test("el registro detecta capacidades según controles y selección sin ejecutar
  assert.equal(transform.agentExecutionEnabled,false);
  assert.equal(pose.available,true);
  assert.equal(initial.execution.enabled,false);
+ assert.equal(api.getCapability("solve_ik").agentExecutionEnabled,false);
+ assert.equal(api.getCapability("unknown_capability"),null);
  const events=[];
  api.subscribe(event=>events.push(event.type));
  sandbox.selected="root";
