@@ -24,17 +24,22 @@ test("la malla muestra un mapa de calor del peso del hueso seleccionado",()=>{
  assert.match(html,/meshBone"\)\.onchange=\(\)=>\{meshStatusMessage="";render\(\);\}/);
 });
 
-test("los controles deshabilitados se distinguen visualmente y no parecen activos",()=>{\n assert.match(html,/button:disabled\\s*\\{[^}]*opacity:/);\n assert.match(html,/input:disabled,select:disabled\\s*\\{[^}]*opacity:/);\n});\n
+test("los controles deshabilitados se distinguen visualmente y no parecen activos",()=>{
+ assert.match(html,/button:disabled\s*\{[^}]*opacity:/);
+ assert.match(html,/input:disabled,select:disabled\s*\{[^}]*opacity:/);
+});
 
 test("ADM Creative Control carga un adaptador de solo lectura",()=>{
  const adapter=fs.readFileSync(path.join(__dirname,"../creative-control/adapter.js"),"utf8");
- assert.match(html,/<script src="..\\/..\\/creative-control\\/adapter\\.js"><\\/script>/);
- assert.match(adapter,/getContext/);
- assert.match(adapter,/getCapabilities/);
- assert.match(adapter,/mode: "read-only"/);
- assert.match(adapter,/Object\\.freeze/);
+ assert.ok(html.includes('<script src="../../creative-control/adapter.js"></script>'));
+ assert.ok(adapter.includes("getContext"));
+ assert.ok(adapter.includes("getCapabilities"));
+ assert.ok(adapter.includes('mode: "read-only"'));
+ assert.ok(adapter.includes("Object.freeze"));
 });
 test("el adaptador inicial no publica operaciones de escritura ni ejecución",()=>{
  const adapter=fs.readFileSync(path.join(__dirname,"../creative-control/adapter.js"),"utf8");
- assert.doesNotMatch(adapter,/\\b(commit|execute|applyPose|setTransform|deleteNode)\\s*[:=(]/);
+ for(const forbidden of ["commit:", "execute:", "applyPose:", "setTransform:", "deleteNode:"]) {
+  assert.equal(adapter.includes(forbidden),false);
+ }
 });
