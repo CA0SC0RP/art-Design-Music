@@ -559,3 +559,8 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - Se conectó el selector de modo en el inspector y se añadieron tres pruebas de regresión. CI pendiente de ejecución. No se ha probado aún en Safari/iPad ni se ha modificado `main`.
 
 - Validación v0.9.31: GitHub Actions #116 completado con éxito; 93 pruebas aprobadas y 0 fallidas. La primera ejecución intermedia quedó antes de corregir el fixture del último peso; la ejecución #116, sobre el código y fixture corregidos, pasó íntegramente. La inspección real en Safari/iPad sigue pendiente.
+
+
+## 2026-11-02 — Editor de personajes v0.9.32: visualización de pesos por hueso
+- Se incorporó un mapa de calor en los vértices de la malla para distinguir rápidamente la influencia del hueso seleccionado. El color cambia de frío a cálido conforme aumenta el peso; el porcentaje se consulta en el título del punto.
+- Cambiar el hueso en el inspector refresca la visualización. La función es informativa y no altera datos de skinning. Se agregó prueba estructural. CI pendiente; Safari/iPad real aún pendiente.
