@@ -253,7 +253,7 @@ test("la vista previa aplica poses y expresiones y rechaza mallas o destinos ine
 
 test("el editor carga el estado de vista previa y ofrece una capa visual separada",()=>{
  assert.ok(html.includes('<script src="../../creative-control/preview-state.js"></script>'));
- assert.match(html,/<g id="creativePreview" pointer-events="none"><\\/g>/);
+ assert.ok(html.includes('<g id="creativePreview" pointer-events="none"></g>'));
  assert.match(html,/window\.ADM_EditorPreview=Object\.freeze/);
  assert.match(html,/clearCreativePreview\(\)/);
  assert.match(html,/creativePreviewStatus/);
