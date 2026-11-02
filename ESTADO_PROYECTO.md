@@ -363,3 +363,10 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Las matrices de referencia (`bindMatrices`) también se comprueban por determinante. Se rechazan matrices singulares antes de que lleguen al skinning, donde no podrían invertirse.
 - Se añadieron dos pruebas de regresión: caras degeneradas/casi degeneradas durante importación y matrices de referencia singulares.
 - Pendiente: confirmar GitHub Actions de esta revisión. No se ha realizado inspección visual ni prueba táctil en Safari/iPad.
+
+
+## Validación automatizada — v0.9.18
+- GitHub Actions, ejecución #78 (commit `8de1d6898cd5443631a447100b2c2a5561d0d791`): completada con éxito.
+- Suite completa: 69 pruebas superadas, 0 fallidas. Sintaxis de módulos, JavaScript integrado y comprobaciones estructurales también correctas.
+- La ejecución #76 detectó un error en el propio caso de prueba de casi colinealidad; se corrigieron las coordenadas del fixture y la ejecución #78 confirmó el caso. No fue un fallo del validador de producción.
+- La prueba visual y táctil en Safari/iPad continúa pendiente.
