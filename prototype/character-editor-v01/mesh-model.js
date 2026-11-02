@@ -44,7 +44,11 @@ function moveVertex(mesh,index,x,y){
 }
 function setInfluence(mesh,index,boneId,weight){
  if(!mesh||!Array.isArray(mesh.vertices)||!mesh.vertices[index]||typeof boneId!=="string"||!boneId||!Number.isFinite(weight)||weight<0)return {ok:false,message:"La influencia no es válida."};
- const vertex=mesh.vertices[index],weights=Array.isArray(vertex.weights)?vertex.weights.map(w=>({...w})):[],existing=weights.find(w=>w.boneId===boneId);
+ const vertex=mesh.vertices[index];
+ if(!Array.isArray(vertex.weights)||vertex.weights.length<1||vertex.weights.length>MAX_INFLUENCES)return {ok:false,message:"El vértice contiene una lista de influencias no válida."};
+ const weights=vertex.weights.map(w=>({...w})),seen=new Set();
+ for(const w of weights){if(!w||typeof w.boneId!=="string"||!w.boneId||seen.has(w.boneId)||!Number.isFinite(w.weight)||w.weight<0)return {ok:false,message:"El vértice contiene una influencia inválida o duplicada."};seen.add(w.boneId);}
+ const existing=weights.find(w=>w.boneId===boneId);
  if(existing)existing.weight=weight;
  else if(weight>0&&weights.length<MAX_INFLUENCES)weights.push({boneId,weight});
  else if(weight>0)return {ok:false,message:"Un vértice admite como máximo cuatro huesos."};
