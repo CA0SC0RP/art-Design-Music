@@ -283,4 +283,5 @@ test("las propuestas de pose validan transformaciones completas y ya no prometen
  const invalid=sandbox.window.ADM_ProposalValidator.validate({...proposal,actions:[{type:"apply_pose",poseId:"pose1",transitionMs:900}]},context);
  assert.ok(invalid.errors.some(error=>error.code==="unknown_property"));
  assert.equal(schema.includes("transitionMs"),false);
+ assert.doesNotThrow(()=>JSON.parse(schema));
 });
