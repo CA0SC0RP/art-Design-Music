@@ -534,3 +534,8 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - El renderizador preevalúa todas las caras de la malla antes de dibujar fragmentos. Si una cara está degenerada o no admite transformación, conserva la pieza completa sin deformar en vez de renderizar una malla parcial con huecos.
 - `transformPoint()` rechaza resultados no finitos; se añadieron dos pruebas de regresión para desbordamiento de coordenadas.
 - Validación CI pendiente. La continuidad visual real y Safari/iPad aún requieren inspección en navegador. `main` intacta.
+
+## Actualización — 2026-11-02: v0.9.28, prevención de pliegues de malla
+- El movimiento de vértices ahora comprueba las caras adyacentes antes de confirmar el cambio. Rechaza movimientos que degeneren o inviertan la orientación de una cara, sin mutar la posición original.
+- Se añadieron pruebas para rechazo sin mutación y movimiento válido dentro de la orientación original.
+- Validación CI pendiente. La inspección visual en navegador y Safari/iPad continúa pendiente. `main` intacta.
