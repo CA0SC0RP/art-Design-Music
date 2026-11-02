@@ -454,3 +454,8 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se añadieron tres pruebas para reducción y normalización, protección del último peso positivo y rechazo de modos desconocidos. Validación CI pendiente; Safari/iPad real sigue pendiente. `main` intacta.
 
 - Cierre de validación v0.9.31: GitHub Actions #116 exitoso; 93 pruebas superadas y 0 fallidas. Incluye los tres casos nuevos del pincel bidireccional y validación de sintaxis del editor. Safari/iPad real sigue pendiente.
+
+
+## Actualización — 2026-11-02: v0.9.32, mapa visual de pesos por hueso
+- Los vértices de la malla ahora muestran un mapa de color según el peso que tiene cada uno para el hueso seleccionado: tonos fríos indican influencia baja y tonos cálidos influencia alta. El porcentaje queda disponible en el título emergente del vértice.
+- Al cambiar el hueso del inspector, la visualización se actualiza sin modificar los pesos. Se añadió una comprobación estructural para este feedback. CI pendiente; revisión visual real en Safari/iPad sigue pendiente. `main` intacta.
