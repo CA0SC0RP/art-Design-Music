@@ -142,5 +142,5 @@ test("rechaza matrices de skinning que desbordan al combinar poses",()=>{
  assert.equal(r.ok,false);
 });
 test("rechaza inversión que produce componentes no finitos",()=>{
- assert.throws(()=>skin.invert([1e-200,0,0,1,0,0]),/no finita/);
+ assert.throws(()=>skin.invert([1,0,1e308,1,1e308,1e308]),/no finita/);
 });
