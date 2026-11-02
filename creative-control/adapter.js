@@ -12,6 +12,7 @@
   let lastProjectFingerprint = null;
   let lastContextFingerprint = null;
   let lastEmittedContext = null;
+  let lastCapabilitiesFingerprint = null;
   const listeners = new Set();
   let observer = null;
 
@@ -113,30 +114,34 @@
     return freezeDeep(raw);
   };
 
-  const getCapabilities = () => freezeDeep({
-    ok: true,
-    protocolVersion: PROTOCOL_VERSION,
-    adapterVersion: ADAPTER_VERSION,
-    mode: "read-only",
-    capabilities: [
-      { id: "inspect_project", access: "read", available: true, description: "Consultar resumen del proyecto y sus piezas." },
-      { id: "inspect_selection", access: "read", available: true, description: "Consultar la pieza seleccionada y su transformación." },
-      { id: "list_poses", access: "read", available: true, description: "Consultar las poses guardadas en el proyecto." },
-      { id: "inspect_mesh", access: "read", available: true, description: "Consultar si una pieza tiene malla y su tamaño." }
-    ],
-    unavailableUntilImplemented: [
-      "select_part",
-      "set_part_transform",
-      "apply_pose",
-      "solve_ik",
-      "set_expression",
-      "create_pose",
-      "scene_operations",
-      "audio_operations",
-      "timeline_operations"
-    ],
-    execution: { enabled: false, approvalRequired: true }
-  });
+  const getCapabilities = () => {
+    const registry = window.ADM_CapabilityRegistry;
+    if (!registry || typeof registry.getCapabilities !== "function") {
+      return freezeDeep({
+        ok: false,
+        protocolVersion: PROTOCOL_VERSION,
+        adapterVersion: ADAPTER_VERSION,
+        mode: "read-only",
+        capabilities: [],
+        error: "capability_registry_unavailable",
+        execution: { enabled: false, approvalRequired: true }
+      });
+    }
+    return freezeDeep({
+      ok: true,
+      protocolVersion: PROTOCOL_VERSION,
+      adapterVersion: ADAPTER_VERSION,
+      ...registry.getCapabilities(),
+      execution: { enabled: false, approvalRequired: true }
+    });
+  };
+
+  const getCapability = id => {
+    const registry = window.ADM_CapabilityRegistry;
+    return registry && typeof registry.getCapability === "function"
+      ? registry.getCapability(id)
+      : null;
+  };
 
   const emitChanges = () => {
     const context = getContext();
@@ -153,6 +158,11 @@
 
     lastEmittedContext = context;
     const capabilities = getCapabilities();
+    const nextCapabilitiesFingerprint = fingerprint(capabilities);
+    if (nextCapabilitiesFingerprint !== lastCapabilitiesFingerprint) {
+      lastCapabilitiesFingerprint = nextCapabilitiesFingerprint;
+      changes.push("capabilities.changed");
+    }
     for (const type of changes) {
       const event = freezeDeep({
         type,
@@ -194,6 +204,7 @@
       version: ADAPTER_VERSION,
       getContext,
       getCapabilities,
+      getCapability,
       subscribe
     })
   });
