@@ -1,9 +1,19 @@
-/* ADM Creative Control — read-only editor adapter.
- * This first stage exposes a narrow, immutable snapshot only.
- * It does not execute creative actions or expose project objects.
+/* ADM Creative Control — read-only synchronization adapter.
+ * Exposes immutable editor snapshots and change notifications.
+ * It never executes creative actions or exposes mutable project objects.
  */
 (() => {
   "use strict";
+
+  const PROTOCOL_VERSION = "1.0.0";
+  const ADAPTER_VERSION = "0.2.0-readonly";
+  let projectRevision = 0;
+  let contextRevision = 0;
+  let lastProjectFingerprint = null;
+  let lastContextFingerprint = null;
+  let lastEmittedContext = null;
+  const listeners = new Set();
+  let observer = null;
 
   const freezeDeep = value => {
     if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
@@ -12,10 +22,10 @@
     return value;
   };
 
-  const getContext = () => {
+  const readRawContext = () => {
     const project = typeof data === "object" && data ? data : null;
     if (!project || !Array.isArray(project.nodes)) {
-      return freezeDeep({ ok: false, error: "editor_context_unavailable" });
+      return { ok: false, error: "editor_context_unavailable" };
     }
 
     const selectedPart = project.nodes.find(node => node.id === selected) || null;
@@ -34,39 +44,92 @@
         rotationMin: Number.isFinite(Number(node.rotationMin)) ? Number(node.rotationMin) : -180,
         rotationMax: Number.isFinite(Number(node.rotationMax)) ? Number(node.rotationMax) : 180
       },
-      hasMesh: !!node.mesh
+      mesh: node.mesh ? {
+        available: true,
+        vertices: Array.isArray(node.mesh.vertices) ? node.mesh.vertices.length : 0,
+        faces: Array.isArray(node.mesh.faces) ? node.mesh.faces.length : 0
+      } : { available: false, vertices: 0, faces: 0 }
     }));
 
     const poses = Array.isArray(project.poses) ? project.poses.map(pose => ({
       id: String(pose.id || ""),
-      name: String(pose.name || "")
+      name: String(pose.name || ""),
+      nodeCount: Array.isArray(pose.nodes) ? pose.nodes.length : 0
     })) : [];
 
-    return freezeDeep({
+    return {
       ok: true,
-      adapterVersion: "0.1.0-readonly",
+      protocolVersion: PROTOCOL_VERSION,
+      adapterVersion: ADAPTER_VERSION,
       project: {
         name: String(project.name || "Proyecto sin nombre"),
-        version: Number(project.version) || 1
+        formatVersion: Number(project.version) || 1,
+        revision: projectRevision
       },
-      workspace: "character",
-      selection: selectedPart ? { id: String(selectedPart.id), name: String(selectedPart.name || "") } : null,
-      nodes,
-      poses,
-      counts: { nodes: nodes.length, poses: poses.length }
+      workspace: {
+        id: "character",
+        available: ["character"],
+        unavailable: ["rig", "animation", "scenes", "audio", "playlist", "timeline"]
+      },
+      selection: selectedPart ? {
+        id: String(selectedPart.id),
+        name: String(selectedPart.name || ""),
+        type: String(selectedPart.type || "")
+      } : null,
+      resources: {
+        nodes,
+        poses,
+        counts: { nodes: nodes.length, poses: poses.length }
+      }
+    };
+  };
+
+  const fingerprint = value => JSON.stringify(value);
+
+  const getContext = () => {
+    const raw = readRawContext();
+    if (!raw.ok) return freezeDeep(raw);
+
+    const projectState = {
+      name: raw.project.name,
+      formatVersion: raw.project.formatVersion,
+      nodes: raw.resources.nodes,
+      poses: raw.resources.poses
+    };
+    const nextProjectFingerprint = fingerprint(projectState);
+    const nextContextFingerprint = fingerprint({
+      project: nextProjectFingerprint,
+      workspace: raw.workspace.id,
+      selection: raw.selection && raw.selection.id
     });
+
+    if (nextProjectFingerprint !== lastProjectFingerprint) {
+      projectRevision += 1;
+      lastProjectFingerprint = nextProjectFingerprint;
+    }
+    if (nextContextFingerprint !== lastContextFingerprint) {
+      contextRevision += 1;
+      lastContextFingerprint = nextContextFingerprint;
+    }
+
+    raw.project.revision = projectRevision;
+    raw.contextRevision = contextRevision;
+    return freezeDeep(raw);
   };
 
   const getCapabilities = () => freezeDeep({
     ok: true,
-    adapterVersion: "0.1.0-readonly",
+    protocolVersion: PROTOCOL_VERSION,
+    adapterVersion: ADAPTER_VERSION,
     mode: "read-only",
     capabilities: [
-      { id: "inspect_project", access: "read", description: "Consultar resumen del proyecto y sus piezas." },
-      { id: "inspect_selection", access: "read", description: "Consultar la pieza seleccionada y su transformación." },
-      { id: "list_poses", access: "read", description: "Consultar las poses guardadas en el proyecto." }
+      { id: "inspect_project", access: "read", available: true, description: "Consultar resumen del proyecto y sus piezas." },
+      { id: "inspect_selection", access: "read", available: true, description: "Consultar la pieza seleccionada y su transformación." },
+      { id: "list_poses", access: "read", available: true, description: "Consultar las poses guardadas en el proyecto." },
+      { id: "inspect_mesh", access: "read", available: true, description: "Consultar si una pieza tiene malla y su tamaño." }
     ],
-    unavailableUntilApproved: [
+    unavailableUntilImplemented: [
+      "select_part",
       "set_part_transform",
       "apply_pose",
       "solve_ik",
@@ -75,17 +138,67 @@
       "scene_operations",
       "audio_operations",
       "timeline_operations"
-    ]
+    ],
+    execution: { enabled: false, approvalRequired: true }
   });
+
+  const emitChanges = () => {
+    const context = getContext();
+    if (!context.ok) return;
+    const previous = lastEmittedContext;
+    const changes = [];
+    if (!previous || previous.project.revision !== context.project.revision) changes.push("project.changed");
+    if (!previous || previous.workspace.id !== context.workspace.id) changes.push("workspace.changed");
+    const previousSelection = previous && previous.selection ? previous.selection.id : null;
+    const nextSelection = context.selection ? context.selection.id : null;
+    if (!previous || previousSelection !== nextSelection) changes.push("selection.changed");
+    if (!previous || previous.contextRevision !== context.contextRevision) changes.push("context.changed");
+    if (!changes.length) return;
+
+    lastEmittedContext = context;
+    const capabilities = getCapabilities();
+    for (const type of changes) {
+      const event = freezeDeep({
+        type,
+        protocolVersion: PROTOCOL_VERSION,
+        contextRevision: context.contextRevision,
+        projectRevision: context.project.revision,
+        context,
+        capabilities
+      });
+      listeners.forEach(listener => {
+        try { listener(event); } catch (_) { /* One subscriber cannot block others. */ }
+      });
+    }
+  };
+
+  const startObserving = () => {
+    if (observer || typeof MutationObserver !== "function" || typeof document === "undefined") return;
+    observer = new MutationObserver(emitChanges);
+    ["art", "outline", "tree", "selectedLabel", "count", "type", "poseSelect"].forEach(id => {
+      const target = document.getElementById(id);
+      if (target) observer.observe(target, { childList: true, subtree: true, attributes: true, characterData: true });
+    });
+  };
+
+  const subscribe = listener => {
+    if (typeof listener !== "function") throw new TypeError("listener_must_be_function");
+    listeners.add(listener);
+    startObserving();
+    emitChanges();
+    return () => listeners.delete(listener);
+  };
 
   Object.defineProperty(window, "ADM_CreativeControl", {
     configurable: false,
     enumerable: true,
     writable: false,
     value: Object.freeze({
-      version: "0.1.0-readonly",
+      protocolVersion: PROTOCOL_VERSION,
+      version: ADAPTER_VERSION,
       getContext,
-      getCapabilities
+      getCapabilities,
+      subscribe
     })
   });
 })();
