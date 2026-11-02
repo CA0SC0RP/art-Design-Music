@@ -502,3 +502,11 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se retiró `transitionMs` del contrato de poses porque el handler actual usa una duración fija de 520 ms. No se declara configurable algo que el editor no implementa.
 - La preview no acepta ni ejecuta cambios: aprobación, commit transaccional, undo y chat siguen pendientes.
 - Validación automatizada de esta etapa pendiente de GitHub Actions. La prueba real de esta capa en Safari/iPad también está pendiente.
+
+
+## Validación automatizada — vista previa creativa aislada
+
+- GitHub Actions #139, ejecución `41526441218`, commit `ed6a8bfaba79434ed308419a3299a8df8e26d6ea`: completada con éxito.
+- Suite completa: **110 pruebas superadas, 0 fallidas**. También pasaron la validación de módulos, sintaxis del JavaScript integrado y comprobación de carga del solver.
+- La cobertura nueva verifica copia no mutante, transformaciones, poses, IK, expresiones, rechazo de mallas no soportadas, destinos inexistentes, cancelación y bloqueo de propuestas obsoletas.
+- La vista previa todavía no se ha probado visualmente en Safari/iPad. CI confirma lógica y estructura, no el comportamiento gráfico real del navegador.
