@@ -469,3 +469,13 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se inicia el contrato de arquitectura en `creative-control/README.md` y el esquema de propuestas en `creative-control/contracts/action-proposal.schema.json`. Estos documentos describen el diseño; no significan que el adaptador o la ejecución estén implementados.
 - Primera etapa: mapear las funciones reales del editor de personajes y diseñar una API de solo lectura; después validador/simulador, transacciones aprobadas y chat persistente. Proveedores externos se dejan para una fase posterior.
 - Se conserva la rama `feature/living-paper-engine-foundation`. No se modifica `main`, no se fusiona ni despliega y no se autorizan gastos.
+
+
+## Actualización — 2026-11-02: registro dinámico de capacidades ADM
+- Se creó `creative-control/capability-registry.js`, un catálogo descriptivo de las capacidades que realmente existen en el editor de personajes.
+- El catálogo distingue lectura nativa, funciones del editor, controles manuales y operaciones representables en propuestas. Cada capacidad informa disponibilidad, espacio, parámetros, precondiciones, impacto, reversibilidad y compatibilidad con el contrato de propuestas.
+- Se registran capacidades de inspección, transformación, poses, IK, expresiones, movimientos predefinidos, malla, jerarquía y gestión del proyecto. La disponibilidad de IK y expresiones se comprueba contra los recursos del personaje activo.
+- El adaptador ahora consume el registro mediante `getCapabilities()` y `getCapability(id)`, y notifica `capabilities.changed` cuando cambia el catálogo efectivo.
+- **Seguridad:** todas las entradas mantienen `agentExecutionEnabled: false`; los controles manuales no se presentan como comandos ejecutables por la IA. No se añadieron permisos de escritura ni llamadas a proveedores externos.
+- Se añadió cobertura de integración en `tests/editor-input.test.js`. CI #130 terminó exitoso; en CI #131, pruebas automatizadas, sintaxis del editor y comprobaciones estructurales aparecen exitosas, mientras GitHub Actions aún finalizaba los pasos de limpieza en la última consulta.
+- Cambios limitados a `feature/living-paper-engine-foundation`. `main` intacta; sin fusión, despliegue ni gastos. La validación visual real en Safari/iPad sigue pendiente.
