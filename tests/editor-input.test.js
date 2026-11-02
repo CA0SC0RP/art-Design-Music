@@ -81,6 +81,10 @@ test("la API entrega contexto inmutable y notifica cambios de proyecto y selecci
  observers[0].callback();
  assert.ok(events.filter(type=>type==="project.changed").length>=2);
  assert.ok(api.getContext().project.revision>firstProjectRevision);
+ const afterTransformRevision=api.getContext().project.revision;
+ sandbox.data.nodes[1].mesh={vertices:[{x:1,y:2,weights:[]}],faces:[]};
+ observers[0].callback();
+ assert.ok(api.getContext().project.revision>afterTransformRevision);
  const projectRevision=api.getContext().project.revision;
  sandbox.selected="root";
  observers[0].callback();
