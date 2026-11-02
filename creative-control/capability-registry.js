@@ -67,7 +67,7 @@
       available: () => has("meshBone") && !!selectedNode()
     },
     {
-      id: "set_part_transform", title: "Ajustar transformación de pieza", category: "transform",
+      id: "set_part_transform", proposalActionType: "set_part_transform", title: "Ajustar transformación de pieza", category: "transform",
       access: "proposal", proposalSupported: true, support: "manual-editor-controls",
       controls: ["x", "y", "rot", "scale"], preconditions: ["Debe haber una pieza no raíz seleccionada.", "La rotación respeta los límites de articulación de la pieza."],
       impact: "Modifica posición, rotación o escala de la pieza seleccionada.",
@@ -82,7 +82,7 @@
       available: () => hasAll(["x", "y", "rot", "scale"]) && !!selectedNode() && selectedNode().id !== data.root
     },
     {
-      id: "apply_pose", title: "Aplicar pose guardada", category: "pose",
+      id: "apply_pose", proposalActionType: "apply_pose", title: "Aplicar pose guardada", category: "pose",
       access: "proposal", proposalSupported: true, support: "editor-function",
       controls: ["poseSelect", "applyPose"], preconditions: ["La pose debe existir en el proyecto.", "La pose debe referirse a piezas compatibles."],
       impact: "Modifica transformaciones y, si corresponde, formas de las piezas incluidas en la pose.",
@@ -94,7 +94,7 @@
       available: () => hasAll(["poseSelect", "applyPose"]) && fn("applyPose") && Array.isArray(data && data.poses) && data.poses.length > 0
     },
     {
-      id: "solve_ik", title: "Resolver cadena IK", category: "rig",
+      id: "solve_ik", proposalActionType: "solve_ik", title: "Resolver cadena IK", category: "rig",
       access: "proposal", proposalSupported: true, support: "editor-function",
       controls: ["ikChain", "ikX", "ikY", "ikBend", "solveIK"],
       preconditions: ["La cadena debe existir en el preset Personaje.", "Los segmentos deben tener pivotes neutros, escala 1 y estar alineados.", "El objetivo debe estar dentro del alcance y los límites articulares."],
@@ -111,7 +111,7 @@
       available: () => hasAll(["ikChain", "ikX", "ikY", "ikBend", "solveIK"]) && fn("solveIKAt") && hasAnyIKChain()
     },
     {
-      id: "set_expression", title: "Aplicar expresión facial", category: "expression",
+      id: "set_expression", proposalActionType: "set_expression", title: "Aplicar expresión facial", category: "expression",
       access: "proposal", proposalSupported: true, support: "editor-function",
       controls: ["expressionSelect", "applyExpression"],
       preconditions: ["El personaje debe tener boca y cejas compatibles.", "La expresión debe pertenecer al catálogo del editor."],
@@ -228,6 +228,7 @@
       access: definition.access,
       available,
       proposalSupported: definition.proposalSupported,
+      proposalActionType: definition.proposalActionType || null,
       agentExecutionEnabled: false,
       support: definition.support,
       controls: definition.controls,
