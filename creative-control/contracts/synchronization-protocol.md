@@ -63,3 +63,18 @@ El registro descriptivo vive en `creative-control/capability-registry.js`. Cada 
 El adaptador publica el catálogo con `getCapabilities()`, una entrada individual con `getCapability(id)` y notifica `capabilities.changed` si el catálogo efectivo cambia. Ninguna entrada habilita ejecución del agente: `agentExecutionEnabled` y `execution.enabled` permanecen en `false`.
 
 El catálogo distingue explícitamente operaciones que el editor puede realizar manualmente de las operaciones que el protocolo puede representar en una propuesta. No se infiere que un botón existente equivalga a un comando seguro para la IA.
+
+## Validación de propuestas
+
+`ADM_ProposalValidator.validate(proposal, context)` valida el esquema 1.0 contra una instantánea del editor. La fachada `ADM_CreativeControl.validateProposal(proposal)` suministra el contexto actual.
+
+Comprobaciones implementadas:
+- versión del esquema, ID, revisión de proyecto y espacio activo;
+- propiedades adicionales no permitidas y tipos de acciones admitidos;
+- piezas destino existentes y exclusión de la raíz;
+- valores numéricos finitos, rangos de posición/escala y límites articulares;
+- poses existentes y duración de transición;
+- existencia de cadena IK, alineación/pivotes/escala requeridos y resultado del solver puro;
+- catálogo de expresiones y piezas faciales requeridas.
+
+La respuesta contiene errores por código/ruta y efectos simulados. No cambia el proyecto, no llama a handlers del editor y no autoriza ejecución. La simulación es un plan estructurado, no una vista previa gráfica todavía.
