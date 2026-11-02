@@ -84,3 +84,36 @@ test("la expansión cero devuelve una copia exacta sin mutar el original",()=>{
  const tri=[{x:1,y:2},{x:8,y:2},{x:3,y:9}],r=skin.expandTriangle(tri,0);
  assert.deepEqual(r.triangle,tri);assert.notEqual(r.triangle,tri);assert.notEqual(r.triangle[0],tri[0]);
 });
+
+
+test("la pose de referencia conserva una malla con varios huesos",()=>{
+ const bind={owner:[1,0,0,1,0,0],upper:[1,0,0,1,0,-10],lower:[1,0,0,1,0,25]};
+ const built=skin.buildSkinMatrices(bind,bind);assert.equal(built.ok,true);
+ const vertices=[
+  {x:0,y:0,weights:[{boneId:"upper",weight:.75},{boneId:"lower",weight:.25}]},
+  {x:12,y:18,weights:[{boneId:"upper",weight:.2},{boneId:"lower",weight:.8}]}
+ ];
+ const result=skin.deformVertices(vertices,built.matrices);assert.equal(result.ok,true);
+ vertices.forEach((v,i)=>{close(result.vertices[i].x,v.x);close(result.vertices[i].y,v.y);});
+});
+
+test("dos huesos conservan una deformación coherente al trasladarse juntos",()=>{
+ const bind={upper:[1,0,0,1,0,-10],lower:[1,0,0,1,0,25]};
+ const current={upper:[1,0,0,1,7,-6],lower:[1,0,0,1,7,29]};
+ const built=skin.buildSkinMatrices(bind,current);assert.equal(built.ok,true);
+ const vertices=[
+  {x:0,y:0,weights:[{boneId:"upper",weight:.75},{boneId:"lower",weight:.25}]},
+  {x:12,y:18,weights:[{boneId:"upper",weight:.2},{boneId:"lower",weight:.8}]}
+ ];
+ const result=skin.deformVertices(vertices,built.matrices);assert.equal(result.ok,true);
+ vertices.forEach((v,i)=>{close(result.vertices[i].x,v.x+7);close(result.vertices[i].y,v.y-6);});
+});
+
+test("la mezcla de huesos mantiene continuidad en vértices compartidos",()=>{
+ const bind={a:[1,0,0,1,0,0],b:[1,0,0,1,0,0]},current={a:[1,0,0,1,10,0],b:[1,0,0,1,0,10]};
+ const matrices=skin.buildSkinMatrices(bind,current);assert.equal(matrices.ok,true);
+ const shared={x:5,y:5,weights:[{boneId:"a",weight:.5},{boneId:"b",weight:.5}]};
+ const left=skin.deformVertices([shared],matrices.matrices),right=skin.deformVertices([shared],matrices.matrices);
+ assert.equal(left.ok,true);assert.equal(right.ok,true);close(left.vertices[0].x,right.vertices[0].x);close(left.vertices[0].y,right.vertices[0].y);
+ close(left.vertices[0].x,10);close(left.vertices[0].y,10);
+});
