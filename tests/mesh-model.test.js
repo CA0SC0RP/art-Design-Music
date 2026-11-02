@@ -127,3 +127,28 @@ test("permite mover un vértice dentro de la orientación original de sus caras"
  const result=model.moveVertex(r.mesh,4,1,1);
  assert.equal(result.ok,true);assert.equal(r.mesh.vertices[4].x,1);assert.equal(r.mesh.vertices[4].y,1);
 });
+
+
+test("el pincel reduce la influencia seleccionada y normaliza las restantes",()=>{
+ const r=model.createGrid({width:20,height:20,columns:3,rows:3,boneId:"root"});
+ for(const v of r.mesh.vertices)assert.equal(model.setInfluence(r.mesh,r.mesh.vertices.indexOf(v),"arm",1).ok,true);
+ const center=r.mesh.vertices[4],before=center.weights.find(w=>w.boneId==="arm").weight;
+ const result=model.paintInfluence(r.mesh,center.x,center.y,"arm",.8,20,"erase");
+ assert.equal(result.ok,true);assert.ok(result.changed>0);
+ const after=center.weights.find(w=>w.boneId==="arm").weight;
+ assert.ok(after<before);
+ for(const v of r.mesh.vertices)assert.ok(Math.abs(v.weights.reduce((sum,w)=>sum+w.weight,0)-1)<1e-8);
+});
+
+test("el pincel no elimina el último peso positivo y conserva la malla al rechazar",()=>{
+ const r=model.createGrid({width:10,height:10,columns:2,rows:2,boneId:"root"}),before=JSON.stringify(r.mesh);
+ const result=model.paintInfluence(r.mesh,0,0,"root",1,100,"erase");
+ assert.equal(result.ok,false);assert.match(result.message,/último peso positivo/);
+ assert.equal(JSON.stringify(r.mesh),before);
+});
+
+test("el pincel rechaza modos desconocidos sin mutar la malla",()=>{
+ const r=model.createGrid({width:10,height:10,columns:2,rows:2,boneId:"root"}),before=JSON.stringify(r.mesh);
+ assert.equal(model.paintInfluence(r.mesh,0,0,"root",.5,20,"replace").ok,false);
+ assert.equal(JSON.stringify(r.mesh),before);
+});
