@@ -388,3 +388,9 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se añadió una prueba de continuidad entre dos triángulos vecinos después de aplicar skinning multi-hueso: ambos mapeos deben producir exactamente las mismas coordenadas en sus vértices compartidos.
 - GitHub Actions, ejecución #85: 73 pruebas superadas, 0 fallidas; sintaxis y comprobaciones estructurales correctas. En las ejecuciones previas #82–84 falló una expectativa de prueba que suponía una traslación absoluta incorrecta; se corrigió para reflejar las matrices relativas de referencia. No se detectó fallo en el módulo de skinning.
 - Sigue pendiente inspección visual y prueba táctil en Safari/iPad.
+
+## Actualización — 2026-11-02: v0.9.21, validación estricta de influencias de skinning
+- `deformVertices()` ahora rechaza influencias repetidas para un mismo hueso y cadenas vacías como identificador, antes de calcular la deformación. Esto evita contar dos veces un mismo hueso y evita aceptar una matriz cuyo nombre de clave esté vacío.
+- Se añadieron dos pruebas de regresión para ambos casos inválidos.
+- GitHub Actions, ejecución #86 (commit `daf6f340106dfe3d4e8985974d21255dcace5add`): completada con éxito; las comprobaciones de sintaxis, pruebas automatizadas e integración finalizaron correctamente. La suite suma 75 pruebas (73 de la ejecución #85 más los dos casos nuevos).
+- La inspección visual en navegador y la prueba táctil en Safari/iPad siguen pendientes. No se modifica `main`.
