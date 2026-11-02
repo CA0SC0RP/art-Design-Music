@@ -18,7 +18,9 @@ function invert(m){
 }
 function transformPoint(m,p){
  if(!validMatrix(m)||!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))throw new Error("Punto o matriz no válidos.");
- return {x:m[0]*p.x+m[2]*p.y+m[4],y:m[1]*p.x+m[3]*p.y+m[5]};
+ const result={x:m[0]*p.x+m[2]*p.y+m[4],y:m[1]*p.x+m[3]*p.y+m[5]};
+ if(!Number.isFinite(result.x)||!Number.isFinite(result.y))throw new Error("La transformación produjo un punto no finito.");
+ return result;
 }
 function expandTriangle(triangle,amount){
  if(!Array.isArray(triangle)||triangle.length!==3||!triangle.every(p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y))||!Number.isFinite(amount)||amount<0)return {ok:false,message:"Triángulo o expansión no válidos."};
