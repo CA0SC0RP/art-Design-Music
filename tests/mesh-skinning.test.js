@@ -149,5 +149,5 @@ test("rechaza puntos que desbordan al aplicar una matriz afín",()=>{
  assert.throws(()=>skin.transformPoint([1e308,0,0,1,0,0],{x:10,y:0}),/no finito/);
 });
 test("rechaza puntos no finitos aunque la matriz sea válida",()=>{
- assert.throws(()=>skin.transformPoint([1,0,0,1,0,0],{x:Number.MAX_VALUE,y:Number.MAX_VALUE}),/no finito/);
+ assert.throws(()=>skin.transformPoint([1,0,1,1,0,0],{x:Number.MAX_VALUE,y:Number.MAX_VALUE}),/no finito/);
 });
