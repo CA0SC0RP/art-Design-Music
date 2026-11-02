@@ -101,7 +101,7 @@ test("el registro detecta capacidades según controles y selección sin ejecutar
  const sandbox={
   window:{applyPose:()=>{},solveIKAt:()=>{},applyExpression:()=>{},runCoordinatedAction:()=>{}},
   document:{getElementById:id=>controls.has(id)?{}:null,querySelectorAll:()=>[{},{}]},
-  data:{version:2,name:"Prueba",root:"root",nodes:[{id:"root",name:"Raíz",type:"grupo"},{id:"torso",name:"Torso",type:"cuerpo",parent:"root",x:0,y:0,rotation:0,scale:1}],poses:[]},
+  data:{version:2,name:"Prueba",root:"root",nodes:[{id:"root",name:"Raíz",type:"grupo"},{id:"torso",name:"Torso",type:"cuerpo",parent:"root",x:0,y:0,rotation:0,scale:1} ],poses:[{id:"pose1",name:"Reposo",nodes:[]}]},
   selected:"torso",
   MutationObserver:FakeMutationObserver
  };
@@ -119,6 +119,8 @@ test("el registro detecta capacidades según controles y selección sin ejecutar
  assert.equal(initial.execution.enabled,false);
  assert.equal(api.getCapability("solve_ik").agentExecutionEnabled,false);
  assert.equal(api.getCapability("unknown_capability"),null);
+ assert.equal(api.getCapability("solve_ik").available,false);
+ assert.equal(api.getCapability("set_expression").available,false);
  const events=[];
  api.subscribe(event=>events.push(event.type));
  sandbox.selected="root";
