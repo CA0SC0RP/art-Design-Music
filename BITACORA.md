@@ -494,3 +494,9 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - La primera expectativa de traslación se corrigió al comprobar el resultado real de matrices relativas (transformación actual × inversa de referencia); el valor correcto en el eje Y era +4, no -6. No se modificó el algoritmo de skinning por este ajuste de prueba.
 - GitHub Actions #85 completó con 73 pruebas aprobadas y 0 fallidas.
 - Aún no se ha realizado inspección visual ni prueba táctil en Safari/iPad.
+
+## Actualización — 2026-11-02: v0.9.21, validación estricta de influencias de skinning
+- `deformVertices()` ahora rechaza influencias repetidas para un mismo hueso y cadenas vacías como identificador, antes de calcular la deformación. Esto evita contar dos veces un mismo hueso y evita aceptar una matriz cuyo nombre de clave esté vacío.
+- Se añadieron dos pruebas de regresión para ambos casos inválidos.
+- GitHub Actions, ejecución #86 (commit `daf6f340106dfe3d4e8985974d21255dcace5add`): completada con éxito; las comprobaciones de sintaxis, pruebas automatizadas e integración finalizaron correctamente. La suite suma 75 pruebas (73 de la ejecución #85 más los dos casos nuevos).
+- La inspección visual en navegador y la prueba táctil en Safari/iPad siguen pendientes. No se modifica `main`.
