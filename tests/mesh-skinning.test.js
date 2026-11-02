@@ -109,11 +109,13 @@ test("dos huesos conservan una deformación coherente al trasladarse juntos",()=
  vertices.forEach((v,i)=>{close(result.vertices[i].x,v.x+7);close(result.vertices[i].y,v.y-6);});
 });
 
-test("la mezcla de huesos mantiene continuidad en vértices compartidos",()=>{
- const bind={a:[1,0,0,1,0,0],b:[1,0,0,1,0,0]},current={a:[1,0,0,1,10,0],b:[1,0,0,1,0,10]};
+test("dos triángulos vecinos comparten exactamente sus vértices tras skinning de varios huesos",()=>{
+ const bind={a:[1,0,0,1,0,0],b:[1,0,0,1,0,0]},current={a:[1,0,0,1,8,-2],b:[1,0,0,1,-3,9]};
  const matrices=skin.buildSkinMatrices(bind,current);assert.equal(matrices.ok,true);
- const shared={x:5,y:5,weights:[{boneId:"a",weight:.5},{boneId:"b",weight:.5}]};
- const left=skin.deformVertices([shared],matrices.matrices),right=skin.deformVertices([shared],matrices.matrices);
- assert.equal(left.ok,true);assert.equal(right.ok,true);close(left.vertices[0].x,right.vertices[0].x);close(left.vertices[0].y,right.vertices[0].y);
- close(left.vertices[0].x,10);close(left.vertices[0].y,10);
+ const source=[{x:0,y:0},{x:10,y:0},{x:10,y:10},{x:0,y:10}],vertices=source.map((p,i)=>({...p,weights:i===0?[{boneId:"a",weight:1}]:i===1?[{boneId:"a",weight:.7},{boneId:"b",weight:.3}]:i===2?[{boneId:"a",weight:.4},{boneId:"b",weight:.6}]:[{boneId:"b",weight:1}]}));
+ const deformed=skin.deformVertices(vertices,matrices.matrices);assert.equal(deformed.ok,true);
+ const first=skin.triangleTransform([source[0],source[1],source[2]],[deformed.vertices[0],deformed.vertices[1],deformed.vertices[2]]);
+ const second=skin.triangleTransform([source[0],source[2],source[3]],[deformed.vertices[0],deformed.vertices[2],deformed.vertices[3]]);
+ assert.equal(first.ok,true);assert.equal(second.ok,true);
+ for(const index of [0,2]){const a=skin.transformPoint(first.matrix,source[index]),b=skin.transformPoint(second.matrix,source[index]);close(a.x,b.x);close(a.y,b.y);close(a.x,deformed.vertices[index].x);close(a.y,deformed.vertices[index].y);}
 });
