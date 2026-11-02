@@ -41,6 +41,8 @@
         x: Number(node.x) || 0,
         y: Number(node.y) || 0,
         rotation: Number(node.rotation) || 0,
+        pivotX: Number(node.pivotX) || 0,
+        pivotY: Number(node.pivotY) || 0,
         scale: Number.isFinite(Number(node.scale)) ? Number(node.scale) : 1,
         rotationMin: Number.isFinite(Number(node.rotationMin)) ? Number(node.rotationMin) : -180,
         rotationMax: Number.isFinite(Number(node.rotationMax)) ? Number(node.rotationMax) : 180
@@ -78,6 +80,7 @@
         type: String(selectedPart.type || "")
       } : null,
       resources: {
+        rootId: project.root == null ? null : String(project.root),
         nodes,
         poses,
         counts: { nodes: nodes.length, poses: poses.length }
@@ -134,6 +137,14 @@
       ...registry.getCapabilities(),
       execution: { enabled: false, approvalRequired: true }
     });
+  };
+
+  const validateProposal = proposal => {
+    const validator = window.ADM_ProposalValidator;
+    if (!validator || typeof validator.validate !== "function") {
+      return freezeDeep({ ok: false, status: "validator_unavailable", errors: [{ code: "validator_unavailable", path: "validator", message: "El validador de propuestas no está disponible." }], effects: [], mutatesProject: false, executionEnabled: false });
+    }
+    return validator.validate(proposal, getContext());
   };
 
   const getCapability = id => {
@@ -205,6 +216,7 @@
       getContext,
       getCapabilities,
       getCapability,
+      validateProposal,
       subscribe
     })
   });
