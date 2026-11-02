@@ -274,7 +274,7 @@ test("las propuestas de pose validan transformaciones completas y ya no prometen
  vm.createContext(sandbox);
  vm.runInContext(source,sandbox);
  const context={ok:true,project:{revision:3},workspace:{id:"character"},resources:{rootId:"root",nodes:[
-  {id:"root",transform:{}},{id:"arm",transform:{x:0,y:0,rotation:0,scale:1,rotationMin:-45,rotationMax:45}}
+  {id:"root",transform:{}},{id:"arm",shape:"limb",transform:{x:0,y:0,rotation:0,scale:1,rotationMin:-45,rotationMax:45}}
  ],poses:[{id:"pose1",name:"Sentado",nodeCount:1,nodes:[{id:"arm",x:5,y:8,rotation:20,scale:1,shape:"limb"}]}]}};
  const proposal={schemaVersion:"1.0",proposalId:"pose-preview",projectVersion:"3",workspace:"character",summary:"Aplicar pose guardada.",actions:[{type:"apply_pose",poseId:"pose1"}]};
  const valid=sandbox.window.ADM_ProposalValidator.validate(proposal,context);
