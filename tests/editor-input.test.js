@@ -23,3 +23,5 @@ test("la malla muestra un mapa de calor del peso del hueso seleccionado",()=>{
  assert.match(html,/Math\.round\(weight\*100\)/);
  assert.match(html,/meshBone"\)\.onchange=\(\)=>\{meshStatusMessage="";render\(\);\}/);
 });
+
+test("los controles deshabilitados se distinguen visualmente y no parecen activos",()=>{\n assert.match(html,/button:disabled\\s*\\{[^}]*opacity:/);\n assert.match(html,/input:disabled,select:disabled\\s*\\{[^}]*opacity:/);\n});\n
