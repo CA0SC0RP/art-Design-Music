@@ -411,3 +411,9 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - `buildSkinMatrices()` queda protegido porque propaga el rechazo de resultados no finitos durante la composición de matrices entre pose de referencia y pose actual.
 - Se añadieron tres pruebas: desbordamiento en multiplicación, desbordamiento al construir matrices de skinning e inversión que produce componentes no finitos.
 - La validación automatizada de esta versión queda pendiente de GitHub Actions. La inspección visual y táctil en Safari/iPad sigue pendiente; `main` no se modifica.
+
+## Actualización — 2026-11-02: v0.9.25, validación de transformaciones mundiales del rig
+- `worldTransform()` comprueba que la composición jerárquica de posición, rotación y escala produzca valores finitos y una escala positiva.
+- `worldMatrix()` valida los seis componentes después de cada multiplicación de matrices afines; `worldMatrices()` devuelve error controlado cuando una jerarquía desborda.
+- Se añadieron dos pruebas de regresión para desbordamiento de escala acumulada y posición al componer matrices.
+- CI automatizado pendiente para esta versión. La revisión visual de articulaciones y uniones de mallas, así como Safari/iPad, siguen pendientes. `main` permanece intacta.
