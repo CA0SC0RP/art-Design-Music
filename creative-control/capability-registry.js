@@ -5,7 +5,7 @@
   "use strict";
 
   const PROTOCOL_VERSION = "1.0.0";
-  const REGISTRY_VERSION = "1.0.0";
+  const REGISTRY_VERSION = "1.0.1";
   const freezeDeep = value => {
     if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
     Object.freeze(value);
@@ -15,6 +15,19 @@
   const has = id => !!document.getElementById(id);
   const hasAll = ids => ids.every(has);
   const fn = name => typeof window[name] === "function";
+  const nodeIds = () => new Set(Array.isArray(data && data.nodes) ? data.nodes.map(node => node.id) : []);
+  const hasAnyIKChain = () => {
+    const ids = nodeIds();
+    return [["armR","foreR","handR"],["armL","foreL","handL"],["legR","shinR","footR"],["legL","shinL","footL"]].some(chain => chain.every(id => ids.has(id)));
+  };
+  const hasFacialParts = () => {
+    const ids = nodeIds();
+    return ["mouth","browL","browR"].every(id => ids.has(id));
+  };
+  const hasCoordinatedParts = () => {
+    const ids = nodeIds();
+    return ["armR","foreR","handR","armL","foreL","handL","legL","shinL","footL","legR","shinR","footR"].every(id => ids.has(id));
+  };
   const selectedNode = () => {
     try { return data.nodes.find(node => node.id === selected) || null; }
     catch (_) { return null; }
@@ -78,7 +91,7 @@
         type: "object", additionalProperties: false, required: ["poseId"],
         properties: { poseId: { type: "string", minLength: 1 }, transitionMs: { type: "integer", minimum: 0, maximum: 30000 } }
       },
-      available: () => hasAll(["poseSelect", "applyPose"]) && fn("applyPose") && Array.isArray(data && data.poses)
+      available: () => hasAll(["poseSelect", "applyPose"]) && fn("applyPose") && Array.isArray(data && data.poses) && data.poses.length > 0
     },
     {
       id: "solve_ik", title: "Resolver cadena IK", category: "rig",
@@ -95,7 +108,7 @@
           bend: { enum: [-1, 1] }
         }
       },
-      available: () => hasAll(["ikChain", "ikX", "ikY", "ikBend", "solveIK"]) && fn("solveIKAt")
+      available: () => hasAll(["ikChain", "ikX", "ikY", "ikBend", "solveIK"]) && fn("solveIKAt") && hasAnyIKChain()
     },
     {
       id: "set_expression", title: "Aplicar expresión facial", category: "expression",
@@ -108,7 +121,7 @@
         type: "object", additionalProperties: false, required: ["expression"],
         properties: { expression: { enum: ["neutral", "happy", "sad", "surprised", "angry"] } }
       },
-      available: () => hasAll(["expressionSelect", "applyExpression"]) && fn("applyExpression")
+      available: () => hasAll(["expressionSelect", "applyExpression"]) && fn("applyExpression") && hasFacialParts()
     },
     {
       id: "run_coordinated_action", title: "Aplicar movimiento coordinado predefinido", category: "motion",
@@ -118,7 +131,7 @@
       impact: "Aplica una pose coordinada mediante transición.",
       reversible: true,
       parameters: { type: "object", additionalProperties: false, properties: { actionId: { enum: ["wave", "walk_a", "walk_b", "rest"] } } },
-      available: () => hasAll(["actionWave", "actionWalkA", "actionWalkB", "actionRest"]) && fn("runCoordinatedAction")
+      available: () => hasAll(["actionWave", "actionWalkA", "actionWalkB", "actionRest"]) && fn("runCoordinatedAction") && hasCoordinatedParts()
     },
     {
       id: "create_mesh", title: "Crear malla", category: "mesh",
@@ -147,6 +160,15 @@
       reversible: true,
       parameters: { type: "object", additionalProperties: false, properties: { partType: { enum: ["arm", "leg", "branch", "leaf", "joint"] } } },
       available: () => document.querySelectorAll("[data-add]").length > 0
+    },
+    {
+      id: "select_part", title: "Seleccionar pieza", category: "selection",
+      access: "manual", proposalSupported: false, support: "manual-ui-handler",
+      controls: ["tree", "scene"], preconditions: ["La pieza debe existir en la jerarquía."],
+      impact: "Cambia la selección activa del editor.",
+      reversible: true,
+      parameters: { type: "object", additionalProperties: false, properties: { targetId: { type: "string", minLength: 1 } } },
+      available: () => has("tree") && has("scene") && Array.isArray(data && data.nodes) && data.nodes.length > 0
     },
     {
       id: "duplicate_part", title: "Duplicar pieza", category: "hierarchy",
