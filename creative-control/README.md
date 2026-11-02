@@ -100,3 +100,11 @@ El archivo `capability-registry.js` describe capacidades detectadas en los contr
 `proposalSupported` significa que el contrato de propuestas conoce esa operación; no significa que la IA pueda ejecutarla. Todas las capacidades mantienen `agentExecutionEnabled: false`. Las acciones que solo existen como controles manuales se identifican como tales y no se presentan como operaciones ejecutables por el agente.
 
 El adaptador consume este registro mediante `getCapabilities()` y `getCapability(id)`, y emite `capabilities.changed` cuando cambia el catálogo efectivo, por ejemplo al cambiar la selección. El registro no invoca handlers ni modifica el proyecto.
+
+## Validador de propuestas no mutante
+
+`proposal-validator.js` valida propuestas estructuradas contra el contexto actual del editor. Comprueba versión del esquema y del proyecto, espacio activo, propiedades permitidas, existencia de piezas y poses, límites de transformación, recursos faciales y precondiciones de IK.
+
+La validación devuelve errores estructurados y un plan de efectos para inspección. Para transformaciones, expresiones e IK puede calcular valores propuestos; no modifica `data`, no llama a handlers de escritura y no aplica la propuesta. La API `window.ADM_CreativeControl.validateProposal(proposal)` obtiene el contexto vigente automáticamente.
+
+El resultado incluye `mutatesProject: false` y `executionEnabled: false`. No existe todavía una vista previa gráfica ni un mecanismo de aprobación/commit; el siguiente paso es convertir estos efectos en una vista previa visual no mutante y después diseñar transacciones aprobadas con undo.
