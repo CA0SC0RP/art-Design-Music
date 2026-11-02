@@ -443,3 +443,5 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - El lienzo limpia el estado de arrastre tanto al cancelar un puntero como cuando el navegador pierde su captura, evitando gestos bloqueados tras interrupciones del sistema.
 - Se añadió una prueba de integración estática para verificar Pointer Events, cancelación/captura perdida y objetivos táctiles de al menos 44 px.
 - Validación CI pendiente. La prueba real en Safari/iPad sigue pendiente; `main` intacta.
+
+- Cierre de validación v0.9.30: CI #112 exitoso; 90 pruebas superadas y 0 fallidas. La prueba nueva de entrada táctil/ratón quedó incluida explícitamente en el workflow. La validación en navegador físico continúa pendiente.
