@@ -119,3 +119,12 @@ test("dos triángulos vecinos comparten exactamente sus vértices tras skinning 
  assert.equal(first.ok,true);assert.equal(second.ok,true);
  for(const index of [0,2]){const a=skin.transformPoint(first.matrix,source[index]),b=skin.transformPoint(second.matrix,source[index]);close(a.x,b.x);close(a.y,b.y);close(a.x,deformed.vertices[index].x);close(a.y,deformed.vertices[index].y);}
 });
+
+test("rechaza influencias duplicadas para un mismo hueso",()=>{
+ const r=skin.deformVertices([{x:1,y:2,weights:[{boneId:"arm",weight:.5},{boneId:"arm",weight:.5}]}],{arm:[1,0,0,1,0,0]});
+ assert.equal(r.ok,false);
+});
+test("rechaza identificadores de hueso vacíos en el skinning",()=>{
+ const r=skin.deformVertices([{x:1,y:2,weights:[{boneId:"",weight:1}]}],{"":[1,0,0,1,0,0]});
+ assert.equal(r.ok,false);
+});
