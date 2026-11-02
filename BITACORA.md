@@ -481,3 +481,9 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - GitHub Actions, ejecución #78: 69 pruebas superadas, 0 fallidas; sintaxis y comprobaciones estructurales correctas.
 - Durante la primera ejecución (#76) falló el fixture de prueba para casi colinealidad porque sus coordenadas no representaban un triángulo casi degenerado. Se corrigió el caso y la ejecución #78 lo validó correctamente. El fallo correspondía al test, no al código del importador.
 - Sigue pendiente la inspección visual en navegador y la prueba táctil real en Safari/iPad.
+
+
+## 2026-11-02 — Editor de personajes v0.9.19: prevalidación del pincel
+- Se reforzó `paintInfluence()` para rechazar la malla antes de calcular distancias si encuentra vértices nulos o coordenadas no finitas, y para respetar el máximo de vértices. Así no se lanza una excepción ni se omite silenciosamente una entrada geométrica corrupta.
+- Se agregó una prueba que confirma el rechazo y la ausencia de mutación.
+- GitHub Actions, ejecución #80: 70 pruebas superadas, 0 fallidas. La inspección visual y la prueba táctil en Safari/iPad siguen pendientes.
