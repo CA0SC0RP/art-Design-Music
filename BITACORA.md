@@ -500,3 +500,9 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - Se añadieron dos pruebas de regresión para ambos casos inválidos.
 - GitHub Actions, ejecución #86 (commit `daf6f340106dfe3d4e8985974d21255dcace5add`): completada con éxito; las comprobaciones de sintaxis, pruebas automatizadas e integración finalizaron correctamente. La suite suma 75 pruebas (73 de la ejecución #85 más los dos casos nuevos).
 - La inspección visual en navegador y la prueba táctil en Safari/iPad siguen pendientes. No se modifica `main`.
+
+## Actualización — 2026-11-02: v0.9.22, edición segura de influencias existentes
+- `setInfluence()` ahora valida la lista completa de pesos existente antes de editarla: rechaza listas vacías o fuera de límite, identificadores vacíos, pesos no finitos/negativos y huesos duplicados. La operación se realiza sobre una copia y no altera el vértice si detecta datos corruptos.
+- Se añadieron dos pruebas de regresión que confirman el rechazo de pesos duplicados e identificadores vacíos, conservando intactos los datos originales.
+- GitHub Actions, ejecución #89 (commit `3426cb000b1487bb18dac4ef24393b3e81b35181`): completada con éxito. Suite: 77 pruebas superadas, 0 fallidas; sintaxis de módulos, JavaScript integrado y comprobaciones estructurales correctas.
+- La etiqueta del prototipo se actualizó a v0.9.22. La inspección visual y táctil en Safari/iPad sigue pendiente; no se modifica `main`.
