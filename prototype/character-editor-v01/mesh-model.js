@@ -40,6 +40,13 @@ function normalizeMesh(raw,boneIds){
 }
 function moveVertex(mesh,index,x,y){
  if(!mesh||!Array.isArray(mesh.vertices)||!Number.isInteger(index)||!mesh.vertices[index]||!Number.isFinite(x)||!Number.isFinite(y))return {ok:false,message:"No se pudo mover el vértice: datos no válidos."};
+ if(Array.isArray(mesh.faces))for(const face of mesh.faces){
+  if(!Array.isArray(face)||face.length!==3||!face.includes(index))continue;
+  if(!face.every(i=>Number.isInteger(i)&&mesh.vertices[i]))return {ok:false,message:"La malla contiene una cara inválida."};
+  const points=face.map(i=>mesh.vertices[i]),area=(p)=>((p[1].x-p[0].x)*(p[2].y-p[0].y)-(p[2].x-p[0].x)*(p[1].y-p[0].y));
+  const before=area(points),candidate=points.map((p,i)=>face[i]===index?{x,y}:p),after=area(candidate);
+  if(!Number.isFinite(before)||!Number.isFinite(after)||Math.abs(before)<1e-9||Math.abs(after)<1e-9||before*after<0)return {ok:false,message:"El movimiento degeneraría o invertiría una cara. Ajusta la posición del vértice."};
+ }
  mesh.vertices[index].x=x;mesh.vertices[index].y=y;return {ok:true};
 }
 function setInfluence(mesh,index,boneId,weight){
