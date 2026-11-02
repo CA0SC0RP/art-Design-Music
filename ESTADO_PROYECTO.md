@@ -479,3 +479,14 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - **Seguridad:** todas las entradas mantienen `agentExecutionEnabled: false`; los controles manuales no se presentan como comandos ejecutables por la IA. No se añadieron permisos de escritura ni llamadas a proveedores externos.
 - Se añadió cobertura de integración en `tests/editor-input.test.js`. CI #130 terminó exitoso; en CI #131, pruebas automatizadas, sintaxis del editor y comprobaciones estructurales aparecen exitosas, mientras GitHub Actions aún finalizaba los pasos de limpieza en la última consulta.
 - Cambios limitados a `feature/living-paper-engine-foundation`. `main` intacta; sin fusión, despliegue ni gastos. La validación visual real en Safari/iPad sigue pendiente.
+
+
+## Actualización — 2026-11-02: validador y simulación estructurada de propuestas
+- Se añadió `creative-control/proposal-validator.js`, que valida propuestas schema 1.0 contra el contexto actual: versión de proyecto, espacio, propiedades, piezas destino, límites de transformación, poses, cadenas IK y expresiones.
+- La simulación devuelve efectos antes/después para transformaciones, valores de solución IK calculados por el solver puro y operaciones faciales propuestas. No dibuja aún una vista previa en el lienzo.
+- El adaptador expone `ADM_CreativeControl.validateProposal(proposal)`; obtiene la instantánea vigente automáticamente.
+- La operación es no mutante: no modifica `data`, no invoca handlers de escritura y devuelve explícitamente `mutatesProject: false` y `executionEnabled: false`.
+- Se añadieron pruebas para propuesta válida, no mutación, revisión obsoleta, límites articulares, acciones desconocidas y simulación IK/expresión.
+- CI #132 exitoso. CI #133: pruebas automatizadas, sintaxis del editor y comprobaciones estructurales completadas correctamente; GitHub Actions aún estaba cerrando el último paso de limpieza en la última consulta.
+- Próximo paso: vista previa visual no mutante que muestre el resultado propuesto sin alterar el proyecto. Aún no hay aprobación/commit ni ejecución IA.
+- Todo permanece en `feature/living-paper-engine-foundation`; `main` intacta, sin fusión, despliegue ni gastos. Safari/iPad real pendiente.
