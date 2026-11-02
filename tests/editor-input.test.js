@@ -131,3 +131,77 @@ test("el registro detecta capacidades según controles y selección sin ejecutar
  assert.equal(next.available,false);
  assert.ok(events.includes("capabilities.changed"));
 });
+
+test("Creative Control carga el validador antes del adaptador",()=>{
+ assert.ok(html.includes('<script src="../../creative-control/proposal-validator.js"></script>'));
+ assert.ok(adapter.includes("validateProposal"));
+ assert.ok(adapter.includes("ADM_ProposalValidator"));
+});
+test("el validador acepta propuestas válidas y simula sin mutar el proyecto",()=>{
+ const source=fs.readFileSync(path.join(__dirname,"../creative-control/proposal-validator.js"),"utf8");
+ const sandbox={window:{}};
+ vm.createContext(sandbox);
+ vm.runInContext(source,sandbox);
+ const context={
+  ok:true,project:{revision:4},workspace:{id:"character"},
+  resources:{rootId:"root",nodes:[
+   {id:"root",transform:{x:0,y:0,rotation:0,scale:1,pivotX:0,pivotY:0}},
+   {id:"torso",transform:{x:0,y:0,rotation:0,scale:1,rotationMin:-90,rotationMax:90,pivotX:0,pivotY:0}}
+  ],poses:[]}
+ };
+ const before=JSON.stringify(context);
+ const result=sandbox.window.ADM_ProposalValidator.validate({
+  schemaVersion:"1.0",proposalId:"proposal-test",projectVersion:"4",workspace:"character",
+  summary:"Mover torso y cambiar su orientación.",
+  actions:[{type:"set_part_transform",targetId:"torso",transform:{x:50,rotation:30}}]
+ },context);
+ assert.equal(result.ok,true);
+ assert.equal(result.status,"valid");
+ assert.equal(result.mutatesProject,false);
+ assert.equal(result.executionEnabled,false);
+ assert.equal(result.effects[0].after.x,50);
+ assert.equal(result.effects[0].after.rotation,30);
+ assert.equal(JSON.stringify(context),before);
+});
+test("el validador rechaza propuestas obsoletas, límites articulares y acciones desconocidas",()=>{
+ const source=fs.readFileSync(path.join(__dirname,"../creative-control/proposal-validator.js"),"utf8");
+ const sandbox={window:{}};
+ vm.createContext(sandbox);
+ vm.runInContext(source,sandbox);
+ const context={ok:true,project:{revision:8},workspace:{id:"character"},resources:{rootId:"root",nodes:[
+  {id:"root",transform:{}},{id:"armR",transform:{x:0,y:0,rotation:0,scale:1,rotationMin:-45,rotationMax:45,pivotX:0,pivotY:0}}
+ ],poses:[]}};
+ const base={schemaVersion:"1.0",proposalId:"stale-test",projectVersion:"7",workspace:"character",summary:"Propuesta antigua",actions:[{type:"set_part_transform",targetId:"armR",transform:{rotation:90}}]};
+ const stale=sandbox.window.ADM_ProposalValidator.validate(base,context);
+ assert.equal(stale.status,"stale");
+ assert.ok(stale.errors.some(error=>error.code==="stale_project"));
+ const current={...base,projectVersion:"8"};
+ const invalid=sandbox.window.ADM_ProposalValidator.validate(current,context);
+ assert.equal(invalid.status,"invalid");
+ assert.ok(invalid.errors.some(error=>error.code==="joint_limit"));
+ const unknown={...base,projectVersion:"8",actions:[{type:"run_arbitrary_code"}]};
+ const rejected=sandbox.window.ADM_ProposalValidator.validate(unknown,context);
+ assert.ok(rejected.errors.some(error=>error.code==="unsupported_action"));
+});
+test("el validador genera una simulación IK y de expresión sin ejecutar cambios",()=>{
+ const source=fs.readFileSync(path.join(__dirname,"../creative-control/proposal-validator.js"),"utf8");
+ const sandbox={window:{ADM_IK:{solveTwoBone:()=>({ok:true,upperDeg:22,lowerDeg:-41})}}};
+ vm.createContext(sandbox);
+ vm.runInContext(source,sandbox);
+ const transform=(x,y)=>({x,y,rotation:0,scale:1,pivotX:0,pivotY:0,rotationMin:-180,rotationMax:180});
+ const context={ok:true,project:{revision:2},workspace:{id:"character"},resources:{rootId:"root",nodes:[
+  {id:"root",transform:transform(0,0)},{id:"torso",transform:transform(0,0)},
+  {id:"armR",transform:transform(65,-50)},{id:"foreR",transform:transform(0,65)},{id:"handR",transform:transform(0,60)},
+  {id:"mouth",transform:transform(0,0)},{id:"browL",transform:transform(0,0)},{id:"browR",transform:transform(0,0)},
+  {id:"eyeL",transform:transform(0,0)},{id:"eyeR",transform:transform(0,0)}
+ ],poses:[]}};
+ const result=sandbox.window.ADM_ProposalValidator.validate({
+  schemaVersion:"1.0",proposalId:"creative-preview",projectVersion:"2",workspace:"character",summary:"Saludar y sonreír.",
+  actions:[{type:"solve_ik",chainId:"armR",target:{x:100,y:-110},bend:1},{type:"set_expression",expression:"happy"}]
+ },context);
+ assert.equal(result.ok,true);
+ assert.equal(result.effects[0].rotations.armR,22);
+ assert.equal(result.effects[0].rotations.foreR,-41);
+ assert.equal(result.effects[1].operations.find(item=>item.targetId==="mouth").value,"mouthSmile");
+ assert.equal(result.mutatesProject,false);
+});
