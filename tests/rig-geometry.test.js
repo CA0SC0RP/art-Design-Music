@@ -33,3 +33,13 @@ test("produce matrices mundiales para todo el rig y rechaza jerarquías rotas",(
  const nodes=rig(),r=worldMatrices(nodes);assert.equal(r.ok,true);assert.equal(Object.keys(r.matrices).length,nodes.length);
  nodes[1].parent="missing";assert.equal(worldMatrices(nodes).ok,false);
 });
+
+test("rechaza transformaciones mundiales que desbordan al componer escalas",()=>{
+ const nodes=[{id:"root",x:0,y:0,rotation:0,scale:1e200,parent:null},{id:"child",x:0,y:0,rotation:0,scale:1e200,parent:"root"}];
+ assert.equal(worldMatrices(nodes).ok,false);
+ assert.throws(()=>worldTransform(nodes,"child"),/no finitos/);
+});
+test("rechaza desbordamiento en la composición de matrices del rig",()=>{
+ const nodes=[{id:"root",x:1e308,y:0,rotation:0,scale:1,parent:null},{id:"child",x:1e308,y:0,rotation:0,scale:1,parent:"root"}];
+ assert.equal(worldMatrices(nodes).ok,false);
+});
