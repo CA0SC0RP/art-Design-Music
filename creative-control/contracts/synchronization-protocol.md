@@ -55,3 +55,11 @@ La implementación actual observa las zonas de interfaz que el editor vuelve a r
 5. Publicar capacidades de cada nuevo espacio solo cuando sus herramientas estén implementadas y probadas.
 
 No se habilitarán proveedores externos ni llamadas de pago en esta etapa.
+
+## Registro de capacidades
+
+El registro descriptivo vive en `creative-control/capability-registry.js`. Cada capacidad declara disponibilidad real, soporte (lectura nativa, función del editor, controles manuales o handler de interfaz), parámetros, precondiciones, impacto, reversibilidad y compatibilidad con el esquema de propuestas.
+
+El adaptador publica el catálogo con `getCapabilities()`, una entrada individual con `getCapability(id)` y notifica `capabilities.changed` si el catálogo efectivo cambia. Ninguna entrada habilita ejecución del agente: `agentExecutionEnabled` y `execution.enabled` permanecen en `false`.
+
+El catálogo distingue explícitamente operaciones que el editor puede realizar manualmente de las operaciones que el protocolo puede representar en una propuesta. No se infiere que un botón existente equivalga a un comando seguro para la IA.
