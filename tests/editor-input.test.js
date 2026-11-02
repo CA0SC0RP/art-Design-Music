@@ -3,6 +3,7 @@ const test=require("node:test");
 const assert=require("node:assert/strict");
 const fs=require("node:fs");
 const path=require("node:path");
+const vm=require("node:vm");
 const html=fs.readFileSync(path.join(__dirname,"../prototype/character-editor-v01/index.html"),"utf8");
 const adapter=fs.readFileSync(path.join(__dirname,"../creative-control/adapter.js"),"utf8");
 
@@ -37,7 +38,7 @@ test("ADM Creative Control carga el adaptador de sincronización de solo lectura
  assert.ok(adapter.includes("MutationObserver"));
  assert.ok(adapter.includes("Object.freeze"));
 });
-test("el contrato identifica revisiones de proyecto y contexto",()=>{
+test("el contrato identifica revisiones y eventos de sincronización",()=>{
  assert.match(adapter,/projectRevision/);
  assert.match(adapter,/contextRevision/);
  assert.match(adapter,/"project\.changed"/);
@@ -49,4 +50,41 @@ test("el adaptador no publica operaciones de escritura ni ejecución",()=>{
   assert.equal(adapter.includes(forbidden),false);
  }
  assert.match(adapter,/execution:\s*\{ enabled: false/);
+});
+test("la API entrega contexto inmutable y notifica cambios de proyecto y selección",()=>{
+ const observers=[];
+ class FakeMutationObserver { constructor(callback){this.callback=callback;observers.push(this);} observe(){} }
+ const sandbox={
+  window:{},
+  data:{version:2,name:"Proyecto de prueba",root:"root",nodes:[
+   {id:"root",name:"Raíz",type:"grupo",children:["part"],x:0,y:0,rotation:0,scale:1},
+   {id:"part",name:"Pieza",type:"brazo",parent:"root",children:[],x:10,y:20,rotation:0,scale:1}
+  ],poses:[]},
+  selected:"part",
+  MutationObserver:FakeMutationObserver,
+  document:{getElementById:()=>({})}
+ };
+ vm.createContext(sandbox);
+ vm.runInContext(adapter,sandbox);
+ const api=sandbox.window.ADM_CreativeControl;
+ assert.equal(api.protocolVersion,"1.0.0");
+ const initial=api.getContext();
+ assert.equal(initial.workspace.id,"character");
+ assert.equal(Object.isFrozen(initial),true);
+ assert.equal(api.getCapabilities().execution.enabled,false);
+ const events=[];
+ const unsubscribe=api.subscribe(event=>events.push(event.type));
+ assert.ok(events.includes("project.changed"));
+ assert.ok(events.includes("selection.changed"));
+ const firstProjectRevision=api.getContext().project.revision;
+ sandbox.data.nodes[1].x=35;
+ observers[0].callback();
+ assert.ok(events.filter(type=>type==="project.changed").length>=2);
+ assert.ok(api.getContext().project.revision>firstProjectRevision);
+ const projectRevision=api.getContext().project.revision;
+ sandbox.selected="root";
+ observers[0].callback();
+ assert.ok(events.includes("selection.changed"));
+ assert.equal(api.getContext().project.revision,projectRevision);
+ unsubscribe();
 });
