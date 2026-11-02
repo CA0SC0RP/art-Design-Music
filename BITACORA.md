@@ -551,3 +551,9 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - Validación CI pendiente. La prueba real en Safari/iPad sigue pendiente; `main` intacta.
 
 - Cierre de validación v0.9.30: CI #112 exitoso; 90 pruebas superadas y 0 fallidas. La prueba nueva de entrada táctil/ratón quedó incluida explícitamente en el workflow. La validación en navegador físico continúa pendiente.
+
+
+## 2026-11-02 — Editor de personajes v0.9.31: control bidireccional del pincel de pesos
+- Se amplió el pincel para trabajar en modo «Añadir influencia» y «Reducir influencia». La reducción disminuye gradualmente el peso del hueso seleccionado y redistribuye proporcionalmente el resto mediante normalización.
+- La operación sigue siendo atómica: si el trazo intentaría eliminar el último peso positivo, no se confirma ningún cambio de la pasada.
+- Se conectó el selector de modo en el inspector y se añadieron tres pruebas de regresión. CI pendiente de ejecución. No se ha probado aún en Safari/iPad ni se ha modificado `main`.
