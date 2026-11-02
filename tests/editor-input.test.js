@@ -25,3 +25,16 @@ test("la malla muestra un mapa de calor del peso del hueso seleccionado",()=>{
 });
 
 test("los controles deshabilitados se distinguen visualmente y no parecen activos",()=>{\n assert.match(html,/button:disabled\\s*\\{[^}]*opacity:/);\n assert.match(html,/input:disabled,select:disabled\\s*\\{[^}]*opacity:/);\n});\n
+
+test("ADM Creative Control carga un adaptador de solo lectura",()=>{
+ const adapter=fs.readFileSync(path.join(__dirname,"../creative-control/adapter.js"),"utf8");
+ assert.match(html,/<script src="..\\/..\\/creative-control\\/adapter\\.js"><\\/script>/);
+ assert.match(adapter,/getContext/);
+ assert.match(adapter,/getCapabilities/);
+ assert.match(adapter,/mode: "read-only"/);
+ assert.match(adapter,/Object\\.freeze/);
+});
+test("el adaptador inicial no publica operaciones de escritura ni ejecución",()=>{
+ const adapter=fs.readFileSync(path.join(__dirname,"../creative-control/adapter.js"),"utf8");
+ assert.doesNotMatch(adapter,/\\b(commit|execute|applyPose|setTransform|deleteNode)\\s*[:=(]/);
+});
