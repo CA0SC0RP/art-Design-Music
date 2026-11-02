@@ -112,11 +112,6 @@
                 "minLength": 1,
                 "maxLength": 120
               },
-              "transitionMs": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 30000
-              }
             }
           },
           {
