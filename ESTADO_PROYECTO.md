@@ -445,3 +445,10 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Validación CI pendiente. La prueba real en Safari/iPad sigue pendiente; `main` intacta.
 
 - Cierre de validación v0.9.30: CI #112 exitoso; 90 pruebas superadas y 0 fallidas. La prueba nueva de entrada táctil/ratón quedó incluida explícitamente en el workflow. La validación en navegador físico continúa pendiente.
+
+
+## Actualización — 2026-11-02: v0.9.31, pincel de pesos con reducción segura
+- El pincel ahora ofrece dos operaciones: añadir influencia del hueso seleccionado o reducirla progresivamente con la misma caída suave.
+- La reducción renormaliza los pesos restantes. Si una operación intentaría borrar el último peso positivo de un vértice, se rechaza de forma transaccional y no deja cambios parciales.
+- La interfaz incorpora el selector «Añadir influencia / Reducir influencia» para usar ambas operaciones con toque o puntero.
+- Se añadieron tres pruebas para reducción y normalización, protección del último peso positivo y rechazo de modos desconocidos. Validación CI pendiente; Safari/iPad real sigue pendiente. `main` intacta.
