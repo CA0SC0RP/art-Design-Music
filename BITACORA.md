@@ -523,3 +523,9 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - `worldMatrix()` valida los seis componentes después de cada multiplicación de matrices afines; `worldMatrices()` devuelve error controlado cuando una jerarquía desborda.
 - Se añadieron dos pruebas de regresión para desbordamiento de escala acumulada y posición al componer matrices.
 - CI automatizado pendiente para esta versión. La revisión visual de articulaciones y uniones de mallas, así como Safari/iPad, siguen pendientes. `main` permanece intacta.
+
+## Actualización — 2026-11-02: v0.9.26, diagnóstico visible de deformación de mallas
+- El renderizador ya no oculta los errores del cálculo de skinning: cuando no puede calcular la deformación, conserva la geometría original y muestra un aviso en el panel de malla con la causa.
+- Si una cara individual no puede transformarse, el editor informa qué cara fue omitida en lugar de dejar un hueco sin explicación.
+- Los avisos de deformación se limpian cuando el cálculo vuelve a ser correcto. No cambia el formato del proyecto ni los pesos de los vértices.
+- Validación CI pendiente. La revisión visual de continuidad entre caras/articulaciones y Safari/iPad continúa pendiente; `main` intacta.
