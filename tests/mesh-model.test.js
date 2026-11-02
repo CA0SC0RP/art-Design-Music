@@ -142,7 +142,7 @@ test("el pincel reduce la influencia seleccionada y normaliza las restantes",()=
 
 test("el pincel no elimina el último peso positivo y conserva la malla al rechazar",()=>{
  const r=model.createGrid({width:10,height:10,columns:2,rows:2,boneId:"root"}),before=JSON.stringify(r.mesh);
- const result=model.paintInfluence(r.mesh,0,0,"root",1,100,"erase");
+ const result=model.paintInfluence(r.mesh,-5,-5,"root",1,100,"erase");
  assert.equal(result.ok,false);assert.match(result.message,/último peso positivo/);
  assert.equal(JSON.stringify(r.mesh),before);
 });
