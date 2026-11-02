@@ -205,3 +205,82 @@ test("el validador genera una simulación IK y de expresión sin ejecutar cambio
  assert.equal(result.effects[1].operations.find(item=>item.targetId==="mouth").value,"mouthSmile");
  assert.equal(result.mutatesProject,false);
 });
+
+
+test("el constructor de vista previa aplica efectos sobre una copia aislada",()=>{
+ const source=fs.readFileSync(path.join(__dirname,"../creative-control/preview-state.js"),"utf8");
+ const sandbox={window:{}};
+ vm.createContext(sandbox);
+ vm.runInContext(source,sandbox);
+ const project={version:2,root:"root",nodes:[
+  {id:"root",parent:null,x:0,y:0,rotation:0,scale:1},
+  {id:"arm",parent:"root",x:10,y:20,rotation:0,scale:1,shape:"limb"},
+  {id:"hand",parent:"arm",x:0,y:40,rotation:0,scale:1,shape:"hand"}
+ ]};
+ const before=JSON.stringify(project);
+ const result=sandbox.window.ADM_PreviewState.build(project,[
+  {type:"set_part_transform",targetId:"arm",after:{x:30,y:45,rotation:25,scale:1}},
+  {type:"solve_ik",rotations:{hand:12}},
+  {type:"set_expression",operations:[]}
+ ]);
+ assert.equal(result.ok,true);
+ assert.equal(result.project.nodes[1].x,30);
+ assert.equal(result.project.nodes[1].rotation,25);
+ assert.equal(result.project.nodes[2].rotation,12);
+ assert.equal(result.mutatesSource,false);
+ assert.equal(JSON.stringify(project),before);
+});
+
+test("la vista previa aplica poses y expresiones y rechaza mallas o destinos inexistentes",()=>{
+ const source=fs.readFileSync(path.join(__dirname,"../creative-control/preview-state.js"),"utf8");
+ const sandbox={window:{}};
+ vm.createContext(sandbox);
+ vm.runInContext(source,sandbox);
+ const project={root:"root",nodes:[
+  {id:"root",parent:null,x:0,y:0,rotation:0,scale:1},
+  {id:"mouth",parent:"root",x:0,y:5,rotation:0,scale:1,shape:"mouthNeutral"}
+ ]};
+ const pose=sandbox.window.ADM_PreviewState.build(project,[{type:"apply_pose",nodes:[{id:"mouth",x:2,y:6,rotation:0,scale:1,shape:"mouthSmile"}]}]);
+ assert.equal(pose.ok,true);
+ assert.equal(pose.project.nodes[1].shape,"mouthSmile");
+ const expression=sandbox.window.ADM_PreviewState.build(project,[{type:"set_expression",operations:[{targetId:"mouth",property:"shape",value:"mouthSad"}]}]);
+ assert.equal(expression.project.nodes[1].shape,"mouthSad");
+ assert.equal(sandbox.window.ADM_PreviewState.build(project,[{type:"set_part_transform",targetId:"missing",after:{x:1}}]).ok,false);
+ const withMesh={root:"root",nodes:[{id:"root",parent:null},{id:"meshPart",parent:"root",mesh:{vertices:[]}}]};
+ const rejected=sandbox.window.ADM_PreviewState.build(withMesh,[{type:"set_part_transform",targetId:"meshPart",after:{x:1}}]);
+ assert.equal(rejected.code,"mesh_preview_unavailable");
+});
+
+test("el editor carga el estado de vista previa y ofrece una capa visual separada",()=>{
+ assert.ok(html.includes('<script src="../../creative-control/preview-state.js"></script>'));
+ assert.match(html,/<g id="creativePreview" pointer-events="none"><\\/g>/);
+ assert.match(html,/window\.ADM_EditorPreview=Object\.freeze/);
+ assert.match(html,/clearCreativePreview\(\)/);
+ assert.match(html,/creativePreviewStatus/);
+});
+
+test("el adaptador expone previsualización y cancelación sin habilitar ejecución",()=>{
+ assert.match(adapter,/const previewProposal = proposal =>/);
+ assert.match(adapter,/const clearPreview = \(\) =>/);
+ assert.match(adapter,/previewProposal,/);
+ assert.match(adapter,/clearPreview,/);
+ assert.match(adapter,/execution:\s*\{ enabled: false/);
+});
+
+test("las propuestas de pose validan transformaciones completas y ya no prometen transición configurable",()=>{
+ const source=fs.readFileSync(path.join(__dirname,"../creative-control/proposal-validator.js"),"utf8");
+ const schema=fs.readFileSync(path.join(__dirname,"../creative-control/contracts/action-proposal.schema.json"),"utf8");
+ const sandbox={window:{}};
+ vm.createContext(sandbox);
+ vm.runInContext(source,sandbox);
+ const context={ok:true,project:{revision:3},workspace:{id:"character"},resources:{rootId:"root",nodes:[
+  {id:"root",transform:{}},{id:"arm",transform:{x:0,y:0,rotation:0,scale:1,rotationMin:-45,rotationMax:45}}
+ ],poses:[{id:"pose1",name:"Sentado",nodeCount:1,nodes:[{id:"arm",x:5,y:8,rotation:20,scale:1,shape:"limb"}]}]}};
+ const proposal={schemaVersion:"1.0",proposalId:"pose-preview",projectVersion:"3",workspace:"character",summary:"Aplicar pose guardada.",actions:[{type:"apply_pose",poseId:"pose1"}]};
+ const valid=sandbox.window.ADM_ProposalValidator.validate(proposal,context);
+ assert.equal(valid.ok,true);
+ assert.equal(valid.effects[0].nodes[0].rotation,20);
+ const invalid=sandbox.window.ADM_ProposalValidator.validate({...proposal,actions:[{type:"apply_pose",poseId:"pose1",transitionMs:900}]},context);
+ assert.ok(invalid.errors.some(error=>error.code==="unknown_property"));
+ assert.equal(schema.includes("transitionMs"),false);
+});
