@@ -92,3 +92,11 @@ Por ello, el primer trabajo de implementación será mapear las acciones reales 
 ## Protocolo de sincronización implementado
 
 El adaptador `0.2.0-readonly` incorpora revisiones de proyecto/contexto y suscripción a eventos `project.changed`, `selection.changed`, `workspace.changed` y `context.changed`. La observación actual se basa en mutaciones de las zonas renderizadas del editor; no expone el DOM a la IA. Solo está disponible el espacio `character`. Las acciones creativas siguen sin ejecución remota ni permisos de escritura. El contrato detallado está en `contracts/synchronization-protocol.md`.
+
+## Registro de capacidades del editor
+
+El archivo `capability-registry.js` describe capacidades detectadas en los controles y funciones que existen en el editor de personajes. Cada entrada informa disponibilidad actual, espacio, categoría, soporte real (función de editor, controles manuales o lectura), parámetros, precondiciones, impacto, reversibilidad y si puede formar parte de una propuesta.
+
+`proposalSupported` significa que el contrato de propuestas conoce esa operación; no significa que la IA pueda ejecutarla. Todas las capacidades mantienen `agentExecutionEnabled: false`. Las acciones que solo existen como controles manuales se identifican como tales y no se presentan como operaciones ejecutables por el agente.
+
+El adaptador consume este registro mediante `getCapabilities()` y `getCapability(id)`, y emite `capabilities.changed` cuando cambia el catálogo efectivo, por ejemplo al cambiar la selección. El registro no invoca handlers ni modifica el proyecto.
