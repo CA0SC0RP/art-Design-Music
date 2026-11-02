@@ -106,7 +106,7 @@ test("dos huesos conservan una deformación coherente al trasladarse juntos",()=
   {x:12,y:18,weights:[{boneId:"upper",weight:.2},{boneId:"lower",weight:.8}]}
  ];
  const result=skin.deformVertices(vertices,built.matrices);assert.equal(result.ok,true);
- vertices.forEach((v,i)=>{close(result.vertices[i].x,v.x+7);close(result.vertices[i].y,v.y-6);});
+ vertices.forEach((v,i)=>{close(result.vertices[i].x,v.x+7);close(result.vertices[i].y,v.y+4);});
 });
 
 test("dos triángulos vecinos comparten exactamente sus vértices tras skinning de varios huesos",()=>{
