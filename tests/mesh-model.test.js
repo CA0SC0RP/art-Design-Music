@@ -101,3 +101,17 @@ test("el pincel rechaza coordenadas de vértice inválidas sin lanzar ni mutar",
  assert.equal(model.paintInfluence(r.mesh,0,0,"arm",.8,20).ok,false);
  assert.equal(r.mesh.vertices[0].weights[0].boneId,"root");
 });
+
+test("setInfluence rechaza pesos existentes duplicados sin mutar el vértice",()=>{
+ const r=model.createGrid({width:10,height:10,columns:2,rows:2,boneId:"root"}),v=r.mesh.vertices[0];
+ v.weights=[{boneId:"root",weight:.5},{boneId:"arm",weight:.5},{boneId:"arm",weight:.2}];
+ const before=JSON.stringify(v.weights);
+ assert.equal(model.setInfluence(r.mesh,0,"root",.8).ok,false);
+ assert.equal(JSON.stringify(v.weights),before);
+});
+test("setInfluence rechaza identificadores vacíos en pesos existentes",()=>{
+ const r=model.createGrid({width:10,height:10,columns:2,rows:2,boneId:"root"}),v=r.mesh.vertices[0];
+ v.weights=[{boneId:"",weight:1}];const before=JSON.stringify(v.weights);
+ assert.equal(model.setInfluence(r.mesh,0,"root",.5).ok,false);
+ assert.equal(JSON.stringify(v.weights),before);
+});
