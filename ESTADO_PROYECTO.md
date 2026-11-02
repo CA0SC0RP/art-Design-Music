@@ -487,6 +487,6 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - El adaptador expone `ADM_CreativeControl.validateProposal(proposal)`; obtiene la instantánea vigente automáticamente.
 - La operación es no mutante: no modifica `data`, no invoca handlers de escritura y devuelve explícitamente `mutatesProject: false` y `executionEnabled: false`.
 - Se añadieron pruebas para propuesta válida, no mutación, revisión obsoleta, límites articulares, acciones desconocidas y simulación IK/expresión.
-- CI #132 exitoso. CI #133: pruebas automatizadas, sintaxis del editor y comprobaciones estructurales completadas correctamente; GitHub Actions aún estaba cerrando el último paso de limpieza en la última consulta.
+- CI #132 y #133 exitosos. CI #133 completó 104 pruebas: 104 aprobadas, 0 fallidas; también pasaron sintaxis del JavaScript integrado y comprobaciones estructurales del editor.
 - Próximo paso: vista previa visual no mutante que muestre el resultado propuesto sin alterar el proyecto. Aún no hay aprobación/commit ni ejecución IA.
 - Todo permanece en `feature/living-paper-engine-foundation`; `main` intacta, sin fusión, despliegue ni gastos. Safari/iPad real pendiente.
