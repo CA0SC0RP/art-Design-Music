@@ -380,3 +380,11 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - GitHub Actions, ejecución #80: completada con éxito. Suite completa: 70 pruebas superadas, 0 fallidas; sintaxis de módulos, JavaScript integrado y comprobaciones estructurales correctas.
 - La ejecución #79 también completó correctamente sobre el cambio de módulo previo.
 - La validación visual y táctil en Safari/iPad continúa pendiente.
+
+
+## Actualización — 2026-11-02: v0.9.20, verificación de skinning con varios huesos
+- Se añadieron pruebas de integración matemática para comprobar que una malla con influencias de varios huesos conserva exactamente su posición cuando la pose actual coincide con la pose de referencia.
+- Se verificó que dos huesos con transformaciones de referencia distintas, al desplazarse juntos, producen el mismo desplazamiento relativo para los vértices mezclados.
+- Se añadió una prueba de continuidad entre dos triángulos vecinos después de aplicar skinning multi-hueso: ambos mapeos deben producir exactamente las mismas coordenadas en sus vértices compartidos.
+- GitHub Actions, ejecución #85: 73 pruebas superadas, 0 fallidas; sintaxis y comprobaciones estructurales correctas. En las ejecuciones previas #82–84 falló una expectativa de prueba que suponía una traslación absoluta incorrecta; se corrigió para reflejar las matrices relativas de referencia. No se detectó fallo en el módulo de skinning.
+- Sigue pendiente inspección visual y prueba táctil en Safari/iPad.
