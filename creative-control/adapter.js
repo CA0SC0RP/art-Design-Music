@@ -57,7 +57,15 @@
     const poses = Array.isArray(project.poses) ? project.poses.map(pose => ({
       id: String(pose.id || ""),
       name: String(pose.name || ""),
-      nodeCount: Array.isArray(pose.nodes) ? pose.nodes.length : 0
+      nodeCount: Array.isArray(pose.nodes) ? pose.nodes.length : 0,
+      nodes: Array.isArray(pose.nodes) ? pose.nodes.map(node => ({
+        id: String(node.id || ""),
+        x: Number.isFinite(Number(node.x)) ? Number(node.x) : null,
+        y: Number.isFinite(Number(node.y)) ? Number(node.y) : null,
+        rotation: Number.isFinite(Number(node.rotation)) ? Number(node.rotation) : null,
+        scale: Number.isFinite(Number(node.scale)) ? Number(node.scale) : null,
+        ...(typeof node.shape === "string" ? { shape: node.shape } : {})
+      })) : []
     })) : [];
 
     return {
@@ -147,6 +155,25 @@
     return validator.validate(proposal, getContext());
   };
 
+  const previewProposal = proposal => {
+    const validation = validateProposal(proposal);
+    if (!validation.ok) return freezeDeep({ ok: false, validation, preview: { ok: false, code: "proposal_not_valid", message: "La propuesta no superó la validación." }, mutatesProject: false, executionEnabled: false });
+    const context = getContext();
+    const renderer = window.ADM_EditorPreview;
+    if (!renderer || typeof renderer.present !== "function") {
+      return freezeDeep({ ok: false, validation, preview: { ok: false, code: "preview_renderer_unavailable", message: "El visor de propuestas no está disponible." }, mutatesProject: false, executionEnabled: false });
+    }
+    const preview = renderer.present(validation, context);
+    return freezeDeep({ ok: !!preview.ok, validation, preview, mutatesProject: false, executionEnabled: false });
+  };
+
+  const clearPreview = () => {
+    const renderer = window.ADM_EditorPreview;
+    return renderer && typeof renderer.clear === "function"
+      ? renderer.clear()
+      : freezeDeep({ ok: false, code: "preview_renderer_unavailable" });
+  };
+
   const getCapability = id => {
     const registry = window.ADM_CapabilityRegistry;
     return registry && typeof registry.getCapability === "function"
@@ -217,6 +244,8 @@
       getCapabilities,
       getCapability,
       validateProposal,
+      previewProposal,
+      clearPreview,
       subscribe
     })
   });
