@@ -90,13 +90,9 @@
     const raw = readRawContext();
     if (!raw.ok) return freezeDeep(raw);
 
-    const projectState = {
-      name: raw.project.name,
-      formatVersion: raw.project.formatVersion,
-      nodes: raw.resources.nodes,
-      poses: raw.resources.poses
-    };
-    const nextProjectFingerprint = fingerprint(projectState);
+    // Fingerprint the complete serializable project privately so mesh vertices,
+    // weights, pose values and future project resources also invalidate stale context.
+    const nextProjectFingerprint = fingerprint(data);
     const nextContextFingerprint = fingerprint({
       project: nextProjectFingerprint,
       workspace: raw.workspace.id,
