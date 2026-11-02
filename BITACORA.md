@@ -539,3 +539,8 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - El movimiento de vértices ahora comprueba las caras adyacentes antes de confirmar el cambio. Rechaza movimientos que degeneren o inviertan la orientación de una cara, sin mutar la posición original.
 - Se añadieron pruebas para rechazo sin mutación y movimiento válido dentro de la orientación original.
 - Validación CI pendiente. La inspección visual en navegador y Safari/iPad continúa pendiente. `main` intacta.
+
+## Actualización — 2026-11-02: v0.9.29, respuesta visible al limitar vértices
+- Al intentar arrastrar un vértice hacia una posición que degeneraría o invertiría una cara, el panel de malla muestra el motivo del rechazo en lugar de ignorar silenciosamente el movimiento.
+- El aviso se limpia cuando el siguiente movimiento es válido. No se modifican los pesos ni la topología al rechazar una posición.
+- Validación CI pendiente. Prueba visual en navegador y Safari/iPad pendiente. `main` intacta.
