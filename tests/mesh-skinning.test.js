@@ -128,3 +128,8 @@ test("rechaza identificadores de hueso vacíos en el skinning",()=>{
  const r=skin.deformVertices([{x:1,y:2,weights:[{boneId:"",weight:1}]}],{"":[1,0,0,1,0,0]});
  assert.equal(r.ok,false);
 });
+
+test("ignora matrices de huesos con influencia cero",()=>{
+ const r=skin.deformVertices([{x:2,y:3,weights:[{boneId:"active",weight:1},{boneId:"unused",weight:0}]}],{active:[1,0,0,1,5,-2],unused:[1e308,0,0,1e308,1e308,1e308]});
+ assert.equal(r.ok,true);close(r.vertices[0].x,7);close(r.vertices[0].y,1);
+});
