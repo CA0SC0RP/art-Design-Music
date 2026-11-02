@@ -356,3 +356,10 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 ## Validación automatizada — v0.9.17
 - GitHub Actions, ejecución #74: completada con éxito. Suite completa: 67 pruebas superadas, 0 fallidas. Incluye los casos nuevos de topología degenerada y pincel transaccional.
 - La validación no sustituye la inspección visual ni las pruebas táctiles en Safari/iPad, que siguen pendientes.
+
+
+## Actualización — 2026-11-02: v0.9.18, validación consistente de mallas importadas
+- `project-io.js` ahora rechaza mallas sin caras y aplica la misma validación de área geométrica mínima que `mesh-model.js`; así, la importación ya no admite triángulos colineales o casi degenerados que el editor rechazaría al crear/normalizar una malla.
+- Las matrices de referencia (`bindMatrices`) también se comprueban por determinante. Se rechazan matrices singulares antes de que lleguen al skinning, donde no podrían invertirse.
+- Se añadieron dos pruebas de regresión: caras degeneradas/casi degeneradas durante importación y matrices de referencia singulares.
+- Pendiente: confirmar GitHub Actions de esta revisión. No se ha realizado inspección visual ni prueba táctil en Safari/iPad.
