@@ -400,3 +400,8 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Se añadieron dos pruebas de regresión que confirman el rechazo de pesos duplicados e identificadores vacíos, conservando intactos los datos originales.
 - GitHub Actions, ejecución #89 (commit `3426cb000b1487bb18dac4ef24393b3e81b35181`): completada con éxito. Suite: 77 pruebas superadas, 0 fallidas; sintaxis de módulos, JavaScript integrado y comprobaciones estructurales correctas.
 - La etiqueta del prototipo se actualizó a v0.9.22. La inspección visual y táctil en Safari/iPad sigue pendiente; no se modifica `main`.
+
+## Actualización — 2026-11-02: v0.9.23, aislamiento de influencias con peso cero
+- `deformVertices()` omite el cálculo de transformación para influencias cuyo peso es exactamente cero. Estas influencias no participan en la mezcla y una matriz extrema asociada no puede contaminar el resultado mediante operaciones `Infinity × 0` o `NaN`.
+- Se añadió una prueba de regresión que combina un hueso activo con otro de peso cero y una matriz finita de magnitud extrema; el vértice debe conservar únicamente la transformación del hueso activo.
+- La validación automatizada de esta versión queda pendiente de la ejecución de GitHub Actions. La inspección visual y táctil en Safari/iPad sigue pendiente; no se modifica `main`.
