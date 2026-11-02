@@ -118,6 +118,8 @@ test("el registro detecta capacidades según controles y selección sin ejecutar
  assert.equal(pose.available,true);
  assert.equal(initial.execution.enabled,false);
  assert.equal(api.getCapability("solve_ik").agentExecutionEnabled,false);
+ assert.equal(api.getCapability("solve_ik").proposalActionType,"solve_ik");
+ assert.equal(api.getCapability("select_part").proposalSupported,false);
  assert.equal(api.getCapability("unknown_capability"),null);
  assert.equal(api.getCapability("solve_ik").available,false);
  assert.equal(api.getCapability("set_expression").available,false);
