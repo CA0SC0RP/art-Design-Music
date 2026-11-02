@@ -108,3 +108,15 @@ El adaptador consume este registro mediante `getCapabilities()` y `getCapability
 La validación devuelve errores estructurados y un plan de efectos para inspección. Para transformaciones, expresiones e IK puede calcular valores propuestos; no modifica `data`, no llama a handlers de escritura y no aplica la propuesta. La API `window.ADM_CreativeControl.validateProposal(proposal)` obtiene el contexto vigente automáticamente.
 
 El resultado incluye `mutatesProject: false` y `executionEnabled: false`. No existe todavía una vista previa gráfica ni un mecanismo de aprobación/commit; el siguiente paso es convertir estos efectos en una vista previa visual no mutante y después diseñar transacciones aprobadas con undo.
+
+
+## Vista previa visual no mutante
+
+- `preview-state.js` construye una copia aislada del proyecto y aplica sobre ella los efectos ya validados.
+- El adaptador expone `previewProposal(proposal)` y `clearPreview()`; ninguna de estas operaciones escribe en el proyecto ni habilita ejecución.
+- El editor representa la copia en una capa SVG separada, atenúa temporalmente el arte original y permite cancelar la vista previa.
+- Si cambia el proyecto, el siguiente render limpia la vista previa para evitar mostrar una propuesta obsoleta.
+- La vista previa se rechaza explícitamente cuando el proyecto contiene mallas/skinning, porque esta versión aún no reproduce esa deformación y no debe mostrar una representación engañosa.
+- Las poses ahora incluyen transformaciones de piezas existentes en el contexto de solo lectura. Se excluye la raíz y se validan valores, límites articulares e IDs.
+- El contrato ya no acepta `transitionMs` para poses: el editor todavía utiliza una duración fija y no debe prometer una duración configurable que no soporta.
+- La vista previa es solo visual. No hay aceptar/commit, ejecución de acciones, undo ni conexión de chat.
