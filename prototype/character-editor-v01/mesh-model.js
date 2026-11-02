@@ -53,7 +53,8 @@ function setInfluence(mesh,index,boneId,weight){
  vertex.weights=weights.filter(w=>w.weight>0).map(w=>({...w,weight:w.weight/total}));return {ok:true};
 }
 function paintInfluence(mesh,x,y,boneId,strength,radius){
- if(!mesh||!Array.isArray(mesh.vertices)||!Number.isFinite(x)||!Number.isFinite(y)||typeof boneId!=="string"||!boneId||!Number.isFinite(strength)||strength<0||strength>1||!Number.isFinite(radius)||radius<=0)return {ok:false,message:"Parámetros del pincel no válidos."};
+ if(!mesh||!Array.isArray(mesh.vertices)||mesh.vertices.length>MAX_VERTICES||!Number.isFinite(x)||!Number.isFinite(y)||typeof boneId!=="string"||!boneId||!Number.isFinite(strength)||strength<0||strength>1||!Number.isFinite(radius)||radius<=0)return {ok:false,message:"Parámetros del pincel no válidos."};
+ if(mesh.vertices.some(v=>!v||!Number.isFinite(v.x)||!Number.isFinite(v.y)))return {ok:false,message:"El pincel encontró un vértice con coordenadas no válidas."};
  const targets=mesh.vertices.map(v=>({v,d:Math.hypot(v.x-x,v.y-y)})).filter(o=>o.d<=radius);
  if(!targets.length||strength===0)return {ok:true,changed:0};
  const updates=[];
