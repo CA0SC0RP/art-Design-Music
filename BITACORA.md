@@ -544,3 +544,8 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - Al intentar arrastrar un vértice hacia una posición que degeneraría o invertiría una cara, el panel de malla muestra el motivo del rechazo en lugar de ignorar silenciosamente el movimiento.
 - El aviso se limpia cuando el siguiente movimiento es válido. No se modifican los pesos ni la topología al rechazar una posición.
 - Validación CI pendiente. Prueba visual en navegador y Safari/iPad pendiente. `main` intacta.
+
+## Actualización — 2026-11-02: v0.9.30, robustez de entrada táctil y puntero
+- El lienzo limpia el estado de arrastre tanto al cancelar un puntero como cuando el navegador pierde su captura, evitando gestos bloqueados tras interrupciones del sistema.
+- Se añadió una prueba de integración estática para verificar Pointer Events, cancelación/captura perdida y objetivos táctiles de al menos 44 px.
+- Validación CI pendiente. La prueba real en Safari/iPad sigue pendiente; `main` intacta.
