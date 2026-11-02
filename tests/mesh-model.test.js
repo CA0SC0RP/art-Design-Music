@@ -115,3 +115,15 @@ test("setInfluence rechaza identificadores vacíos en pesos existentes",()=>{
  assert.equal(model.setInfluence(r.mesh,0,"root",.5).ok,false);
  assert.equal(JSON.stringify(v.weights),before);
 });
+
+test("rechaza mover un vértice si degenera o invierte una cara",()=>{
+ const r=model.createGrid({width:20,height:20,columns:2,rows:2,boneId:"root"}),v=r.mesh.vertices[0],before={x:v.x,y:v.y};
+ const result=model.moveVertex(r.mesh,0,20,20);
+ assert.equal(result.ok,false);assert.match(result.message,/degeneraría o invertiría/);
+ assert.deepEqual({x:v.x,y:v.y},before);
+});
+test("permite mover un vértice dentro de la orientación original de sus caras",()=>{
+ const r=model.createGrid({width:20,height:20,columns:3,rows:3,boneId:"root"});
+ const result=model.moveVertex(r.mesh,4,1,1);
+ assert.equal(result.ok,true);assert.equal(r.mesh.vertices[4].x,1);assert.equal(r.mesh.vertices[4].y,1);
+});
