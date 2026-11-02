@@ -511,3 +511,9 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - `deformVertices()` omite el cálculo de transformación para influencias cuyo peso es exactamente cero. Estas influencias no participan en la mezcla y una matriz extrema asociada no puede contaminar el resultado mediante operaciones `Infinity × 0` o `NaN`.
 - Se añadió una prueba de regresión que combina un hueso activo con otro de peso cero y una matriz finita de magnitud extrema; el vértice debe conservar únicamente la transformación del hueso activo.
 - La validación automatizada de esta versión queda pendiente de la ejecución de GitHub Actions. La inspección visual y táctil en Safari/iPad sigue pendiente; no se modifica `main`.
+
+## Actualización — 2026-11-02: v0.9.24, protección ante desbordamiento de matrices afines
+- `multiply()` e `invert()` ahora verifican que los seis componentes del resultado sigan siendo finitos. Rechazan explícitamente desbordamientos numéricos aunque las matrices de entrada contengan únicamente valores finitos.
+- `buildSkinMatrices()` queda protegido porque propaga el rechazo de resultados no finitos durante la composición de matrices entre pose de referencia y pose actual.
+- Se añadieron tres pruebas: desbordamiento en multiplicación, desbordamiento al construir matrices de skinning e inversión que produce componentes no finitos.
+- La validación automatizada de esta versión queda pendiente de GitHub Actions. La inspección visual y táctil en Safari/iPad sigue pendiente; `main` no se modifica.
