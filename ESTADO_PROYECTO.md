@@ -452,3 +452,5 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - La reducción renormaliza los pesos restantes. Si una operación intentaría borrar el último peso positivo de un vértice, se rechaza de forma transaccional y no deja cambios parciales.
 - La interfaz incorpora el selector «Añadir influencia / Reducir influencia» para usar ambas operaciones con toque o puntero.
 - Se añadieron tres pruebas para reducción y normalización, protección del último peso positivo y rechazo de modos desconocidos. Validación CI pendiente; Safari/iPad real sigue pendiente. `main` intacta.
+
+- Cierre de validación v0.9.31: GitHub Actions #116 exitoso; 93 pruebas superadas y 0 fallidas. Incluye los tres casos nuevos del pincel bidireccional y validación de sintaxis del editor. Safari/iPad real sigue pendiente.
