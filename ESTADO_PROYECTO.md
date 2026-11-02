@@ -370,3 +370,13 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Suite completa: 69 pruebas superadas, 0 fallidas. Sintaxis de módulos, JavaScript integrado y comprobaciones estructurales también correctas.
 - La ejecución #76 detectó un error en el propio caso de prueba de casi colinealidad; se corrigieron las coordenadas del fixture y la ejecución #78 confirmó el caso. No fue un fallo del validador de producción.
 - La prueba visual y táctil en Safari/iPad continúa pendiente.
+
+
+## Actualización — 2026-11-02: v0.9.19, prevalidación del pincel de pesos
+- `paintInfluence()` ahora verifica antes de calcular objetivos que la lista de vértices no exceda el límite y que todos los vértices tengan coordenadas finitas. Esto evita excepciones al encontrar una entrada nula y evita que un vértice con coordenadas corruptas quede silenciosamente fuera del área de pintura.
+- Se añadió una prueba de regresión para coordenadas no finitas y vértices nulos, verificando que la malla no se modifique.
+
+## Validación automatizada — v0.9.19
+- GitHub Actions, ejecución #80: completada con éxito. Suite completa: 70 pruebas superadas, 0 fallidas; sintaxis de módulos, JavaScript integrado y comprobaciones estructurales correctas.
+- La ejecución #79 también completó correctamente sobre el cambio de módulo previo.
+- La validación visual y táctil en Safari/iPad continúa pendiente.
