@@ -78,3 +78,16 @@ Comprobaciones implementadas:
 - catálogo de expresiones y piezas faciales requeridas.
 
 La respuesta contiene errores por código/ruta y efectos simulados. No cambia el proyecto, no llama a handlers del editor y no autoriza ejecución. La simulación es un plan estructurado, no una vista previa gráfica todavía.
+
+
+## Vista previa aislada (v1.0)
+
+El flujo de propuesta añade una fase de presentación no mutante:
+
+1. El adaptador valida la propuesta contra el contexto y la revisión actuales.
+2. El constructor de preview clona el proyecto y aplica los efectos únicamente a esa copia.
+3. El editor dibuja la copia en una capa SVG separada.
+4. Cancelar elimina esa capa y restaura la visibilidad normal del arte original.
+5. Cualquier render posterior del proyecto limpia la preview activa para impedir que sobreviva a un cambio de estado.
+
+La capa de preview no recibe permisos de escritura. La existencia de una preview no equivale a aprobación ni a ejecución. Los proyectos con mallas/skinning se rechazan en esta primera versión porque aún no existe un renderer aislado que reproduzca esas deformaciones fielmente.
