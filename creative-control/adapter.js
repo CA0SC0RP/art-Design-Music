@@ -54,19 +54,24 @@
       } : { available: false, vertices: 0, faces: 0 }
     }));
 
-    const poses = Array.isArray(project.poses) ? project.poses.map(pose => ({
-      id: String(pose.id || ""),
-      name: String(pose.name || ""),
-      nodeCount: Array.isArray(pose.nodes) ? pose.nodes.length : 0,
-      nodes: Array.isArray(pose.nodes) ? pose.nodes.map(node => ({
-        id: String(node.id || ""),
-        x: Number.isFinite(Number(node.x)) ? Number(node.x) : null,
-        y: Number.isFinite(Number(node.y)) ? Number(node.y) : null,
-        rotation: Number.isFinite(Number(node.rotation)) ? Number(node.rotation) : null,
-        scale: Number.isFinite(Number(node.scale)) ? Number(node.scale) : null,
-        ...(typeof node.shape === "string" ? { shape: node.shape } : {})
-      })) : []
-    })) : [];
+    const poses = Array.isArray(project.poses) ? project.poses.map(pose => {
+      const poseNodes = Array.isArray(pose.nodes)
+        ? pose.nodes.filter(node => node && node.id != null && String(node.id) !== String(project.root))
+        : [];
+      return {
+        id: String(pose.id || ""),
+        name: String(pose.name || ""),
+        nodeCount: poseNodes.length,
+        nodes: poseNodes.map(node => ({
+          id: String(node.id),
+          x: Number.isFinite(Number(node.x)) ? Number(node.x) : null,
+          y: Number.isFinite(Number(node.y)) ? Number(node.y) : null,
+          rotation: Number.isFinite(Number(node.rotation)) ? Number(node.rotation) : null,
+          scale: Number.isFinite(Number(node.scale)) ? Number(node.scale) : null,
+          ...(typeof node.shape === "string" ? { shape: node.shape } : {})
+        }))
+      };
+    }) : [];
 
     return {
       ok: true,
