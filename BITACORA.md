@@ -469,3 +469,9 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 ## Validación automatizada — editor v0.9.17
 - GitHub Actions, ejecución #74: completada con éxito. Suite completa: 67 pruebas superadas, 0 fallidas. Incluye los casos nuevos de topología degenerada y pincel transaccional.
 - La validación no sustituye la inspección visual ni las pruebas táctiles en Safari/iPad, que siguen pendientes.
+
+
+## 2026-11-02 — Editor de personajes v0.9.18: importación de mallas consistente
+- Se detectó que el importador validaba índices de caras, pero no su área geométrica, y aceptaba matrices de referencia singulares. Eso permitía importar una malla que después fallaría al construir el skinning.
+- `project-io.js` ahora rechaza mallas sin caras, triángulos degenerados o casi degenerados (umbral alineado con `mesh-model.js`) y matrices de referencia no invertibles.
+- Se agregaron pruebas de regresión para ambos casos. Pendiente confirmar CI; no se afirma prueba visual en Safari/iPad.
