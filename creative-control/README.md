@@ -87,3 +87,8 @@ Por ello, el primer trabajo de implementación será mapear las acciones reales 
 - Eliminar personajes, partes, rigs, escenas o archivos.
 - Aplicar cambios persistentes sin aprobación humana.
 - Hacer llamadas a proveedores de pago o consumir créditos sin autorización explícita.
+
+
+## Protocolo de sincronización implementado
+
+El adaptador `0.2.0-readonly` incorpora revisiones de proyecto/contexto y suscripción a eventos `project.changed`, `selection.changed`, `workspace.changed` y `context.changed`. La observación actual se basa en mutaciones de las zonas renderizadas del editor; no expone el DOM a la IA. Solo está disponible el espacio `character`. Las acciones creativas siguen sin ejecución remota ni permisos de escritura. El contrato detallado está en `contracts/synchronization-protocol.md`.
