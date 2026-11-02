@@ -487,3 +487,10 @@ Se refinó la expansión de recortes triangulares para usar offsets paralelos de
 - Se reforzó `paintInfluence()` para rechazar la malla antes de calcular distancias si encuentra vértices nulos o coordenadas no finitas, y para respetar el máximo de vértices. Así no se lanza una excepción ni se omite silenciosamente una entrada geométrica corrupta.
 - Se agregó una prueba que confirma el rechazo y la ausencia de mutación.
 - GitHub Actions, ejecución #80: 70 pruebas superadas, 0 fallidas. La inspección visual y la prueba táctil en Safari/iPad siguen pendientes.
+
+
+## 2026-11-02 — Editor de personajes v0.9.20: pruebas multi-hueso
+- Se agregaron pruebas que cubren la pose de referencia con múltiples huesos, traslación conjunta a partir de matrices de referencia distintas y continuidad de vértices compartidos entre triángulos vecinos tras skinning multi-hueso.
+- La primera expectativa de traslación se corrigió al comprobar el resultado real de matrices relativas (transformación actual × inversa de referencia); el valor correcto en el eje Y era +4, no -6. No se modificó el algoritmo de skinning por este ajuste de prueba.
+- GitHub Actions #85 completó con 73 pruebas aprobadas y 0 fallidas.
+- Aún no se ha realizado inspección visual ni prueba táctil en Safari/iPad.
