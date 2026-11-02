@@ -92,3 +92,36 @@ test("la API entrega contexto inmutable y notifica cambios de proyecto y selecci
  assert.equal(api.getContext().project.revision,projectRevision);
  unsubscribe();
 });
+
+test("el registro detecta capacidades según controles y selección sin ejecutar acciones",()=>{
+ const registry=fs.readFileSync(path.join(__dirname,"../creative-control/capability-registry.js"),"utf8");
+ const observers=[];
+ class FakeMutationObserver { constructor(callback){this.callback=callback;observers.push(this);} observe(){} }
+ const controls=new Set(["x","y","rot","scale","poseSelect","applyPose","ikChain","ikX","ikY","ikBend","solveIK","expressionSelect","applyExpression","meshCreate","meshDelete","meshPaint","meshAssign","meshBone","meshWeight","meshBrush","meshBrushMode","actionWave","actionWalkA","actionWalkB","actionRest","duplicate","parent","delete","poseName","savePose","import","export","save","tree","art","outline","selectedLabel","count","type"]);
+ const sandbox={
+  window:{applyPose:()=>{},solveIKAt:()=>{},applyExpression:()=>{},runCoordinatedAction:()=>{}},
+  document:{getElementById:id=>controls.has(id)?{}:null,querySelectorAll:()=>[{},{}]},
+  data:{version:2,name:"Prueba",root:"root",nodes:[{id:"root",name:"Raíz",type:"grupo"},{id:"torso",name:"Torso",type:"cuerpo",parent:"root",x:0,y:0,rotation:0,scale:1}],poses:[]},
+  selected:"torso",
+  MutationObserver:FakeMutationObserver
+ };
+ vm.createContext(sandbox);
+ vm.runInContext(registry,sandbox);
+ vm.runInContext(adapter,sandbox);
+ const api=sandbox.window.ADM_CreativeControl;
+ const initial=api.getCapabilities();
+ const transform=initial.capabilities.find(item=>item.id==="set_part_transform");
+ const pose=initial.capabilities.find(item=>item.id==="apply_pose");
+ assert.equal(transform.available,true);
+ assert.equal(transform.proposalSupported,true);
+ assert.equal(transform.agentExecutionEnabled,false);
+ assert.equal(pose.available,true);
+ assert.equal(initial.execution.enabled,false);
+ const events=[];
+ api.subscribe(event=>events.push(event.type));
+ sandbox.selected="root";
+ observers[0].callback();
+ const next=api.getCapabilities().capabilities.find(item=>item.id==="set_part_transform");
+ assert.equal(next.available,false);
+ assert.ok(events.includes("capabilities.changed"));
+});
