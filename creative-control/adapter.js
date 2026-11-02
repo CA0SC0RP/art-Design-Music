@@ -64,10 +64,10 @@
         nodeCount: poseNodes.length,
         nodes: poseNodes.map(node => ({
           id: String(node.id),
-          x: Number.isFinite(Number(node.x)) ? Number(node.x) : null,
-          y: Number.isFinite(Number(node.y)) ? Number(node.y) : null,
-          rotation: Number.isFinite(Number(node.rotation)) ? Number(node.rotation) : null,
-          scale: Number.isFinite(Number(node.scale)) ? Number(node.scale) : null,
+          x: Number.isFinite(node.x) ? node.x : null,
+          y: Number.isFinite(node.y) ? node.y : null,
+          rotation: Number.isFinite(node.rotation) ? node.rotation : null,
+          scale: Number.isFinite(node.scale) ? node.scale : null,
           ...(typeof node.shape === "string" ? { shape: node.shape } : {})
         }))
       };
