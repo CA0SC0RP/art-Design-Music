@@ -423,3 +423,8 @@ El registro anterior identifica la imagen maestra como PNG RGB de 8 bits, 3840 �
 - Si una cara individual no puede transformarse, el editor informa qué cara fue omitida en lugar de dejar un hueco sin explicación.
 - Los avisos de deformación se limpian cuando el cálculo vuelve a ser correcto. No cambia el formato del proyecto ni los pesos de los vértices.
 - Validación CI pendiente. La revisión visual de continuidad entre caras/articulaciones y Safari/iPad continúa pendiente; `main` intacta.
+
+## Actualización — 2026-11-02: v0.9.27, renderizado íntegro y puntos finitos
+- El renderizador preevalúa todas las caras de la malla antes de dibujar fragmentos. Si una cara está degenerada o no admite transformación, conserva la pieza completa sin deformar en vez de renderizar una malla parcial con huecos.
+- `transformPoint()` rechaza resultados no finitos; se añadieron dos pruebas de regresión para desbordamiento de coordenadas.
+- Validación CI pendiente. La continuidad visual real y Safari/iPad aún requieren inspección en navegador. `main` intacta.
