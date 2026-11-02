@@ -92,11 +92,38 @@
       }
 
       if (action.type === "apply_pose") {
-        if (!onlyKeys(action, ["type","poseId","transitionMs"])) addError(errors, "unknown_property", path, "La acción contiene propiedades no permitidas.");
+        if (!onlyKeys(action, ["type","poseId"])) addError(errors, "unknown_property", path, "La acción contiene propiedades no permitidas.");
         const pose = typeof action.poseId === "string" ? poses.get(action.poseId) : null;
-        if (!pose) addError(errors, "unknown_pose", path + ".poseId", "La pose solicitada no existe en el proyecto activo.");
-        if (action.transitionMs !== undefined && (!Number.isInteger(action.transitionMs) || action.transitionMs < 0 || action.transitionMs > 30000)) addError(errors, "invalid_transition", path + ".transitionMs", "La transición debe ser un entero entre 0 y 30000 ms.");
-        effects.push({ type: action.type, poseId: action.poseId, affectedParts: pose ? pose.nodeCount : 0, preview: "pose-summary" });
+        if (!pose) {
+          addError(errors, "unknown_pose", path + ".poseId", "La pose solicitada no existe en el proyecto activo.");
+          return;
+        }
+        const poseNodes = Array.isArray(pose.nodes) ? pose.nodes : [];
+        if (!poseNodes.length) addError(errors, "pose_data_unavailable", path + ".poseId", "La pose no contiene transformaciones disponibles para previsualizar.");
+        const previewNodes = [];
+        poseNodes.forEach((poseNode, poseIndex) => {
+          const posePath = path + ".pose.nodes[" + poseIndex + "]";
+          const node = poseNode && typeof poseNode.id === "string" ? nodes.get(poseNode.id) : null;
+          if (!node) { addError(errors, "unknown_pose_target", posePath + ".id", "La pose referencia una pieza que no existe en el proyecto activo."); return; }
+          if (poseNode.id === context.resources.rootId) { addError(errors, "root_pose_target", posePath + ".id", "La pose no puede transformar la raíz."); return; }
+          const values = {};
+          for (const key of ["x","y","rotation","scale"]) {
+            const value = poseNode[key];
+            if (!isFiniteNumber(value)) addError(errors, "invalid_pose_value", posePath + "." + key, "La pose contiene un valor numérico no válido.");
+            else values[key] = value;
+          }
+          if (isFiniteNumber(values.x) && (values.x < -1000 || values.x > 1000)) addError(errors, "out_of_range", posePath + ".x", "La posición debe estar entre -1000 y 1000.");
+          if (isFiniteNumber(values.y) && (values.y < -1000 || values.y > 1000)) addError(errors, "out_of_range", posePath + ".y", "La posición debe estar entre -1000 y 1000.");
+          if (isFiniteNumber(values.scale) && (values.scale < 0.05 || values.scale > 10)) addError(errors, "out_of_range", posePath + ".scale", "La escala debe estar entre 0.05 y 10.");
+          if (isFiniteNumber(values.rotation) && (values.rotation < Number(node.transform.rotationMin ?? -180) || values.rotation > Number(node.transform.rotationMax ?? 180))) addError(errors, "joint_limit", posePath + ".rotation", "La pose excede los límites de esta articulación.");
+          if (poseNode.shape !== undefined) {
+            const faceShapes = ["mouthNeutral","mouthSmile","mouthSad","mouthOpen","mouthAngry"];
+            if (typeof poseNode.shape !== "string" || (poseNode.shape !== node.shape && !faceShapes.includes(poseNode.shape))) addError(errors, "invalid_pose_shape", posePath + ".shape", "La pose contiene una forma no admitida para esta pieza.");
+            else values.shape = poseNode.shape;
+          }
+          previewNodes.push({ id: poseNode.id, ...values });
+        });
+        effects.push({ type: action.type, poseId: action.poseId, nodes: previewNodes, affectedParts: previewNodes.length, preview: "pose" });
         return;
       }
 
